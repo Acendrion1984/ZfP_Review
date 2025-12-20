@@ -1,0 +1,2584 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZfP Audit-Checkliste - Schaeffler</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 6px;
+            font-size: 14px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #2c3e50;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 4px;
+            font-size: 1.3em;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        /* AUDIT AUSWAHL */
+        .audit-selection {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .audit-selection h2 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+        .audit-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .audit-btn {
+            padding: 12px 8px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+        }
+        .audit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+        .audit-btn.wirbelstrom { background: #3498db; }
+        .audit-btn.magnetpulver { background: #e74c3c; }
+        .audit-btn.nital { background: #2ecc71; }
+        .audit-btn.ultraschall { background: #9b59b6; }
+        .audit-btn .btn-icon {
+            font-size: 1.6em;
+            margin-bottom: 6px;
+        }
+        .audit-btn .btn-progress {
+            margin-top: 4px;
+            font-size: 0.7em;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 8px;
+            min-width: 35px;
+        }
+
+        /* CONTROLS - ALLE IN EINER ZEILE */
+        .controls-top {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 10px;
+            flex-wrap: nowrap;
+        }
+        .controls-top button {
+            padding: 5px 6px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.75em;
+            min-height: 30px;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-back { background: #7f8c8d; color: white; }
+        .btn-export-single { background: #27ae60; color: white; }
+        .btn-export-images { background: #3498db; color: white; }
+        .btn-desktop { background: #95a5a6; color: white; }
+        
+        .controls-bottom {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .controls-bottom button {
+            padding: 6px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8em;
+            min-height: 32px;
+            flex: 1;
+            min-width: 70px;
+        }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-info { background: #17a2b8; color: white; }
+        button:hover { opacity: 0.9; }
+
+        /* TEILNEHMER - OPTIMIERT MIT + IN DER ZEILE */
+        .participants-section {
+            background: #f8f9fa;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .participants-section h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .participants-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .participant-group {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .participant-group h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ecf0f1;
+            padding-bottom: 3px;
+            font-size: 0.8em;
+        }
+        .participant-input-container {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+        .participant-input {
+            flex: 1;
+            padding: 4px 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: inherit;
+            font-size: 0.8em;
+        }
+        .add-participant {
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.65em;
+            width: 24px;
+            min-width: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .participant-list {
+            margin-top: 5px;
+            max-height: 80px;
+            overflow-y: auto;
+            font-size: 0.75em;
+        }
+        .participant-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .remove-participant {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 1px 5px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 0.7em;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* AUDIT STATUS - KORRIGIERT */
+        .audit-status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.8em;
+            background: #f8f9fa;
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            flex-wrap: wrap;
+        }
+        .audit-status span {
+            flex: 1;
+            text-align: center;
+            min-width: 100px;
+            margin: 2px 0;
+        }
+        .audit-progress-container {
+            margin: 10px 0;
+            background: #ecf0f1;
+            border-radius: 5px;
+            height: 10px;
+            overflow: hidden;
+        }
+        .audit-progress-bar {
+            height: 100%;
+            background: #27ae60;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.5em;
+            font-weight: bold;
+        }
+
+        /* FRAGEN UND SECTIONS - DROPDOWN SICHERSTELLEN */
+        .section {
+            margin-bottom: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .section-header {
+            background: #34495e;
+            color: white;
+            padding: 8px 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-header:hover {
+            background: #2c3e50;
+        }
+        .section-header h2 { 
+            margin: 0; 
+            font-size: 1em;
+        }
+        .section-header span {
+            transition: transform 0.3s;
+        }
+        .section.expanded .section-header span {
+            transform: rotate(90deg);
+        }
+        .section-content {
+            padding: 8px;
+            display: none;
+        }
+        .section.expanded .section-content { 
+            display: block; 
+        }
+
+        .question {
+            margin-bottom: 8px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .question-text { 
+            flex: 1; 
+            font-weight: 500;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        .question-id {
+            background: #3498db;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+        .points-options {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .points-option {
+            flex: 1;
+            min-width: 40px;
+            padding: 6px 2px;
+            border: 2px solid #ddd;
+            border-radius: 3px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.2s;
+            font-size: 0.9em;
+        }
+        .points-option:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .points-option.selected {
+            border-color: #3498db;
+            background: #3498db;
+            color: white;
+        }
+        .points-option[data-points="0"] { border-color: #e74c3c; color: #e74c3c; }
+        .points-option[data-points="0"].selected { background: #e74c3c; color: white; }
+        .points-option[data-points="2"] { border-color: #e67e22; color: #e67e22; }
+        .points-option[data-points="2"].selected { background: #e67e22; color: white; }
+        .points-option[data-points="4"] { border-color: #f1c40f; color: #f1c40f; }
+        .points-option[data-points="4"].selected { background: #f1c40f; color: #333; }
+        .points-option[data-points="8"] { border-color: #2ecc71; color: #2ecc71; }
+        .points-option[data-points="8"].selected { background: #2ecc71; color: white; }
+        .points-option[data-points="10"] { border-color: #27ae60; color: #27ae60; }
+        .points-option[data-points="10"].selected { background: #27ae60; color: white; }
+        .points-display {
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: center;
+            padding: 6px;
+            border-radius: 3px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+        .evidence {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            resize: vertical;
+            min-height: 40px;
+            font-family: inherit;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+        .deviation-section {
+            display: none;
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #fff3f3;
+            border-radius: 3px;
+            border-left: 3px solid #e74c3c;
+        }
+        .deviation-section h4 { 
+            color: #c0392b; 
+            margin-bottom: 5px; 
+            font-size: 0.85em;
+        }
+        .deviation-field, .responsible-field {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #e74c3c;
+            border-radius: 3px;
+            resize: vertical;
+            min-height: 40px;
+            font-family: inherit;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+        .responsible-field {
+            border-color: #ddd;
+            min-height: auto;
+        }
+        .image-upload { margin-bottom: 8px; }
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .file-input-label {
+            display: inline-block;
+            padding: 5px 8px;
+            background: #3498db;
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 150px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            display: none;
+        }
+        .remove-image {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 3px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 5px;
+            font-size: 0.75em;
+        }
+
+        /* MOBILE ANSICHT */
+        .mobile-view .participants-section {
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+        .mobile-participant-type {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+        .mobile-participant-type-btn {
+            flex: 1;
+            padding: 4px;
+            border: 1px solid #3498db;
+            border-radius: 3px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.7em;
+        }
+        .mobile-participant-type-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        .mobile-participant-input-container {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+        .mobile-participant-input {
+            flex: 1;
+            padding: 4px 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+        .mobile-add-participant {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.7em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+        }
+
+        .mobile-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            align-items: center;
+        }
+        .mobile-nav button {
+            padding: 6px 10px;
+            font-size: 0.8em;
+            min-width: 80px;
+            border: none;
+            border-radius: 4px;
+            background: #95a5a6;
+            color: white;
+            cursor: pointer;
+        }
+        #mobileCounter {
+            font-size: 0.85em;
+            padding: 0 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* KATEGORIEN-BUTTONS */
+        .mobile-section-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            margin-bottom: 8px;
+        }
+        .section-btn { 
+            flex: 1; 
+            min-width: 60px; 
+            font-size: 0.7em;
+            padding: 4px 5px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: none;
+            border-radius: 3px;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* EVALUATION */
+        .evaluation {
+            display: none;
+            margin-top: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .evaluation.active { display: block; }
+        .evaluation h2 {
+            font-size: 1em;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        /* ANSICHTS-STEUERUNG - KORRIGIERT */
+        .desktop-view { display: block; }
+        .mobile-view { display: none; }
+        .audit-content { display: none; }
+        .audit-content.active { display: block; }
+        .audit-selection { display: none; }
+        .audit-selection.active { display: block; }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #ecf0f1;
+            color: #7f8c8d;
+            font-size: 0.85em;
+        }
+        .creator-info {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 4px;
+            font-size: 0.9em;
+        }
+        .version-info {
+            margin-top: 2px;
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+
+        /* MOBILE OPTIMIERUNGEN */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+                font-size: 13px;
+            }
+            
+            .container { 
+                padding: 8px !important; 
+            }
+            
+            /* Mobile Ansicht erzwingen */
+            .desktop-view { 
+                display: none !important; 
+            }
+            .mobile-view { 
+                display: block !important; 
+            }
+            
+            /* Audit-Auswahl auf Mobile */
+            .audit-buttons {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            
+            .audit-btn {
+                padding: 10px 6px;
+                min-height: 70px;
+                font-size: 0.85em;
+                flex-direction: row;
+                justify-content: flex-start;
+                text-align: left;
+                padding-left: 12px;
+            }
+            
+            .audit-btn .btn-icon {
+                font-size: 1.4em;
+                margin-right: 8px;
+                margin-bottom: 0;
+            }
+            
+            .audit-btn .btn-progress {
+                margin-left: auto;
+                margin-top: 0;
+            }
+            
+            /* Abkürzungen auf den Buttons für Mobile */
+            .audit-btn.wirbelstrom::before { content: "ET - "; }
+            .audit-btn.magnetpulver::before { content: "MT - "; }
+            .audit-btn.nital::before { content: "NE - "; }
+            .audit-btn.ultraschall::before { content: "UT - "; }
+            
+            /* Controls auf Mobile */
+            .controls-top {
+                gap: 3px;
+                margin-bottom: 8px;
+            }
+            
+            .controls-top button {
+                padding: 4px 5px;
+                font-size: 0.7em;
+                min-height: 26px;
+            }
+            
+            .controls-bottom {
+                gap: 3px;
+                margin-bottom: 8px;
+            }
+            
+            .controls-bottom button {
+                padding: 4px 5px;
+                font-size: 0.7em;
+                min-height: 28px;
+                min-width: 60px;
+            }
+            
+            /* Teilnehmer auf Mobile */
+            .participants-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            
+            /* Status auf Mobile - Vertikal */
+            .audit-status {
+            }
+            
+            .audit-status span {
+                min-width: auto;
+                text-align: left;
+                display: flex;
+                justify-content: space-between;
+            }
+            
+            /* Frage-Display auf Mobile */
+            .question {
+                padding: 8px;
+            }
+            
+            .question-text {
+                font-size: 0.85em;
+            }
+            
+            .question-id {
+                font-size: 0.7em;
+                margin-left: 5px;
+            }
+            
+            .points-options {
+                gap: 2px;
+            }
+            
+            .points-option {
+                min-width: 30px;
+                padding: 4px 2px;
+                font-size: 0.8em;
+            }
+            
+            /* Mobile Navigation */
+            .mobile-nav button {
+                min-width: 60px;
+                padding: 5px 8px;
+            }
+            
+            /* Section-Selector auf Mobile */
+            .mobile-section-selector {
+                gap: 2px;
+            }
+            
+            .section-btn {
+                min-width: 50px;
+                font-size: 0.65em;
+                padding: 3px 4px;
+            }
+            
+            /* Evidence und Fields */
+            .evidence, .deviation-field, .responsible-field {
+                font-size: 0.8em;
+                padding: 5px 6px;
+            }
+        }
+
+        /* SEHR KLEINE DISPLAYS */
+        @media (max-width: 360px) {
+            .container { 
+                padding: 6px !important; 
+            }
+            
+            .audit-btn {
+                padding: 8px 5px;
+                min-height: 60px;
+                font-size: 0.8em;
+            }
+            
+            .controls-top button {
+                padding: 3px 4px;
+                font-size: 0.65em;
+                min-height: 24px;
+            }
+            
+            .controls-bottom button {
+                padding: 3px 4px;
+                font-size: 0.65em;
+                min-height: 26px;
+                min-width: 55px;
+            }
+            
+            .question-text {
+                font-size: 0.8em;
+            }
+            
+            .mobile-nav button {
+                min-width: 50px;
+                padding: 4px 6px;
+            }
+            
+            #mobileCounter {
+                font-size: 0.75em;
+            }
+        }
+        
+        /* DESKTOP VERGRÖSSERUNGEN */
+        @media (min-width: 769px) {
+            body {
+                font-size: 15px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .controls-top button {
+                padding: 8px 10px;
+                font-size: 0.85em;
+                min-height: 36px;
+            }
+            
+            .controls-bottom button {
+                padding: 8px 10px;
+                font-size: 0.85em;
+                min-height: 38px;
+                min-width: 80px;
+            }
+            
+            .participants-section {
+                padding: 12px;
+            }
+            
+            .participant-input {
+                padding: 6px 8px;
+                font-size: 0.9em;
+            }
+            
+            .question {
+                padding: 12px;
+            }
+            
+            .question-text {
+                font-size: 1em;
+            }
+            
+            .question-id {
+                font-size: 0.85em;
+                padding: 3px 8px;
+            }
+            
+            .points-option {
+                min-width: 45px;
+                padding: 8px 2px;
+                font-size: 1em;
+            }
+            
+            .evidence, .deviation-field, .responsible-field {
+                padding: 8px 10px;
+                font-size: 0.9em;
+                min-height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ZfP Audit-Checkliste</h1>
+            <div class="subtitle">Zerstörungsfreie Prüfverfahren - Schaeffler</div>
+        </header>
+
+        <!-- AUDIT AUSWAHL -->
+        <div id="auditSelection" class="audit-selection active">
+            <h2>Audit-Verfahren auswählen:</h2>
+            <div class="audit-buttons">
+                <button class="audit-btn wirbelstrom" data-audit="wirbelstrom">
+                    <div class="btn-icon">⚡</div>
+                    <span>Wirbelstromprüfung</span>
+                    <div class="btn-progress" id="wirbelstromProgress">0%</div>
+                </button>
+                <button class="audit-btn magnetpulver" data-audit="magnetpulver">
+                    <div class="btn-icon">🧲</div>
+                    <span>Magnetpulverprüfung</span>
+                    <div class="btn-progress" id="magnetpulverProgress">0%</div>
+                </button>
+                <button class="audit-btn nital" data-audit="nital">
+                    <div class="btn-icon">🧪</div>
+                    <span>Nital-Ätzen</span>
+                    <div class="btn-progress" id="nitalProgress">0%</div>
+                </button>
+                <button class="audit-btn ultraschall" data-audit="ultraschall">
+                    <div class="btn-icon">📡</div>
+                    <span>Ultraschallprüfung</span>
+                    <div class="btn-progress" id="ultraschallProgress">0%</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- AUDIT CONTENT -->
+        <div id="auditContent" class="audit-content">
+            <!-- CONTROLS -->
+            <div class="controls-top">
+                <button class="btn-back" id="backBtn">← Zurück</button>
+                <button class="btn-export-single" id="exportSingleBtn">📁 Einzeldatei</button>
+                <button class="btn-export-images" id="exportImagesBtn">🖼️ Mit Bildern</button>
+                <button class="btn-desktop" id="toggleViewBtn">🖥️ Desktop</button>
+            </div>
+
+            <div class="controls-bottom">
+                <button class="btn-warning" id="loadBtn">📂 Laden</button>
+                <button class="btn-danger" id="resetBtn">🗑️ Reset</button>
+                <button class="btn-secondary" id="printBtn">🖨️ Drucken</button>
+                <button class="btn-info" id="evaluationBtn">📊 Auswertung</button>
+            </div>
+
+            <!-- Desktop Teilnehmer -->
+            <div class="participants-section desktop-view">
+                <h3>📋 Teilnehmer</h3>
+                <div class="participants-grid">
+                    <div class="participant-group">
+                        <h4>👨‍💼 Auditor</h4>
+                        <div class="participant-input-container">
+                            <input type="text" class="participant-input" id="auditorInput" placeholder="Name">
+                            <button class="add-participant" onclick="addParticipant('auditor')">+</button>
+                        </div>
+                        <div class="participant-list" id="auditorList"></div>
+                    </div>
+                    <div class="participant-group">
+                        <h4>👥 Auditiert</h4>
+                        <div class="participant-input-container">
+                            <input type="text" class="participant-input" id="auditeeInput" placeholder="Name">
+                            <button class="add-participant" onclick="addParticipant('auditee')">+</button>
+                        </div>
+                        <div class="participant-list" id="auditeeList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Teilnehmer -->
+            <div class="participants-section mobile-view">
+                <h3>📋 Teilnehmer</h3>
+                <div class="mobile-participant-type">
+                    <button class="mobile-participant-type-btn active" data-type="auditor">👨‍💼 Auditor</button>
+                    <button class="mobile-participant-type-btn" data-type="auditee">👥 Auditiert</button>
+                </div>
+                <div class="mobile-participant-input-container">
+                    <input type="text" class="mobile-participant-input" id="mobileParticipantInput" placeholder="Name">
+                    <button class="mobile-add-participant" onclick="addMobileParticipant()">+</button>
+                </div>
+                <div class="participant-list" id="mobileParticipantList"></div>
+            </div>
+
+            <!-- Statusanzeige -->
+            <div class="audit-status">
+                <span class="status-part">Fortschritt: <strong id="progressText">0%</strong></span>
+                <span class="separator"> </span>
+                <span class="status-part">Frage <strong id="answeredCount">0</strong>/<strong id="totalCount">24</strong></span>
+                <span class="separator"> </span>
+                <span class="status-part"><strong id="pointsTotal">0</strong>/<strong id="pointsMax">240</strong> Punkte</span>
+            </div>
+            <div class="audit-progress-container">
+                <div class="audit-progress-bar" id="auditProgressBar" style="width: 0%">0%</div>
+            </div>
+
+            <!-- Desktop Ansicht -->
+            <div class="desktop-view" id="desktopView">
+                <div id="auditSections"></div>
+            </div>
+
+            <!-- Mobile Ansicht -->
+            <div class="mobile-view" id="mobileView">
+                <div class="mobile-section-selector" id="sectionSelector"></div>
+                <div id="mobileQuestions"></div>
+                <div class="mobile-nav">
+                    <button class="btn-secondary" id="prevBtn">← Zurück</button>
+                    <span id="mobileCounter">Frage 1/1</span>
+                    <button class="btn-secondary" id="nextBtn">Weiter →</button>
+                </div>
+            </div>
+
+            <!-- Evaluation -->
+            <div class="evaluation" id="evaluation">
+                <h2>Auswertung</h2>
+                <div id="evaluationContent"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>ZfP Audit-Checkliste &copy; 2025 Schaeffler</p>
+            <div class="version-info">Version AC - 01.12.2025</div>
+            <div class="creator-info">Ersteller: Daniel Häusner, WI/SW2-PQT</div>
+        </footer>
+    </div>
+
+    <input type="file" id="fileLoader" accept=".json" style="display: none;">
+
+    <script>
+        // === KONSTANTEN UND DATENSTRUKTUREN ===
+        const AUDIT_TYPES = {
+            wirbelstrom: {
+                id: 'wirbelstrom',
+                title: 'Wirbelstromprüfung',
+                short: 'ET',
+                color: '#3498db',
+                icon: '⚡',
+                standards: 'S245006-1 / S245008-1 / S245007-1 / S245012'
+            },
+            magnetpulver: {
+                id: 'magnetpulver',
+                title: 'Magnetpulverprüfung',
+                short: 'MT',
+                color: '#e74c3c',
+                icon: '🧲',
+                standards: 'S245008-2 / S245012'
+            },
+            nital: {
+                id: 'nital',
+                title: 'Nital-Ätzen',
+                short: 'NE',
+                color: '#2ecc71',
+                icon: '🧪',
+                standards: 'S245013-1 / S245012-1'
+            },
+            ultraschall: {
+                id: 'ultraschall',
+                title: 'Ultraschallprüfung',
+                short: 'UT',
+                color: '#9b59b6',
+                icon: '📡',
+                standards: 'S245009-3 / S245012'
+            }
+        };
+
+        // VOLLSTÄNDIGE AUDIT-DATEN MIT ALLEN FRAGEN
+        const AUDIT_DATA = {
+            wirbelstrom: [
+                {
+                    title: "1.1 Personal und Qualifikation",
+                    short: "1.1 Personal",
+                    questions: [
+                        { id: "1.1.1", text: "Ist der Level-2-Experte für die Wirbelstromprüfung qualifiziert? (Zertifikat, gültiger Sehtestnachweis)" },
+                        { id: "1.1.2", text: "Sind alle Bediener für die Wirbelstromprüfung geschult? (Schulungsplan, Zertifikat, gültiger Sehtestnachweis)" },
+                        { id: "1.1.3", text: "Ist ein Verantwortlicher (Supervisor) für die Methode definiert, und erfüllt dieser die Anforderungen gemäß S245012?" },
+                        { id: "1.1.4", text: "Ist der Bediener mit der Basisanweisung vertraut?" }
+                    ]
+                },
+                {
+                    title: "1.2 Ausrüstung und Plausibilitätsprüfung",
+                    short: "1.2 Ausrüstung",
+                    questions: [
+                        { id: "1.2.1", text: "Wird die tägliche Plausibilitätsprüfung durchgeführt und dokumentiert?" },
+                        { id: "1.2.2", text: "Wird die jährliche Überprüfung durchgeführt und dokumentiert?" },
+                        { id: "1.2.3", text: "Wird die Maschine einschließlich relevanter Messgeräte in SAP überwacht? (Maschine, Restmagnetfeldmessgerät, Magnetfeldstärkemessgerät)" },
+                        { id: "1.2.4", text: "Befindet sich die Maschine in einem guten technischen Zustand? (Software gemäß IATF, Hardware)" }
+                    ]
+                },
+                {
+                    title: "1.3 Prüfanweisungen",
+                    short: "1.3 Anweisungen",
+                    questions: [
+                        { id: "1.3.1", text: "Ist die Prüfanweisung vollständig? (Parameter, Gerät, Sonde, Grenzwerte, Maßnahmen, Unterschrift eines Level-2-Prüfers)" },
+                        { id: "1.3.2", text: "Ist der Prüfprozess im Control1- oder Prüfplan beschrieben?" },
+                        { id: "1.3.3", text: "Existiert eine Prüfdokumentation, die Informationen über Prüfergebnisse und Prozessentscheidungen enthält (siehe 1.3.1)?" },
+                        { id: "1.3.4", text: "Liegen die erforderlichen Anweisungen am Arbeitsplatz in der aktuellsten Version vor?" },
+                        { id: "1.3.5", text: "Sind die Messungen des Restmagnetismus im Prüfplan enthalten (falls erforderlich)?" }
+                    ]
+                },
+                {
+                    title: "1.4 Referenzteile S285066",
+                    short: "1.4 Referenzteile",
+                    questions: [
+                        { id: "1.4.1", text: "Existieren Referenzteile zur Maschinenüberprüfung gemäß S285066 (Merkmale der Fehler)?" },
+                        { id: "1.4.2", text: "Sind diese Referenzteile gekennzeichnet und korrekt gelagert?" },
+                        { id: "1.4.3", text: "Sind die Referenzteile in SAP angelegt?" },
+                        { id: "1.4.4", text: "Werden die Referenzteile überwacht?" }
+                    ]
+                },
+                {
+                    title: "1.5 Prozess",
+                    short: "1.5 Prozess",
+                    questions: [
+                        { id: "1.5.1", text: "Entsprechen die Parameter und die Sonde der Prüfanweisung, und ist die Anlage funktionsfähig?" },
+                        { id: "1.5.2", text: "Gibt es einen wirksamen Prozess zur Aussortierung fehlerhafter Teile?" },
+                        { id: "1.5.3", text: "Wird das Zwischenbehälter-Prinzip angewendet?" },
+                        { id: "1.5.4", text: "Werden fehlerhafte Teile analysiert und kommuniziert?" },
+                        { id: "1.5.5", text: "Ist der Produktionsstatus der Teile bekannt, und besteht keine Vermischungsgefahr am Arbeitsplatz (fehlerhafte Teile sind gekennzeichnet)?" },
+                        { id: "1.5.6", text: "Sind die Randbedingungen für die Anlage gegeben (Sauberkeit, Wartung)?" },
+                        { id: "1.5.7", text: "Ist die Schutzausrüstung funktionsfähig und wird sie verwendet? (Persönliche Schutzausrüstung / Maschinenschutz)" }
+                    ]
+                }
+            ],
+            magnetpulver: [
+                {
+                    title: "2.1 Qualifikation",
+                    short: "2.1 Qualifikation",
+                    questions: [
+                        { id: "2.1.1", text: "Ist der Level-2-Experte für Magnetpulverprüfung (MPI) qualifiziert? (Zertifikat, gültiger Sehtestnachweis)" },
+                        { id: "2.1.2", text: "Sind alle Bediener für die Magnetpulverprüfung geschult? (Schulungsplan, Zertifikat, gültiger Sehtestnachweis)" },
+                        { id: "2.1.3", text: "Ist ein Verantwortlicher für die Methode definiert, und erfüllt dieser die Anforderungen gemäß S245012?" },
+                        { id: "2.1.4", text: "Ist der Bediener mit der Basisanweisung vertraut?" }
+                    ]
+                },
+                {
+                    title: "2.2 Ausrüstung und Plausibilitätsprüfung",
+                    short: "2.2 Ausrüstung",
+                    questions: [
+                        { id: "2.2.1", text: "Wird die tägliche Plausibilitätsprüfung durchgeführt und dokumentiert? (ASTM-Röhre, MTU Nr. 3)" },
+                        { id: "2.2.2", text: "Wird die monatliche Überprüfung der UV-Lampe durchgeführt und dokumentiert?" },
+                        { id: "2.2.3", text: "Wird die jährliche Überprüfung durchgeführt und dokumentiert?" },
+                        { id: "2.2.4", text: "Wird die Maschine in SAP überwacht (Software gemäß IATF)?" },
+                        { id: "2.2.5", text: "Sind die Magnetisierungswerte stabil?" },
+                        { id: "2.2.6", text: "Werden die Messgeräte überwacht und in SAP geführt? (UV-Meter, Lux-Meter, Magnetfeldstärkemessgerät inkl. Referenzmagnet)" },
+                        { id: "2.2.7", text: "Wird ein Restmagnetfeldmessgerät (Gaussmeter) verwendet? (Handhabung, Überwachung, SAP, Referenzblock)" },
+                        { id: "2.2.8", text: "Befindet sich die Maschine in gutem technischen Zustand? (Software gemäß IATF, Hardware)" }
+                    ]
+                },
+                {
+                    title: "2.3 Prüfanweisungen",
+                    short: "2.3 Anweisungen",
+                    questions: [
+                        { id: "2.3.1", text: "Ist die Prüfanweisung vollständik? (Parameter, Gerät, Grenzwerte, Maßnahmen, Unterschrift Level 2)" },
+                        { id: "2.3.2", text: "Ist der Prüfprozess im Control- oder Prüfplan enthalten?" },
+                        { id: "2.3.3", text: "Existiert eine Prüfdokumentation mit Ergebnissen und Prozessentscheidungen (siehe 1.3.1)?" },
+                        { id: "2.3.4", text: "Liegen die erforderlichen Anweisungen am Arbeitsplatz in der neuesten Version vor?" },
+                        { id: "2.3.5", text: "Sind Restmagnetismus-Messungen im Prüfplan enthalten (falls erforderlich)?" }
+                    ]
+                },
+                {
+                    title: "2.4 Referenzteile S285066",
+                    short: "2.4 Referenzteile",
+                    questions: [
+                        { id: "2.4.1", text: "Existieren Referenzteile zur Maschinenüberprüfung gemäß S285066 (Merkmale der Fehler)?" },
+                        { id: "2.4.2", text: "Sind diese Referenzteile gekennzeichnet und korrekt gelagert?" },
+                        { id: "2.4.3", text: "Sind die Referenzteile in SAP angelegt?" },
+                        { id: "2.4.4", text: "Werden die Referenzteile überwacht?" }
+                    ]
+                },
+                {
+                    title: "2.5 Prozess",
+                    short: "2.5 Prozess",
+                    questions: [
+                        { id: "2.5.1", text: "Entsprechen die Parameter und die Sonde der Prüfanweisung, und ist die Anlage funktionsfähig?" },
+                        { id: "2.5.2", text: "Gibt es einen wirksamen Prozess zur Aussortierung fehlerhafter Teile?" },
+                        { id: "2.5.3", text: "Wird das Zwischenbehälter-Prinzip angewendet?" },
+                        { id: "2.5.4", text: "Werden fehlerhafte Teile analysiert und kommuniziert?" },
+                        { id: "2.5.5", text: "Ist der Produktionsstatus der Teile bekannt, und besteht keine Vermischungsgefahr am Arbeitsplatz (fehlerhafte Teile sind gekennzeichnet)?" },
+                        { id: "2.5.6", text: "Sind die Randbedingungen für die Anlage gegeben (Sauberkeit, Wartung)?" },
+                        { id: "2.5.7", text: "Ist die Schutzausrüstung funktionsfähig und wird sie verwendet? (Persönliche Schutzausrüstung / Maschinenschutz)" }
+                    ]
+                }
+            ],
+            nital: [
+                {
+                    title: "3.1 Qualifikation",
+                    short: "3.1 Qualifikation",
+                    questions: [
+                        { id: "3.1.1", text: "Ist der Level-2-Experte für Nital-Ätzprüfung qualifiziert? (Zertifikat, gültiger Sehtestnachweis)" },
+                        { id: "3.1.2", text: "Sind alle Bediener für die Nital-Ätzprüfung geschult? (Schulungsplan, Zertifikat, gültiger Sehtestnachweis)" },
+                        { id: "3.1.3", text: "Ist ein Verantwortlicher für die Methode definiert, und erfüllt dieser die Anforderungen gemäß S245012?" },
+                        { id: "3.1.4", text: "Ist der Bediener mit der Basisanweisung vertraut?" }
+                    ]
+                },
+                {
+                    title: "3.2 Ausrüstung und Plausibilitätsprüfung",
+                    short: "3.2 Ausrüstung",
+                    questions: [
+                        { id: "3.2.1", text: "Wird die tägliche Plausibilitätsprüfung durchgeführt und dokumentiert?" },
+                        { id: "3.2.2", text: "Entspricht der Reinigungsprozess der Norm? (Parameter, Ultraschall)" },
+                        { id: "3.2.3", text: "Entspricht der Ätzprozess der Norm? (Material, chemische Analyse, Überwachung)" },
+                        { id: "3.2.4", text: "Befindet sich die Maschine in gutem technischen Zustand? (Software gemäß IATF, Hardware)" }
+                    ]
+                },
+                {
+                    title: "3.3 Prüfanweisungen",
+                    short: "3.3 Anweisungen",
+                    questions: [
+                        { id: "3.3.1", text: "Ist die Prüfanweisung vollständig? (Parameter, Gerät, Grenzwerte, Maßnahmen, Unterschrift eines Level-2-Prüfers)" },
+                        { id: "3.3.2", text: "Ist der Prüfprozess im Control- oder Prüfplan beschrieben?" },
+                        { id: "3.3.3", text: "Existiert eine Prüfdokumentation, die Informationen über Prüfergebnisse und Prozessentscheidungen enthält?" },
+                        { id: "3.3.4", text: "Liegen die erforderlichen Anweisungen am Arbeitsplatz in der aktuellsten Version vor?" },
+                        { id: "3.3.5", text: "Sind die Messungen des Restmagnetismus im Prüfplan enthalten (falls erforderlich)?" }
+                    ]
+                },
+                {
+                    title: "3.4 Referenzteile S285066",
+                    short: "3.4 Referenzteile",
+                    questions: [
+                        { id: "3.4.1", text: "Existieren Referenzteile zur Maschinenüberprüfung gemäß S285066 (Merkmale der Fehler)?" },
+                        { id: "3.4.2", text: "Sind diese Referenzteile gekennzeichnet und korrekt gelagert?" },
+                        { id: "3.4.3", text: "Sind die Referenzteile in SAP angelegt?" },
+                        { id: "3.4.4", text: "Werden die Referenzteile überwacht?" }
+                    ]
+                },
+                {
+                    title: "3.5 Prozess",
+                    short: "3.5 Prozess",
+                    questions: [
+                        { id: "3.5.1", text: "Entsprechen die Parameter und die Sonde der Prüfanweisung, und ist die Anlage funktionsfähig?" },
+                        { id: "3.5.2", text: "Gibt es einen wirksamen Prozess zur Aussortierung fehlerhafter Teile?" },
+                        { id: "3.5.3", text: "Wird das Zwischenbehälter-Prinzip angewendet?" },
+                        { id: "3.5.4", text: "Werden fehlerhafte Teile analysiert und kommuniziert?" },
+                        { id: "3.5.5", text: "Ist der Produktionsstatus der Teile bekannt, und besteht keine Vermischungsgefahr am Arbeitsplatz (fehlerhafte Teile sind gekennzeichnet)?" },
+                        { id: "3.5.6", text: "Sind die Randbedingungen für die Anlage gegeben (Sauberkeit, Wartung)?" },
+                        { id: "3.5.7", text: "Ist die Schutzausrüstung funktionsfähik und wird sie verwendet? (Persönliche Schutzausrüstung / Maschinenschutz)" }
+                    ]
+                }
+            ],
+            ultraschall: [
+                {
+                    title: "4.1 Qualifikation",
+                    short: "4.1 Qualifikation",
+                    questions: [
+                        { id: "4.1.1", text: "Ist der Level-2-Experte für Ultraschallprüfung (UT) qualifiziert? (Zertifikat, gültiger Sehtestnachweis)" },
+                        { id: "4.1.2", text: "Sind alle Bediener für die Ultraschallprüfung geschult? (Schulungsplan, Zertifikat, gültiger Sehtestnachweis)" },
+                        { id: "4.1.3", text: "Ist ein Verantwortlicher für die Methode definiert, und erfüllt dieser die Anforderungen gemäß S245012?" },
+                        { id: "4.1.4", text: "Ist der Bediener mit der Basisanweisung vertraut?" }
+                    ]
+                },
+                {
+                    title: "4.2 Ausrüstung und Plausibilitätsprüfung",
+                    short: "4.2 Ausrüstung",
+                    questions: [
+                        { id: "4.2.1", text: "Wird die tägliche Plausibilitätsprüfung durchgeführt und dokumentiert?" },
+                        { id: "4.2.2", text: "Wird die jährliche Überprüfung durchgeführt und dokumentiert?" },
+                        { id: "4.2.3", text: "Wird die Maschine einschließlich relevanter Messgeräte in SAP überwacht? (Maschine, Restmagnetfeldmessgerät, Magnetfeldstärkemessgerät, Software gemäß IATF)" },
+                        { id: "4.2.4", text: "Befindet sich die Maschine in gutem technischen Zustand? (Software gemäß IATF, Hardware)" }
+                    ]
+                },
+                {
+                    title: "4.3 Prüfanweisungen",
+                    short: "4.3 Anweisungen",
+                    questions: [
+                        { id: "4.3.1", text: "Ist die Prüfanweisung vollständig? (Parameter, Gerät, Grenzwerte, Maßnahmen, Unterschrift eines Level-2-Prüfers)" },
+                        { id: "4.3.2", text: "Ist der Prüfprozess im Control- oder Prüfplan beschrieben?" },
+                        { id: "4.3.3", text: "Existiert eine Prüfdokumentation, die Informationen über Prüfergebnisse und Prozessentscheidungen enthält?" },
+                        { id: "4.3.4", text: "Liegen die erforderlichen Anweisungen am Arbeitsplatz in der aktuellsten Version vor?" },
+                        { id: "4.3.5", text: "Sind die Messungen des Restmagnetismus im Prüfplan enthalten (falls erforderlich)?" }
+                    ]
+                },
+                {
+                    title: "4.4 Referenzteile S285066",
+                    short: "4.4 Referenzteile",
+                    questions: [
+                        { id: "4.4.1", text: "Existieren Referenzteile zur Maschinenüberprüfung gemäß S285066 (Merkmale der Fehler)?" },
+                        { id: "4.4.2", text: "Sind diese Referenzteile gekennzeichnet und korrekt gelagert?" },
+                        { id: "4.4.3", text: "Sind die Referenzteile in SAP angelegt?" },
+                        { id: "4.4.4", text: "Werden die Referenzteile überwacht?" }
+                    ]
+                },
+                {
+                    title: "4.5 Prozess",
+                    short: "4.5 Prozess",
+                    questions: [
+                        { id: "4.5.1", text: "Entsprechen die Parameter und die Sonde der Prüfanweisung, und ist die Anlage funktionsfähik?" },
+                        { id: "4.5.2", text: "Gibt es einen wirksamen Prozess zur Aussortierung fehlerhafter Teile?" },
+                        { id: "4.5.3", text: "Wird das Zwischenbehälter-Prinzip angewendet?" },
+                        { id: "4.5.4", text: "Werden fehlerhafte Teile analysiert und kommuniziert?" },
+                        { id: "4.5.5", text: "Ist der Produktionsstatus der Teile bekannt, und besteht keine Vermischungsgefahr am Arbeitsplatz (fehlerhafte Teile sind gekennzeichnet)?" },
+                        { id: "4.5.6", text: "Sind die Randbedingungen für die Anlage gegeben (Sauberkeit, Wartung)?" },
+                        { id: "4.5.7", text: "Ist die Schutzausrüstung funktionsfähik und wird sie verwendet? (Persönliche Schutzausrüstung / Maschinenschutz)" }
+                    ]
+                }
+            ]
+        };
+
+        // === GLOBALE VARIABLEN ===
+        let currentAuditType = null;
+        let currentAuditData = null;
+        let allQuestions = [];
+        let allQuestionElements = [];
+        let currentMobileQuestion = 0;
+        let imageStorage = {};
+        let participants = { auditors: [], auditees: [] };
+        let currentMobileParticipantType = 'auditor';
+
+        // === INITIALISIERUNG ===
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupEventListeners();
+        });
+
+        function initializeApp() {
+            loadAllAuditData();
+            updateAuditProgressDisplays();
+        }
+
+        // === MODIFIZIERTE EXPORT FUNKTIONEN ===
+        async function exportSingleFile() {
+            if (!currentAuditType || !currentAuditData) return;
+            
+            saveCurrentAuditData();
+            
+            const exportData = { ...currentAuditData };
+            
+            // Bilder sind bereits als Base64 in imageStorage enthalten
+            exportData.images = imageStorage;
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            a.download = `ZfP-Audit_${AUDIT_TYPES[currentAuditType].title}_${timestamp}.json`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            const imageCount = Object.keys(imageStorage).length;
+            const answeredQuestions = allQuestions.filter(q => q.points !== null).length;
+            const totalQuestions = allQuestions.length;
+            
+            alert(`✅ Audit wurde exportiert\n\n📁 Dateiname: ${a.download}\n📊 Enthaltene Daten:\n• ${answeredQuestions}/${totalQuestions} Fragen bewertet\n• ${participants.auditors.length} Auditor(en)\n• ${participants.auditees.length} auditierte Person(en)\n• ${imageCount} Bild(er) als Base64 kodiert`);
+        }
+
+        async function exportWithImagesSeparate() {
+            if (!currentAuditType || !currentAuditData) return;
+            
+            saveCurrentAuditData();
+            
+            // 1. JSON-Datei ohne Bilder erstellen
+            const exportData = { ...currentAuditData };
+            exportData.images = {}; // Leere Bilder-Referenz
+            exportData.meta.exportMode = 'separate';
+            exportData.meta.imageReferences = {};
+            
+            // Bildreferenzen erstellen
+            Object.keys(imageStorage).forEach(questionId => {
+                const imageData = imageStorage[questionId];
+                const matches = imageData.match(/^data:(image\/[a-zA-Z]*);base64,(.*)$/);
+                if (matches) {
+                    const mimeType = matches[1];
+                    const extension = mimeType.split('/')[1] || 'jpg';
+                    exportData.meta.imageReferences[questionId] = `${questionId}.${extension}`;
+                }
+            });
+            
+            const jsonStr = JSON.stringify(exportData, null, 2);
+            const jsonBlob = new Blob([jsonStr], { type: 'application/json' });
+            
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            const jsonFilename = `ZfP-Audit_${AUDIT_TYPES[currentAuditType].title}_${timestamp}.json`;
+            
+            // JSON-Datei downloaden
+            downloadFile(jsonBlob, jsonFilename);
+            
+            // 2. Bilder als separate Dateien exportieren
+            let imageCount = 0;
+            const imagePromises = [];
+            
+            for (const [questionId, imageData] of Object.entries(imageStorage)) {
+                const matches = imageData.match(/^data:(image\/[a-zA-Z]*);base64,(.*)$/);
+                if (matches) {
+                    imagePromises.push(
+                        new Promise((resolve) => {
+                            setTimeout(() => {
+                                const mimeType = matches[1];
+                                const base64Data = matches[2];
+                                const extension = mimeType.split('/')[1] || 'jpg';
+                                
+                                const byteCharacters = atob(base64Data);
+                                const byteNumbers = new Array(byteCharacters.length);
+                                for (let i = 0; i < byteCharacters.length; i++) {
+                                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                                }
+                                const byteArray = new Uint8Array(byteNumbers);
+                                const blob = new Blob([byteArray], { type: mimeType });
+                                
+                                downloadFile(blob, `${questionId}.${extension}`);
+                                imageCount++;
+                                resolve();
+                            }, 300 * imageCount); // Verzögerung zwischen Downloads
+                        })
+                    );
+                }
+            }
+            
+            // Warten bis alle Bilder exportiert sind
+            await Promise.all(imagePromises);
+            
+            setTimeout(() => {
+                alert(`✅ Export erfolgreich!\n\n📁 Exportierte Dateien:\n• ${jsonFilename} (Audit-Daten)\n• ${imageCount} Bilddatei(en)\n\n⚠️ Wichtig: JSON-Datei und Bilder müssen im gleichen Ordner bleiben!`);
+            }, 500);
+        }
+
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // === AUDIT MANAGEMENT ===
+        function loadAllAuditData() {
+            Object.keys(AUDIT_TYPES).forEach(auditType => {
+                const saved = localStorage.getItem(`zfpAudit_${auditType}`);
+                if (!saved) {
+                    const sections = AUDIT_DATA[auditType];
+                    const allQuestionsForAudit = sections.flatMap(section => 
+                        section.questions.map(q => ({
+                            ...q,
+                            sectionTitle: section.title,
+                            sectionShort: section.short,
+                            points: null,
+                            evidence: "",
+                            deviation: { text: "", responsible: "", hasImage: false }
+                        }))
+                    );
+                    
+                    const initialData = {
+                        meta: {
+                            created: new Date().toISOString(),
+                            lastModified: new Date().toISOString(),
+                            auditType: auditType,
+                            title: AUDIT_TYPES[auditType].title,
+                            standards: AUDIT_TYPES[auditType].standards
+                        },
+                        participants: { auditors: [], auditees: [] },
+                        questions: allQuestionsForAudit,
+                        images: {}
+                    };
+                    localStorage.setItem(`zfpAudit_${auditType}`, JSON.stringify(initialData));
+                }
+            });
+        }
+
+        function startAudit(auditType) {
+            currentAuditType = auditType;
+            
+            document.getElementById('auditSelection').classList.remove('active');
+            document.getElementById('auditContent').classList.add('active');
+            
+            loadCurrentAuditData();
+            
+            const auditInfo = AUDIT_TYPES[auditType];
+            document.querySelector('h1').textContent = `ZfP Audit - ${auditInfo.title}`;
+            document.querySelector('.subtitle').textContent = auditInfo.standards;
+            
+            renderAuditSections();
+            setupDesktopEventListeners();
+            updateCurrentAuditProgress();
+            renderParticipants();
+            setupMobileParticipants();
+            
+            // Standard-Ansicht basierend auf Bildschirmgröße
+            const isMobile = window.innerWidth <= 768;
+            const toggleBtn = document.getElementById('toggleViewBtn');
+            
+            if (isMobile) {
+                document.getElementById('desktopView').style.display = 'none';
+                document.getElementById('mobileView').style.display = 'block';
+                toggleBtn.textContent = '🖥️ Desktop';
+                renderMobileQuestion();
+            } else {
+                document.getElementById('desktopView').style.display = 'block';
+                document.getElementById('mobileView').style.display = 'none';
+                toggleBtn.textContent = '📱 Mobile';
+            }
+            
+            document.getElementById('evaluation').style.display = 'none';
+        }
+
+        function loadCurrentAuditData() {
+            const saved = localStorage.getItem(`zfpAudit_${currentAuditType}`);
+            if (saved) {
+                currentAuditData = JSON.parse(saved);
+                allQuestions = currentAuditData.questions || [];
+                participants = currentAuditData.participants || { auditors: [], auditees: [] };
+                imageStorage = currentAuditData.images || {};
+            } else {
+                const sections = AUDIT_DATA[currentAuditType];
+                allQuestions = sections.flatMap(section => 
+                    section.questions.map(q => ({
+                        ...q,
+                        sectionTitle: section.title,
+                        sectionShort: section.short,
+                        points: null,
+                        evidence: "",
+                        deviation: { text: "", responsible: "", hasImage: false }
+                    }))
+                );
+                
+                currentAuditData = {
+                    meta: {
+                        created: new Date().toISOString(),
+                        lastModified: new Date().toISOString(),
+                        auditType: currentAuditType,
+                        title: AUDIT_TYPES[currentAuditType].title,
+                        standards: AUDIT_TYPES[currentAuditType].standards
+                    },
+                    participants: { auditors: [], auditees: [] },
+                    questions: allQuestions,
+                    images: {}
+                };
+            }
+            
+            allQuestionElements = allQuestions;
+        }
+
+        function saveCurrentAuditData() {
+            if (!currentAuditType || !currentAuditData) return;
+            
+            currentAuditData.questions = allQuestions;
+            currentAuditData.participants = participants;
+            currentAuditData.images = imageStorage;
+            currentAuditData.meta.lastModified = new Date().toISOString();
+            
+            localStorage.setItem(`zfpAudit_${currentAuditType}`, JSON.stringify(currentAuditData));
+            updateAuditProgressDisplays();
+            updateCurrentAuditProgress();
+        }
+
+        function goBackToSelection() {
+            saveCurrentAuditData();
+            
+            currentAuditType = null;
+            currentAuditData = null;
+            allQuestions = [];
+            allQuestionElements = [];
+            
+            document.getElementById('auditSelection').classList.add('active');
+            document.getElementById('auditContent').classList.remove('active');
+            
+            document.querySelector('h1').textContent = 'ZfP Audit-Checkliste';
+            document.querySelector('.subtitle').textContent = 'Zerstörungsfreie Prüfverfahren - Schaeffler';
+        }
+
+        // === FORTSCHRITTSANZEIGEN - KORRIGIERT ===
+        function updateAuditProgressDisplays() {
+            Object.keys(AUDIT_TYPES).forEach(auditType => {
+                const progress = calculateAuditProgress(auditType);
+                const progressElement = document.getElementById(`${auditType}Progress`);
+                if (progressElement) {
+                    progressElement.textContent = `${progress.percent}%`;
+                }
+            });
+        }
+
+        function calculateAuditProgress(auditType) {
+            const saved = localStorage.getItem(`zfpAudit_${auditType}`);
+            if (!saved) {
+                const sections = AUDIT_DATA[auditType];
+                const total = sections.reduce((sum, section) => sum + section.questions.length, 0);
+                return { answered: 0, total: total, percent: 0, points: 0, maxPoints: total * 10 };
+            }
+            
+            const data = JSON.parse(saved);
+            const questions = data.questions || [];
+            const total = questions.length;
+            const answered = questions.filter(q => q.points !== null).length;
+            const points = questions.reduce((sum, q) => sum + (q.points || 0), 0);
+            const maxPoints = total * 10;
+            const percent = total > 0 ? Math.round((answered / total) * 100) : 0;
+            
+            return { answered, total, percent, points, maxPoints };
+        }
+
+        function updateCurrentAuditProgress() {
+            if (!allQuestions.length) return;
+            
+            const total = allQuestions.length;
+            const answered = allQuestions.filter(q => q.points !== null).length;
+            const points = allQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
+            const maxPoints = total * 10;
+            const percent = total > 0 ? Math.round((answered / total) * 100) : 0;
+            
+            document.getElementById('answeredCount').textContent = answered;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('progressText').textContent = `${percent}%`;
+            document.getElementById('pointsTotal').textContent = points;
+            document.getElementById('pointsMax').textContent = maxPoints;
+            
+            const progressBar = document.getElementById('auditProgressBar');
+            progressBar.style.width = `${percent}%`;
+            progressBar.textContent = `${percent}%`;
+            progressBar.style.backgroundColor = percent === 100 ? '#27ae60' : 
+                                              percent >= 75 ? '#2ecc71' :
+                                              percent >= 50 ? '#f39c12' :
+                                              percent >= 25 ? '#e67e22' : '#e74c3c';
+            
+            if (currentAuditType) {
+                updateAuditProgressDisplays();
+            }
+        }
+
+        // === RENDERING FUNKTIONEN ===
+        function renderAuditSections() {
+            const container = document.getElementById('auditSections');
+            container.innerHTML = '';
+            
+            if (!currentAuditType || !AUDIT_DATA[currentAuditType]) return;
+            
+            const sections = AUDIT_DATA[currentAuditType];
+            
+            sections.forEach((section, sectionIndex) => {
+                const sectionElement = document.createElement('div');
+                sectionElement.className = 'section';
+                sectionElement.innerHTML = `
+                    <div class="section-header">
+                        <h2>${section.title}</h2>
+                        <span>▶</span>
+                    </div>
+                    <div class="section-content" style="display: none;">
+                        ${renderQuestions(section.questions)}
+                    </div>
+                `;
+                container.appendChild(sectionElement);
+            });
+            
+            setupSectionHeaders();
+        }
+
+        function renderQuestions(questions) {
+            return questions.map(question => {
+                const questionData = getQuestionData(question.id);
+                const hasImage = imageStorage[question.id];
+                const points = questionData.points;
+                const pointsText = points !== null ? `${points} Punkte` : "Nicht bewertet";
+                const pointsColor = getPointsColor(points);
+                
+                return `
+                <div class="question" data-id="${question.id}">
+                    <div class="question-header">
+                        <div class="question-text">${question.text}</div>
+                        <div class="question-id">${question.id}</div>
+                    </div>
+                    
+                    <div class="points-display" style="background-color: ${pointsColor}20; color: ${pointsColor}; border-color: ${pointsColor};">
+                        ${pointsText}
+                    </div>
+
+                    <div class="points-options">
+                        <div class="points-option ${points === 0 ? 'selected' : ''}" data-points="0">0</div>
+                        <div class="points-option ${points === 2 ? 'selected' : ''}" data-points="2">2</div>
+                        <div class="points-option ${points === 4 ? 'selected' : ''}" data-points="4">4</div>
+                        <div class="points-option ${points === 8 ? 'selected' : ''}" data-points="8">8</div>
+                        <div class="points-option ${points === 10 ? 'selected' : ''}" data-points="10">10</div>
+                    </div>
+
+                    <textarea class="evidence" placeholder="Nachweis / Kommentar / Referenz">${questionData.evidence}</textarea>
+                    
+                    <div class="deviation-section" style="display: ${points !== null && points <= 8 ? 'block' : 'none'};">
+                        <h4>Abweichungsinformationen (nur bei weniger als 10 Punkten)</h4>
+                        <textarea class="deviation-field" placeholder="Beschreibung der Abweichung / Maßnahmen">${questionData.deviation.text || ''}</textarea>
+                        <input type="text" class="responsible-field" placeholder="Verantwortlicher" value="${questionData.deviation.responsible || ''}">
+                        <div class="image-upload">
+                            <div class="file-input-wrapper">
+                                <input type="file" accept="image/*" class="image-input" id="desktop_image-${question.id}" onchange="handleImageUploadDesktop(event, '${question.id}')">
+                                <span class="file-input-label">Bild hochladen</span>
+                            </div>
+                            ${hasImage ? `
+                                <img class="image-preview" id="desktop_preview-${question.id}" src="${hasImage}" style="display: block;">
+                                <button type="button" class="remove-image" data-question="${question.id}" onclick="removeImageForQuestion('${question.id}')">Bild entfernen</button>
+                            ` : `
+                                <img class="image-preview" id="desktop_preview-${question.id}" style="display: none;">
+                            `}
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // === MOBILE FUNKTIONEN ===
+        function renderMobileQuestion() {
+            if (allQuestionElements.length === 0) return;
+            
+            const container = document.getElementById('mobileQuestions');
+            const question = allQuestionElements[currentMobileQuestion];
+            if (!question) return;
+            
+            const questionData = getQuestionData(question.id);
+            const hasImage = imageStorage[question.id];
+            const points = questionData.points;
+            const pointsColor = getPointsColor(points);
+            
+            container.innerHTML = `
+                <div class="question" data-id="${question.id}">
+                    <div class="question-header">
+                        <div class="question-text">${question.text}</div>
+                        <div class="question-id">${question.id}</div>
+                    </div>
+                    
+                    <div class="points-display" style="background-color: ${pointsColor}20; color: ${pointsColor}; border-color: ${pointsColor};">
+                        ${points !== null ? `${points} Punkte` : "Nicht bewertet"}
+                    </div>
+
+                    <div class="points-options">
+                        <div class="points-option ${points === 0 ? 'selected' : ''}" data-points="0">0</div>
+                        <div class="points-option ${points === 2 ? 'selected' : ''}" data-points="2">2</div>
+                        <div class="points-option ${points === 4 ? 'selected' : ''}" data-points="4">4</div>
+                        <div class="points-option ${points === 8 ? 'selected' : ''}" data-points="8">8</div>
+                        <div class="points-option ${points === 10 ? 'selected' : ''}" data-points="10">10</div>
+                    </div>
+
+                    <textarea class="evidence" placeholder="Nachweis / Kommentar / Referenz">${questionData.evidence}</textarea>
+                    
+                    <div class="deviation-section" style="display: ${points !== null && points <= 8 ? 'block' : 'none'};">
+                        <h4>Abweichungsinformationen</h4>
+                        <textarea class="deviation-field" placeholder="Beschreibung der Abweichung / Maßnahmen">${questionData.deviation.text || ''}</textarea>
+                        <input type="text" class="responsible-field" placeholder="Verantwortlicher" value="${questionData.deviation.responsible || ''}">
+                        <div class="image-upload">
+                            <div class="file-input-wrapper">
+                                <input type="file" accept="image/*" class="image-input" id="mobile_image-${question.id}" onchange="handleImageUploadMobile(event, '${question.id}')">
+                                <span class="file-input-label">Bild hochladen</span>
+                            </div>
+                            ${hasImage ? `
+                                <img class="image-preview" id="mobile_preview-${question.id}" src="${hasImage}" style="display: block;">
+                                <button type="button" class="remove-image" data-question="${question.id}" onclick="removeImageForQuestion('${question.id}')">Bild entfernen</button>
+                            ` : `
+                                <img class="image-preview" id="mobile_preview-${question.id}" style="display: none;">
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('mobileCounter').textContent = `Frage ${currentMobileQuestion + 1}/${allQuestionElements.length}`;
+            renderMobileSectionSelector();
+            
+            // Event Listener für Mobile Question setzen
+            setTimeout(() => {
+                setupMobileQuestionListeners(question.id);
+            }, 10);
+        }
+
+        function renderMobileSectionSelector() {
+            const container = document.getElementById('sectionSelector');
+            container.innerHTML = '';
+            
+            if (!currentAuditType || !AUDIT_DATA[currentAuditType]) return;
+            
+            const sections = AUDIT_DATA[currentAuditType];
+            const sectionsData = [];
+            
+            let questionIndex = 0;
+            sections.forEach((section, sectionIndex) => {
+                sectionsData.push({
+                    title: section.title,
+                    short: section.short,
+                    startIndex: questionIndex,
+                    count: section.questions.length
+                });
+                questionIndex += section.questions.length;
+            });
+            
+            sectionsData.forEach((section, index) => {
+                const button = document.createElement('button');
+                button.className = 'section-btn';
+                button.textContent = section.short;
+                button.title = section.title;
+                button.addEventListener('click', function() {
+                    currentMobileQuestion = section.startIndex;
+                    renderMobileQuestion();
+                    container.scrollIntoView({ behavior: 'smooth' });
+                });
+                container.appendChild(button);
+            });
+        }
+
+        // === HELPER FUNKTIONEN ===
+        function getQuestionData(questionId) {
+            return allQuestions.find(q => q.id === questionId) || {
+                points: null,
+                evidence: "",
+                deviation: { text: "", responsible: "", hasImage: false }
+            };
+        }
+
+        function getPointsColor(points) {
+            const colors = {
+                0: "#e74c3c",
+                2: "#e67e22", 
+                4: "#f39c12",
+                8: "#2ecc71",
+                10: "#27ae60"
+            };
+            return colors[points] || "#95a5a6";
+        }
+
+        function updateQuestionData(questionId, field, value) {
+            const question = allQuestions.find(q => q.id === questionId);
+            if (question) {
+                if (field === 'deviation') {
+                    question.deviation = { ...question.deviation, ...value };
+                } else if (field === 'evidence') {
+                    question.evidence = value;
+                } else if (field === 'points') {
+                    question.points = value;
+                    
+                    // Bei Punkteänderung Deviation-Sektion anzeigen/verstecken
+                    const questionElement = document.querySelector(`.question[data-id="${questionId}"]`);
+                    if (questionElement) {
+                        const deviationSection = questionElement.querySelector('.deviation-section');
+                        if (deviationSection) {
+                            if (value !== null && value <= 8) {
+                                deviationSection.style.display = 'block';
+                            } else {
+                                deviationSection.style.display = 'none';
+                            }
+                        }
+                    }
+                }
+                saveCurrentAuditData();
+                updateCurrentAuditProgress();
+            }
+        }
+
+        // === BILDVERARBEITUNG ===
+        async function processAndLimitImage(file, maxWidth = 1200, maxHeight = 800, quality = 0.8) {
+            return new Promise((resolve, reject) => {
+                const maxSize = 10 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    reject(new Error(`Bild ist zu groß (${(file.size / 1024 / 1024).toFixed(1)}MB). Maximale Größe: 10MB`));
+                    return;
+                }
+
+                const img = new Image();
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxWidth || height > maxHeight) {
+                        const ratio = Math.min(maxWidth / width, maxHeight / height);
+                        width = Math.floor(width * ratio);
+                        height = Math.floor(height * ratio);
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    try {
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                        resolve({
+                            dataUrl: compressedDataUrl,
+                            originalSize: file.size,
+                            compressedSize: Math.floor((compressedDataUrl.length - 'data:image/jpeg;base64,'.length) * 0.75),
+                            dimensions: { width, height }
+                        });
+                    } catch (error) {
+                        reject(new Error('Bild konnte nicht verarbeitet werden'));
+                    }
+                };
+                
+                img.onerror = function() {
+                    reject(new Error('Bild konnte nicht geladen werden'));
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        // Desktop Bild-Upload Handler
+        async function handleImageUploadDesktop(event, questionId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            event.target.value = '';
+            
+            if (!file.type.startsWith('image/')) {
+                alert('❌ Bitte wählen Sie eine Bilddatei aus');
+                return;
+            }
+            
+            try {
+                const preview = document.getElementById(`desktop_preview-${questionId}`);
+                if (preview) {
+                    preview.style.display = 'block';
+                    preview.src = '';
+                }
+                
+                const result = await processAndLimitImage(file);
+                
+                if (preview) {
+                    preview.src = result.dataUrl;
+                }
+                
+                imageStorage[questionId] = result.dataUrl;
+                saveCurrentAuditData();
+                
+                const question = allQuestions.find(q => q.id === questionId);
+                if (question) {
+                    question.deviation.hasImage = true;
+                }
+                
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+                const preview = document.getElementById(`desktop_preview-${questionId}`);
+                if (preview) {
+                    preview.style.display = 'none';
+                }
+            }
+        }
+
+        // Mobile Bild-Upload Handler
+        async function handleImageUploadMobile(event, questionId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            event.target.value = '';
+            
+            if (!file.type.startsWith('image/')) {
+                alert('❌ Bitte wählen Sie eine Bilddatei aus');
+                return;
+            }
+            
+            try {
+                const preview = document.getElementById(`mobile_preview-${questionId}`);
+                if (preview) {
+                    preview.style.display = 'block';
+                    preview.src = '';
+                }
+                
+                const result = await processAndLimitImage(file);
+                
+                if (preview) {
+                    preview.src = result.dataUrl;
+                }
+                
+                imageStorage[questionId] = result.dataUrl;
+                saveCurrentAuditData();
+                
+                const question = allQuestions.find(q => q.id === questionId);
+                if (question) {
+                    question.deviation.hasImage = true;
+                }
+                
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+                const preview = document.getElementById(`mobile_preview-${questionId}`);
+                if (preview) {
+                    preview.style.display = 'none';
+                }
+            }
+        }
+
+        function removeImageForQuestion(questionId) {
+            delete imageStorage[questionId];
+            
+            const question = allQuestions.find(q => q.id === questionId);
+            if (question) {
+                question.deviation.hasImage = false;
+            }
+            
+            saveCurrentAuditData();
+            
+            // Desktop Preview
+            const desktopPreview = document.getElementById(`desktop_preview-${questionId}`);
+            if (desktopPreview) {
+                desktopPreview.style.display = 'none';
+                desktopPreview.src = '';
+            }
+            
+            // Mobile Preview
+            const mobilePreview = document.getElementById(`mobile_preview-${questionId}`);
+            if (mobilePreview) {
+                mobilePreview.style.display = 'none';
+                mobilePreview.src = '';
+            }
+            
+            // Wenn in Mobile-Ansicht, neu rendern
+            if (document.getElementById('mobileView').style.display === 'block') {
+                renderMobileQuestion();
+            }
+        }
+
+        // === TEILNEHMER FUNKTIONEN - OPTIMIERT ===
+        function renderParticipants() {
+            renderParticipantList('auditor', 'auditorList');
+            renderParticipantList('auditee', 'auditeeList');
+            renderMobileParticipantList();
+        }
+
+        function renderParticipantList(type, containerId) {
+            const container = document.getElementById(containerId);
+            const items = participants[type + 's'] || [];
+            
+            container.innerHTML = '';
+            items.forEach((participant, index) => {
+                const item = document.createElement('div');
+                item.className = 'participant-item';
+                item.innerHTML = `
+                    <span>${participant}</span>
+                    <button class="remove-participant" onclick="removeParticipant('${type}', ${index})">×</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function renderMobileParticipantList() {
+            const container = document.getElementById('mobileParticipantList');
+            const items = participants[currentMobileParticipantType + 's'] || [];
+            
+            container.innerHTML = '';
+            items.forEach((participant, index) => {
+                const item = document.createElement('div');
+                item.className = 'participant-item';
+                item.innerHTML = `
+                    <span>${participant}</span>
+                    <button class="remove-participant" onclick="removeMobileParticipant(${index})">×</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function addParticipant(type) {
+            const input = document.getElementById(`${type}Input`);
+            const name = input.value.trim();
+            
+            if (name) {
+                participants[type + 's'].push(name);
+                input.value = '';
+                renderParticipants();
+                saveCurrentAuditData();
+            }
+        }
+
+        function addMobileParticipant() {
+            const input = document.getElementById('mobileParticipantInput');
+            const name = input.value.trim();
+            
+            if (name) {
+                participants[currentMobileParticipantType + 's'].push(name);
+                input.value = '';
+                renderMobileParticipantList();
+                saveCurrentAuditData();
+            }
+        }
+
+        function removeParticipant(type, index) {
+            participants[type + 's'].splice(index, 1);
+            renderParticipants();
+            saveCurrentAuditData();
+        }
+
+        function removeMobileParticipant(index) {
+            participants[currentMobileParticipantType + 's'].splice(index, 1);
+            renderMobileParticipantList();
+            saveCurrentAuditData();
+        }
+
+        function setupMobileParticipants() {
+            const typeButtons = document.querySelectorAll('.mobile-participant-type-btn');
+            typeButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    typeButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentMobileParticipantType = this.dataset.type;
+                    renderMobileParticipantList();
+                });
+            });
+        }
+
+        // === EVENT LISTENERS SETUP ===
+        function setupEventListeners() {
+            // Audit-Auswahl Buttons
+            document.querySelectorAll('.audit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    startAudit(this.dataset.audit);
+                });
+            });
+
+            // Zurück-Button
+            document.getElementById('backBtn').addEventListener('click', goBackToSelection);
+
+            // Ansicht umschalten
+            document.getElementById('toggleViewBtn').addEventListener('click', toggleView);
+
+            // Export-Buttons - JETZT MIT DEN BEIDEN FUNKTIONEN
+            document.getElementById('exportSingleBtn').addEventListener('click', function() {
+                exportSingleFile();
+            });
+            
+            document.getElementById('exportImagesBtn').addEventListener('click', function() {
+                exportWithImagesSeparate();
+            });
+
+            // Load Button
+            document.getElementById('loadBtn').addEventListener('click', function() {
+                document.getElementById('fileLoader').click();
+            });
+
+            document.getElementById('fileLoader').addEventListener('change', function(e) {
+                loadData(e);
+            });
+
+            // Reset Button - KORRIGIERT für iOS
+            document.getElementById('resetBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showResetConfirmation();
+            });
+
+            // Print Button
+            document.getElementById('printBtn').addEventListener('click', printAudit);
+
+            // Evaluation Button
+            document.getElementById('evaluationBtn').addEventListener('click', showEvaluation);
+
+            // Mobile Navigation
+            document.getElementById('prevBtn').addEventListener('click', function() {
+                if (currentMobileQuestion > 0) {
+                    currentMobileQuestion--;
+                    renderMobileQuestion();
+                }
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', function() {
+                if (currentMobileQuestion < allQuestionElements.length - 1) {
+                    currentMobileQuestion++;
+                    renderMobileQuestion();
+                }
+            });
+
+            // Responsive Anpassungen
+            window.addEventListener('resize', handleResize);
+        }
+
+        // Setup für Desktop Event Listeners
+        function setupDesktopEventListeners() {
+            // Punkte Optionen - Event Delegation
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('points-option')) {
+                    const questionElement = e.target.closest('.question');
+                    if (!questionElement) return;
+                    
+                    const questionId = questionElement.dataset.id;
+                    const points = parseInt(e.target.dataset.points);
+                    
+                    updateQuestionData(questionId, 'points', points);
+                    
+                    questionElement.querySelectorAll('.points-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    e.target.classList.add('selected');
+                    
+                    const pointsDisplay = questionElement.querySelector('.points-display');
+                    if (pointsDisplay) {
+                        pointsDisplay.textContent = `${points} Punkte`;
+                        pointsDisplay.style.backgroundColor = `${getPointsColor(points)}20`;
+                        pointsDisplay.style.color = getPointsColor(points);
+                        pointsDisplay.style.borderColor = getPointsColor(points);
+                    }
+                    
+                    const deviationSection = questionElement.querySelector('.deviation-section');
+                    if (deviationSection) {
+                        if (points !== null && points <= 8) {
+                            deviationSection.style.display = 'block';
+                        } else {
+                            deviationSection.style.display = 'none';
+                        }
+                    }
+                    
+                    // Mobile Ansicht aktualisieren
+                    if (document.getElementById('mobileView').style.display === 'block') {
+                        renderMobileQuestion();
+                    }
+                }
+            });
+
+            // Evidence Textareas - Event Delegation
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('evidence')) {
+                    const questionId = e.target.closest('.question').dataset.id;
+                    updateQuestionData(questionId, 'evidence', e.target.value);
+                }
+            });
+
+            // Deviation Textareas - Event Delegation
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('deviation-field')) {
+                    const questionId = e.target.closest('.question').dataset.id;
+                    updateQuestionData(questionId, 'deviation', { text: e.target.value });
+                }
+            });
+
+            // Responsible Inputs - Event Delegation
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('responsible-field')) {
+                    const questionId = e.target.closest('.question').dataset.id;
+                    updateQuestionData(questionId, 'deviation', { responsible: e.target.value });
+                }
+            });
+        }
+
+        // Setup für Section Headers (Dropdowns)
+        function setupSectionHeaders() {
+            const sectionHeaders = document.querySelectorAll('.section-header');
+            sectionHeaders.forEach(header => {
+                // Entferne alte Event Listener
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+                
+                // Füge neuen Event Listener hinzu
+                newHeader.addEventListener('click', handleSectionClick);
+            });
+        }
+
+        function handleSectionClick() {
+            const section = this.parentElement;
+            const isExpanded = section.classList.contains('expanded');
+            
+            section.classList.toggle('expanded');
+            const span = this.querySelector('span');
+            span.textContent = section.classList.contains('expanded') ? '▼' : '▶';
+            
+            // Content anzeigen/verstecken
+            const content = section.querySelector('.section-content');
+            if (content) {
+                content.style.display = section.classList.contains('expanded') ? 'block' : 'none';
+            }
+        }
+
+        // Setup für Mobile Question Listeners
+        function setupMobileQuestionListeners(questionId) {
+            // Punkte Optionen
+            const pointsOptions = document.querySelectorAll('.points-option');
+            pointsOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const points = parseInt(this.dataset.points);
+                    updateQuestionData(questionId, 'points', points);
+                    
+                    pointsOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    const pointsDisplay = document.querySelector('.points-display');
+                    if (pointsDisplay) {
+                        pointsDisplay.textContent = `${points} Punkte`;
+                        pointsDisplay.style.backgroundColor = `${getPointsColor(points)}20`;
+                        pointsDisplay.style.color = getPointsColor(points);
+                        pointsDisplay.style.borderColor = getPointsColor(points);
+                    }
+                    
+                    const deviationSection = document.querySelector('.deviation-section');
+                    if (deviationSection) {
+                        if (points !== null && points <= 8) {
+                            deviationSection.style.display = 'block';
+                        } else {
+                            deviationSection.style.display = 'none';
+                        }
+                    }
+                    
+                    // Desktop Ansicht aktualisieren
+                    renderAuditSections();
+                    setupSectionHeaders();
+                });
+            });
+
+            // Evidence Textarea
+            const evidenceTextarea = document.querySelector('.evidence');
+            if (evidenceTextarea) {
+                evidenceTextarea.addEventListener('input', function() {
+                    updateQuestionData(questionId, 'evidence', this.value);
+                });
+            }
+
+            // Deviation Textarea
+            const deviationTextarea = document.querySelector('.deviation-field');
+            if (deviationTextarea) {
+                deviationTextarea.addEventListener('input', function() {
+                    updateQuestionData(questionId, 'deviation', { text: this.value });
+                });
+            }
+
+            // Responsible Input
+            const responsibleInput = document.querySelector('.responsible-field');
+            if (responsibleInput) {
+                responsibleInput.addEventListener('input', function() {
+                    updateQuestionData(questionId, 'deviation', { responsible: this.value });
+                });
+            }
+        }
+
+        function toggleView() {
+            const desktopView = document.getElementById('desktopView');
+            const mobileView = document.getElementById('mobileView');
+            const toggleBtn = document.getElementById('toggleViewBtn');
+            
+            if (desktopView.style.display === 'block') {
+                desktopView.style.display = 'none';
+                mobileView.style.display = 'block';
+                toggleBtn.textContent = '🖥️ Desktop';
+                renderMobileQuestion();
+            } else {
+                desktopView.style.display = 'block';
+                mobileView.style.display = 'none';
+                toggleBtn.textContent = '📱 Mobile';
+                renderAuditSections();
+                setupSectionHeaders();
+            }
+        }
+
+        function handleResize() {
+            const isMobile = window.innerWidth <= 768;
+            const desktopView = document.getElementById('desktopView');
+            const mobileView = document.getElementById('mobileView');
+            const toggleBtn = document.getElementById('toggleViewBtn');
+            
+            if (isMobile && desktopView.style.display === 'block') {
+                desktopView.style.display = 'none';
+                mobileView.style.display = 'block';
+                toggleBtn.textContent = '🖥️ Desktop';
+                renderMobileQuestion();
+            } else if (!isMobile && mobileView.style.display === 'block') {
+                desktopView.style.display = 'block';
+                mobileView.style.display = 'none';
+                toggleBtn.textContent = '📱 Mobile';
+                renderAuditSections();
+                setupSectionHeaders();
+            }
+        }
+
+        // === RESET BESTÄTIGUNG DIALOG - KORRIGIERT für iOS ===
+        function showResetConfirmation() {
+            // Erstelle Bestätigungsdialog
+            const dialogHtml = `
+                <div id="resetConfirmDialog" style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                ">
+                    <div style="
+                        background: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        max-width: 90%;
+                        width: 300px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                    ">
+                        <h3 style="margin-bottom: 15px; color: #e74c3c; font-size: 1.1em;">⚠️ Audit zurücksetzen</h3>
+                        <p style="margin-bottom: 20px; color: #333; font-size: 0.9em; line-height: 1.4;">
+                            Sind Sie sicher?<br>
+                            Alle Daten für dieses Audit werden gelöscht.
+                        </p>
+                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <button id="resetCancelBtn" style="
+                                padding: 10px 16px;
+                                background: #95a5a6;
+                                color: white;
+                                border: none;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                font-size: 0.9em;
+                                min-width: 80px;
+                            ">Abbrechen</button>
+                            <button id="resetConfirmBtn" style="
+                                padding: 10px 16px;
+                                background: #e74c3c;
+                                color: white;
+                                border: none;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                font-size: 0.9em;
+                                min-width: 80px;
+                            ">Löschen</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Dialog einfügen
+            const dialogContainer = document.createElement('div');
+            dialogContainer.innerHTML = dialogHtml;
+            document.body.appendChild(dialogContainer.firstElementChild);
+            
+            // Event Listener für Dialog-Buttons
+            document.getElementById('resetCancelBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                const dialog = document.getElementById('resetConfirmDialog');
+                if (dialog) {
+                    dialog.remove();
+                }
+            });
+            
+            document.getElementById('resetConfirmBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                const dialog = document.getElementById('resetConfirmDialog');
+                if (dialog) {
+                    dialog.remove();
+                }
+                resetAudit();
+            });
+            
+            // Dialog schließen bei Klick auf Hintergrund
+            document.getElementById('resetConfirmDialog').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.remove();
+                }
+            });
+        }
+
+        // === LOAD DATA FUNKTION ===
+        function loadData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const loadedData = JSON.parse(e.target.result);
+                    
+                    if (!loadedData.meta || !loadedData.meta.auditType) {
+                        throw new Error('Ungültiges Audit-Datenformat');
+                    }
+                    
+                    const auditType = loadedData.meta.auditType;
+                    
+                    if (currentAuditType !== auditType) {
+                        if (confirm(`Sie haben ein ${AUDIT_TYPES[auditType].title}-Audit geladen.\nMöchten Sie zu diesem Audit wechseln?`)) {
+                            startAudit(auditType);
+                        }
+                    }
+                    
+                    currentAuditData = loadedData;
+                    allQuestions = currentAuditData.questions || [];
+                    participants = currentAuditData.participants || { auditors: [], auditees: [] };
+                    imageStorage = currentAuditData.images || {};
+                    
+                    localStorage.setItem(`zfpAudit_${auditType}`, JSON.stringify(currentAuditData));
+                    
+                    renderAuditSections();
+                    setupSectionHeaders();
+                    renderParticipants();
+                    renderMobileQuestion();
+                    updateCurrentAuditProgress();
+                    
+                    alert(`✅ Audit wurde geladen:\n\n${loadedData.meta.title}\nStandards: ${loadedData.meta.standards}\nLetzte Änderung: ${new Date(loadedData.meta.lastModified).toLocaleDateString()}`);
+                    
+                } catch (error) {
+                    alert(`❌ Fehler beim Laden: ${error.message}`);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function resetAudit() {
+            if (!currentAuditType) return;
+            
+            const sections = AUDIT_DATA[currentAuditType];
+            allQuestions = sections.flatMap(section => 
+                section.questions.map(q => ({
+                    ...q,
+                    sectionTitle: section.title,
+                    sectionShort: section.short,
+                    points: null,
+                    evidence: "",
+                    deviation: { text: "", responsible: "", hasImage: false }
+                }))
+            );
+            
+            participants = { auditors: [], auditees: [] };
+            imageStorage = {};
+            
+            currentAuditData = {
+                meta: {
+                    created: new Date().toISOString(),
+                    lastModified: new Date().toISOString(),
+                    auditType: currentAuditType,
+                    title: AUDIT_TYPES[currentAuditType].title,
+                    standards: AUDIT_TYPES[currentAuditType].standards
+                },
+                participants: participants,
+                questions: allQuestions,
+                images: imageStorage
+            };
+            
+            localStorage.setItem(`zfpAudit_${currentAuditType}`, JSON.stringify(currentAuditData));
+            
+            renderAuditSections();
+            setupSectionHeaders();
+            renderParticipants();
+            renderMobileQuestion();
+            updateCurrentAuditProgress();
+            
+            alert('✅ Audit wurde zurückgesetzt');
+        }
+
+        function printAudit() {
+            saveCurrentAuditData();
+            window.print();
+        }
+
+        function showEvaluation() {
+            const evaluation = document.getElementById('evaluation');
+            evaluation.style.display = evaluation.style.display === 'block' ? 'none' : 'block';
+            
+            if (evaluation.style.display === 'block') {
+                renderEvaluation();
+            }
+        }
+
+        function renderEvaluation() {
+            const total = allQuestions.length;
+            const answered = allQuestions.filter(q => q.points !== null).length;
+            const points = allQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
+            const maxPoints = total * 10;
+            const percent = total > 0 ? (points / maxPoints) * 100 : 0;
+            
+            let grade = 'A';
+            let color = '#27ae60';
+            
+            if (percent >= 90) {
+                grade = 'A';
+                color = '#27ae60';
+            } else if (percent >= 80) {
+                grade = 'B';
+                color = '#2ecc71';
+            } else if (percent >= 70) {
+                grade = 'C';
+                color = '#f39c12';
+            } else if (percent >= 60) {
+                grade = 'D';
+                color = '#e67e22';
+            } else {
+                grade = 'F';
+                color = '#e74c3c';
+            }
+            
+            const lowScoreQuestions = allQuestions
+                .filter(q => q.points !== null && q.points <= 4)
+                .map(q => ({
+                    id: q.id,
+                    text: q.text,
+                    points: q.points,
+                    deviation: q.deviation?.text || 'Keine Abweichung'
+                }));
+            
+            const evaluationContent = document.getElementById('evaluationContent');
+            evaluationContent.innerHTML = `
+                <div style="margin-bottom: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 5px;">
+                    <h3 style="margin-bottom: 10px; color: #2c3e50;">Zusammenfassung</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 10px;">
+                        <div style="text-align: center; padding: 8px; background-color: white; border-radius: 4px;">
+                            <div style="font-size: 0.8em; color: #7f8c8d;">Gesamtpunkte</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: #2c3e50;">${points}/${maxPoints}</div>
+                        </div>
+                        <div style="text-align: center; padding: 8px; background-color: white; border-radius: 4px;">
+                            <div style="font-size: 0.8em; color: #7f8c8d;">Prozent</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: ${color};">${percent.toFixed(1)}%</div>
+                        </div>
+                        <div style="text-align: center; padding: 8px; background-color: white; border-radius: 4px;">
+                            <div style="font-size: 0.8em; color: #7f8c8d;">Note</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: ${color};">${grade}</div>
+                        </div>
+                        <div style="text-align: center; padding: 8px; background-color: white; border-radius: 4px;">
+                            <div style="font-size: 0.8em; color: #7f8c8d;">Beantwortet</div>
+                            <div style="font-size: 1.5em; font-weight: bold; color: #2c3e50;">${answered}/${total}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${lowScoreQuestions.length > 0 ? `
+                    <div style="margin-bottom: 15px; padding: 10px; background-color: #fff3f3; border-radius: 5px; border-left: 4px solid #e74c3c;">
+                        <h3 style="margin-bottom: 10px; color: #c0392b;">Kritische Fragen (≤ 4 Punkte)</h3>
+                        <div style="font-size: 0.9em;">
+                            ${lowScoreQuestions.map(q => `
+                                <div style="margin-bottom: 8px; padding: 8px; background-color: white; border-radius: 4px;">
+                                    <strong style="color: #e74c3c;">${q.id} (${q.points} Punkte)</strong><br>
+                                    ${q.text}<br>
+                                    <em style="color: #7f8c8d; font-size: 0.9em;">Abweichung: ${q.deviation}</em>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div style="margin-top: 15px; padding: 10px; background-color: #e8f4fc; border-radius: 5px;">
+                    <h3 style="margin-bottom: 10px; color: #2c3e50;">Empfehlungen</h3>
+                    <ul style="font-size: 0.9em; padding-left: 20px;">
+                        ${percent >= 90 ? 
+                            '<li>✅ Sehr gutes Ergebnis. Der Prozess ist effektiv und gut dokumentiert.</li>' : 
+                        percent >= 80 ? 
+                            '<li>⚠️ Gutes Ergebnis. Einige Verbesserungspotentiale vorhanden.</li>' : 
+                        percent >= 70 ? 
+                            '<li>⚠️ Akzeptables Ergebnis. Es sollten Maßnahmen zur Verbesserung geplant werden.</li>' : 
+                            '<li>❌ Kritisches Ergebnis. Es sind dringende Maßnahmen erforderlich.</li>'}
+                        ${answered < total ? 
+                            '<li>⚠️ Nicht alle Fragen wurden bewertet. Bitte vervollständigen Sie das Audit.</li>' : ''}
+                        ${lowScoreQuestions.length > 0 ? 
+                            `<li>⚠️ ${lowScoreQuestions.length} Fragen haben kritisch niedrige Punktzahlen. Diese sollten priorisiert angegangen werden.</li>` : ''}
+                    </ul>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
