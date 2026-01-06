@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZfP Audit-Checkliste - Schaeffler</title>
     <style>
+        /* === ALLE EXISTIERENDEN STYLES BEIBEHALTEN === */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -43,7 +44,139 @@
             margin-bottom: 8px;
         }
 
-        /* AUDIT AUSWAHL */
+        /* === KONTROLLELEMENTE === */
+        .controls-top {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 10px;
+            flex-wrap: nowrap;
+        }
+        .controls-top button {
+            padding: 5px 6px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.75em;
+            min-height: 30px;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-back { background: #7f8c8d; color: white; }
+        .btn-report { background: #8e44ad; color: white; }
+        .btn-export-single { background: #27ae60; color: white; }
+        .btn-export-images { background: #3498db; color: white; }
+        .btn-desktop { background: #95a5a6; color: white; }
+        .btn-reset { background: #e74c3c; color: white; } /* NEU: Reset-Button in obere Zeile */
+        
+        .controls-bottom {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .controls-bottom button {
+            padding: 6px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8em;
+            min-height: 32px;
+            flex: 1;
+            min-width: 70px;
+        }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-info { background: #17a2b8; color: white; }
+        button:hover { opacity: 0.9; }
+
+        /* === BERICHT-MODAL === */
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 10000;
+            overflow: auto;
+        }
+        
+        .report-modal-content {
+            background: white;
+            margin: 20px auto;
+            width: 95%;
+            max-width: 210mm;
+            min-height: 297mm;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .report-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .report-modal-print {
+            position: absolute;
+            top: 10px;
+            right: 50px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 10001;
+        }
+        
+        .report-modal iframe {
+            width: 100%;
+            height: calc(100vh - 40px);
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* === DRUCK-STYLES FÜR DEN BERICHT === */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .report-container, .report-container * {
+                visibility: visible;
+            }
+            .report-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        /* === REST DER EXISTIERENDEN STYLES === */
         .audit-selection {
             text-align: center;
             margin: 15px 0;
@@ -96,56 +229,6 @@
             min-width: 35px;
         }
 
-        /* CONTROLS - ALLE IN EINER ZEILE */
-        .controls-top {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 10px;
-            flex-wrap: nowrap;
-        }
-        .controls-top button {
-            padding: 5px 6px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.75em;
-            min-height: 30px;
-            flex: 1;
-            min-width: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .btn-back { background: #7f8c8d; color: white; }
-        .btn-export-single { background: #27ae60; color: white; }
-        .btn-export-images { background: #3498db; color: white; }
-        .btn-desktop { background: #95a5a6; color: white; }
-        
-        .controls-bottom {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        .controls-bottom button {
-            padding: 6px 8px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.8em;
-            min-height: 32px;
-            flex: 1;
-            min-width: 70px;
-        }
-        .btn-warning { background: #f39c12; color: white; }
-        .btn-danger { background: #e74c3c; color: white; }
-        .btn-secondary { background: #95a5a6; color: white; }
-        .btn-info { background: #17a2b8; color: white; }
-        button:hover { opacity: 0.9; }
-
-        /* TEILNEHMER - OPTIMIERT MIT + IN DER ZEILE */
         .participants-section {
             background: #f8f9fa;
             border: 1px solid #3498db;
@@ -231,7 +314,6 @@
             justify-content: center;
         }
 
-        /* AUDIT STATUS - KORRIGIERT */
         .audit-status {
             display: flex;
             justify-content: space-between;
@@ -269,7 +351,6 @@
             font-weight: bold;
         }
 
-        /* FRAGEN UND SECTIONS - DROPDOWN SICHERSTELLEN */
         .section {
             margin-bottom: 10px;
             border: 1px solid #bdc3c7;
@@ -455,7 +536,6 @@
             font-size: 0.75em;
         }
 
-        /* MOBILE ANSICHT */
         .mobile-view .participants-section {
             padding: 8px;
             margin-bottom: 8px;
@@ -528,7 +608,6 @@
             font-weight: bold;
         }
 
-        /* KATEGORIEN-BUTTONS */
         .mobile-section-selector {
             display: flex;
             flex-wrap: wrap;
@@ -551,7 +630,6 @@
             cursor: pointer;
         }
 
-        /* EVALUATION */
         .evaluation {
             display: none;
             margin-top: 12px;
@@ -566,7 +644,6 @@
             color: #2c3e50;
         }
 
-        /* ANSICHTS-STEUERUNG - KORRIGIERT */
         .desktop-view { display: block; }
         .mobile-view { display: none; }
         .audit-content { display: none; }
@@ -574,7 +651,6 @@
         .audit-selection { display: none; }
         .audit-selection.active { display: block; }
 
-        /* FOOTER */
         footer {
             text-align: center;
             margin-top: 12px;
@@ -595,7 +671,6 @@
             color: #7f8c8d;
         }
 
-        /* MOBILE OPTIMIERUNGEN */
         @media (max-width: 768px) {
             body {
                 padding: 5px;
@@ -606,7 +681,6 @@
                 padding: 8px !important; 
             }
             
-            /* Mobile Ansicht erzwingen */
             .desktop-view { 
                 display: none !important; 
             }
@@ -614,7 +688,6 @@
                 display: block !important; 
             }
             
-            /* Audit-Auswahl auf Mobile */
             .audit-buttons {
                 grid-template-columns: 1fr;
                 gap: 6px;
@@ -641,13 +714,11 @@
                 margin-top: 0;
             }
             
-            /* Abkürzungen auf den Buttons für Mobile */
             .audit-btn.wirbelstrom::before { content: "ET - "; }
             .audit-btn.magnetpulver::before { content: "MT - "; }
             .audit-btn.nital::before { content: "NE - "; }
             .audit-btn.ultraschall::before { content: "UT - "; }
             
-            /* Controls auf Mobile */
             .controls-top {
                 gap: 3px;
                 margin-bottom: 8px;
@@ -671,24 +742,11 @@
                 min-width: 60px;
             }
             
-            /* Teilnehmer auf Mobile */
             .participants-grid {
                 grid-template-columns: 1fr;
                 gap: 6px;
             }
             
-            /* Status auf Mobile - Vertikal */
-            .audit-status {
-            }
-            
-            .audit-status span {
-                min-width: auto;
-                text-align: left;
-                display: flex;
-                justify-content: space-between;
-            }
-            
-            /* Frage-Display auf Mobile */
             .question {
                 padding: 8px;
             }
@@ -712,13 +770,11 @@
                 font-size: 0.8em;
             }
             
-            /* Mobile Navigation */
             .mobile-nav button {
                 min-width: 60px;
                 padding: 5px 8px;
             }
             
-            /* Section-Selector auf Mobile */
             .mobile-section-selector {
                 gap: 2px;
             }
@@ -729,14 +785,12 @@
                 padding: 3px 4px;
             }
             
-            /* Evidence und Fields */
             .evidence, .deviation-field, .responsible-field {
                 font-size: 0.8em;
                 padding: 5px 6px;
             }
         }
 
-        /* SEHR KLEINE DISPLAYS */
         @media (max-width: 360px) {
             .container { 
                 padding: 6px !important; 
@@ -775,7 +829,6 @@
             }
         }
         
-        /* DESKTOP VERGRÖSSERUNGEN */
         @media (min-width: 769px) {
             body {
                 font-size: 15px;
@@ -870,18 +923,18 @@
 
         <!-- AUDIT CONTENT -->
         <div id="auditContent" class="audit-content">
-            <!-- CONTROLS -->
+            <!-- KONTROLLELEMENTE MIT BERICHT-BUTTON UND RESET -->
             <div class="controls-top">
                 <button class="btn-back" id="backBtn">← Zurück</button>
+                <button class="btn-report" id="reportBtn">📋 Bericht</button>
                 <button class="btn-export-single" id="exportSingleBtn">📁 Einzeldatei</button>
                 <button class="btn-export-images" id="exportImagesBtn">🖼️ Mit Bildern</button>
+                <button class="btn-reset" id="resetBtn">🗑️ Reset</button> <!-- RESET HINZUGEFÜGT -->
                 <button class="btn-desktop" id="toggleViewBtn">🖥️ Desktop</button>
             </div>
 
             <div class="controls-bottom">
                 <button class="btn-warning" id="loadBtn">📂 Laden</button>
-                <button class="btn-danger" id="resetBtn">🗑️ Reset</button>
-                <button class="btn-secondary" id="printBtn">🖨️ Drucken</button>
                 <button class="btn-info" id="evaluationBtn">📊 Auswertung</button>
             </div>
 
@@ -964,6 +1017,15 @@
         </footer>
     </div>
 
+    <!-- === BERICHT-MODAL === -->
+    <div id="reportModal" class="report-modal">
+        <div class="report-modal-content">
+            <button class="report-modal-close" onclick="closeReport()">×</button>
+            <button class="report-modal-print" onclick="printReport()">🖨️ Drucken</button>
+            <iframe id="reportFrame" title="Auditbericht"></iframe>
+        </div>
+    </div>
+
     <input type="file" id="fileLoader" accept=".json" style="display: none;">
 
     <script>
@@ -1003,7 +1065,7 @@
             }
         };
 
-        // VOLLSTÄNDIGE AUDIT-DATEN MIT ALLEN FRAGEN
+        // VOLLSTÄNDIGE AUDIT-DATEN
         const AUDIT_DATA = {
             wirbelstrom: [
                 {
@@ -1256,119 +1318,1084 @@
             updateAuditProgressDisplays();
         }
 
-        // === MODIFIZIERTE EXPORT FUNKTIONEN ===
-        async function exportSingleFile() {
-            if (!currentAuditType || !currentAuditData) return;
+        // === NEUE BERICHT-FUNKTION ===
+        function createReport() {
+            if (!currentAuditType || !currentAuditData) {
+                alert("Bitte zuerst ein Audit auswählen und ausfüllen!");
+                return;
+            }
             
             saveCurrentAuditData();
             
-            const exportData = { ...currentAuditData };
+            // Erstelle einen temporären iframe für sauberen Druck
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = 'none';
+            iframe.style.opacity = '0';
+            iframe.style.visibility = 'hidden';
+            document.body.appendChild(iframe);
             
-            // Bilder sind bereits als Base64 in imageStorage enthalten
-            exportData.images = imageStorage;
+            // Generiere den Bericht-HTML
+            const reportHtml = createReportHTML();
             
-            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
+            // Schreibe HTML in iframe
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(reportHtml);
+            iframeDoc.close();
             
-            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-            a.download = `ZfP-Audit_${AUDIT_TYPES[currentAuditType].title}_${timestamp}.json`;
+            // Warte bis Inhalte geladen sind
+            iframe.onload = function() {
+                setTimeout(() => {
+                    try {
+                        // Fokus auf iframe für sauberen Druck
+                        iframe.contentWindow.focus();
+                        
+                        // Drucken starten
+                        iframe.contentWindow.print();
+                        
+                        // Entferne iframe nach 3 Sekunden (nachdem Druckdialog geöffnet wurde)
+                        setTimeout(() => {
+                            if (iframe && iframe.parentNode) {
+                                iframe.parentNode.removeChild(iframe);
+                            }
+                        }, 3000);
+                        
+                    } catch (error) {
+                        console.error("Druckfehler:", error);
+                        alert("Drucken konnte nicht gestartet werden. Bitte versuchen Sie es erneut.");
+                        
+                        // Entferne iframe bei Fehler
+                        if (iframe && iframe.parentNode) {
+                            iframe.parentNode.removeChild(iframe);
+                        }
+                    }
+                }, 500);
+            };
+        }
+
+        function createReportHTML() {
+            const auditInfo = AUDIT_TYPES[currentAuditType];
+            const totalPoints = allQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
+            const maxPoints = allQuestions.length * 10;
+            const okCount = allQuestions.filter(q => 
+                !q.deviation || !q.deviation.text || q.deviation.text.trim() === ''
+            ).length;
+            const nokCount = allQuestions.filter(q => 
+                q.deviation && q.deviation.text && q.deviation.text.trim() !== ''
+            ).length;
+            const imageCount = allQuestions.filter(q => 
+                q.deviation && q.deviation.hasImage === true
+            ).length;
             
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            // Berechnung der Auswertung
+            const percentage = maxPoints > 0 ? (totalPoints / maxPoints * 100) : 0;
             
-            const imageCount = Object.keys(imageStorage).length;
+            // Bestimmung der Note basierend auf Prozentsatz
+            let grade = '';
+            let gradeColor = '';
+            let gradeText = '';
+            
+            if (percentage >= 95) {
+                grade = 'A';
+                gradeColor = '#27ae60';
+                gradeText = 'Exzellent';
+            } else if (percentage >= 85) {
+                grade = 'B';
+                gradeColor = '#2ecc71';
+                gradeText = 'Sehr gut';
+            } else if (percentage >= 75) {
+                grade = 'C';
+                gradeColor = '#f39c12';
+                gradeText = 'Gut';
+            } else if (percentage >= 65) {
+                grade = 'D';
+                gradeColor = '#e67e22';
+                gradeText = 'Befriedigend';
+            } else if (percentage >= 50) {
+                grade = 'E';
+                gradeColor = '#e74c3c';
+                gradeText = 'Ausreichend';
+            } else {
+                grade = 'F';
+                gradeColor = '#c0392b';
+                gradeText = 'Nicht bestanden';
+            }
+            
+            // Kritische Fragen (≤ 4 Punkte) für die Auswertung
+            const criticalQuestions = allQuestions
+                .filter(q => q.points !== null && q.points <= 4)
+                .map(q => ({
+                    id: q.id,
+                    text: q.text.substring(0, 80) + (q.text.length > 80 ? '...' : ''),
+                    points: q.points,
+                    deviation: q.deviation?.text || 'Keine Angabe'
+                }));
+            
+            // Fragen nach Punktzahl gruppieren für Statistik
+            const pointsDistribution = {
+                0: allQuestions.filter(q => q.points === 0).length,
+                2: allQuestions.filter(q => q.points === 2).length,
+                4: allQuestions.filter(q => q.points === 4).length,
+                8: allQuestions.filter(q => q.points === 8).length,
+                10: allQuestions.filter(q => q.points === 10).length,
+                null: allQuestions.filter(q => q.points === null).length
+            };
+            
+            // Bewertete Fragen
             const answeredQuestions = allQuestions.filter(q => q.points !== null).length;
             const totalQuestions = allQuestions.length;
             
-            alert(`✅ Audit wurde exportiert\n\n📁 Dateiname: ${a.download}\n📊 Enthaltene Daten:\n• ${answeredQuestions}/${totalQuestions} Fragen bewertet\n• ${participants.auditors.length} Auditor(en)\n• ${participants.auditees.length} auditierte Person(en)\n• ${imageCount} Bild(er) als Base64 kodiert`);
-        }
-
-        async function exportWithImagesSeparate() {
-            if (!currentAuditType || !currentAuditData) return;
+            // Schaeffler Logo URL
+            const schaefflerLogoURL = "https://upload.wikimedia.org/wikipedia/commons/7/72/Schaeffler_logo.svg";
             
-            saveCurrentAuditData();
-            
-            // 1. JSON-Datei ohne Bilder erstellen
-            const exportData = { ...currentAuditData };
-            exportData.images = {}; // Leere Bilder-Referenz
-            exportData.meta.exportMode = 'separate';
-            exportData.meta.imageReferences = {};
-            
-            // Bildreferenzen erstellen
+            // Bilder für den Bericht
+            const imageData = {};
             Object.keys(imageStorage).forEach(questionId => {
-                const imageData = imageStorage[questionId];
-                const matches = imageData.match(/^data:(image\/[a-zA-Z]*);base64,(.*)$/);
-                if (matches) {
-                    const mimeType = matches[1];
-                    const extension = mimeType.split('/')[1] || 'jpg';
-                    exportData.meta.imageReferences[questionId] = `${questionId}.${extension}`;
+                if (imageStorage[questionId]) {
+                    imageData[questionId] = imageStorage[questionId];
                 }
             });
             
-            const jsonStr = JSON.stringify(exportData, null, 2);
-            const jsonBlob = new Blob([jsonStr], { type: 'application/json' });
-            
-            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-            const jsonFilename = `ZfP-Audit_${AUDIT_TYPES[currentAuditType].title}_${timestamp}.json`;
-            
-            // JSON-Datei downloaden
-            downloadFile(jsonBlob, jsonFilename);
-            
-            // 2. Bilder als separate Dateien exportieren
-            let imageCount = 0;
-            const imagePromises = [];
-            
-            for (const [questionId, imageData] of Object.entries(imageStorage)) {
-                const matches = imageData.match(/^data:(image\/[a-zA-Z]*);base64,(.*)$/);
-                if (matches) {
-                    imagePromises.push(
-                        new Promise((resolve) => {
-                            setTimeout(() => {
-                                const mimeType = matches[1];
-                                const base64Data = matches[2];
-                                const extension = mimeType.split('/')[1] || 'jpg';
-                                
-                                const byteCharacters = atob(base64Data);
-                                const byteNumbers = new Array(byteCharacters.length);
-                                for (let i = 0; i < byteCharacters.length; i++) {
-                                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                                }
-                                const byteArray = new Uint8Array(byteNumbers);
-                                const blob = new Blob([byteArray], { type: mimeType });
-                                
-                                downloadFile(blob, `${questionId}.${extension}`);
-                                imageCount++;
-                                resolve();
-                            }, 300 * imageCount); // Verzögerung zwischen Downloads
-                        })
-                    );
+            const sections = {};
+            allQuestions.forEach(question => {
+                const sectionKey = question.sectionTitle || 'Allgemein';
+                if (!sections[sectionKey]) {
+                    sections[sectionKey] = [];
                 }
+                sections[sectionKey].push({
+                    ...question,
+                    imageData: imageData[question.id]
+                });
+            });
+            
+            // EXAKTE Breiten für die Tabelle
+            const totalTableWidth = 180;
+            const colWidths = {
+                id: 15,
+                question: 65,
+                evidence: 35,
+                deviation: 40,
+                responsible: 20,
+                points: 5
+            };
+            
+            let questionsHTML = '';
+            Object.keys(sections).forEach(sectionTitle => {
+                questionsHTML += `
+                <div class="section">
+                    <div class="section-header">${sectionTitle}</div>
+                    <table class="questions-table" style="width: ${totalTableWidth}mm;">
+                        <thead>
+                            <tr>
+                                <th class="col-id" style="width: ${colWidths.id}mm;">ID</th>
+                                <th class="col-question" style="width: ${colWidths.question}mm;">Frage / Prüfpunkt</th>
+                                <th class="col-evidence" style="width: ${colWidths.evidence}mm;">Evidenz / Nachweis</th>
+                                <th class="col-deviation" style="width: ${colWidths.deviation}mm;">Abweichung / Maßnahme</th>
+                                <th class="col-responsible" style="width: ${colWidths.responsible}mm;">Verantwortlich</th>
+                                <th class="col-points" style="width: ${colWidths.points}mm;">Pkte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sections[sectionTitle].map(question => {
+                                const hasDeviation = question.deviation && question.deviation.text && question.deviation.text.trim() !== '';
+                                const hasImage = question.imageData;
+                                const statusClass = hasDeviation ? 'status-nok' : (question.points !== null ? 'status-ok' : 'status-na');
+                                
+                                return `
+                                    <tr>
+                                        <td class="col-id" style="width: ${colWidths.id}mm;">
+                                            <div class="question-id">
+                                                <span class="status-indicator ${statusClass}"></span>
+                                                ${question.id}
+                                            </div>
+                                        </td>
+                                        <td class="col-question" style="width: ${colWidths.question}mm;">${question.text}</td>
+                                        <td class="col-evidence" style="width: ${colWidths.evidence}mm;">${question.evidence || ''}</td>
+                                        <td class="col-deviation" style="width: ${colWidths.deviation}mm;">${question.deviation?.text || ''}</td>
+                                        <td class="col-responsible" style="width: ${colWidths.responsible}mm;">${question.deviation?.responsible || ''}</td>
+                                        <td class="col-points" style="width: ${colWidths.points}mm; text-align: center; font-weight: bold;">${question.points || 0}</td>
+                                    </tr>
+                                    ${hasImage ? `
+                                    <tr class="image-row">
+                                        <td colspan="6" style="padding: 2mm 0;">
+                                            <div class="report-image-container">
+                                                <img src="${question.imageData}" class="report-image" alt="Beweisbild">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    ` : ''}
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                `;
+            });
+            
+            return `
+            <!DOCTYPE html>
+            <html lang="de">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Auditbericht - ${auditInfo.title} | Schaeffler</title>
+                <style>
+                    @page {
+                        size: A4 portrait;
+                        margin: 15mm 15mm 15mm 15mm;
+                        @bottom-right {
+                            content: "Seite " counter(page) " von " counter(pages);
+                            font-size: 8pt;
+                            color: #666;
+                        }
+                    }
+                    
+                    body {
+                        font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        font-size: 10pt;
+                        line-height: 1.3;
+                        color: #000;
+                        margin: 0;
+                        padding: 0;
+                        width: 100%;
+                    }
+                    
+                    .report-element {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 0 auto !important;
+                        box-sizing: border-box;
+                    }
+                    
+                    /* ===== KOPFZEILE ===== */
+                    .header-container {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 0 auto 6mm auto !important;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        border-bottom: 1.5pt solid #003865;
+                        padding-bottom: 4mm;
+                        box-sizing: border-box;
+                    }
+                    
+                    .title-section {
+                        flex: 1;
+                        text-align: left;
+                        padding-right: 10mm;
+                    }
+                    
+                    .report-title {
+                        font-size: 16pt;
+                        font-weight: bold;
+                        color: #003865;
+                        margin-bottom: 1mm;
+                        text-transform: uppercase;
+                    }
+                    
+                    .report-subtitle {
+                        font-size: 12pt;
+                        color: #333;
+                        font-weight: 600;
+                        margin-bottom: 1mm;
+                    }
+                    
+                    .report-standards {
+                        font-size: 10pt;
+                        color: #666;
+                        font-style: italic;
+                    }
+                    
+                    .logo-section {
+                        flex-shrink: 0;
+                        text-align: right;
+                    }
+                    
+                    .schaeffler-logo {
+                        width: 45mm;
+                        height: auto;
+                    }
+                    
+                    /* ===== METADATEN ===== */
+                    .meta-container {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 0 auto 8mm auto !important;
+                        background: #f8f9fa;
+                        border: 1pt solid #ddd;
+                        border-radius: 4px;
+                        padding: 4mm;
+                        box-sizing: border-box;
+                    }
+                    
+                    .meta-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 6mm;
+                        font-size: 9pt;
+                    }
+                    
+                    .meta-column {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 2mm;
+                    }
+                    
+                    .meta-row {
+                        display: flex;
+                        justify-content: space-between;
+                        padding-bottom: 1.5mm;
+                        border-bottom: 0.5pt dotted #ccc;
+                    }
+                    
+                    .meta-row:last-child {
+                        border-bottom: none;
+                        padding-bottom: 0;
+                    }
+                    
+                    .meta-label {
+                        font-weight: bold;
+                        color: #003865;
+                        min-width: 35mm;
+                    }
+                    
+                    .meta-value {
+                        text-align: right;
+                        flex: 1;
+                    }
+                    
+                    /* ===== TEILNEHMER ===== */
+                    .participants-container {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 0 auto 8mm auto !important;
+                        background: #f0f7ff;
+                        border: 1pt solid #003865;
+                        border-radius: 4px;
+                        padding: 4mm;
+                        box-sizing: border-box;
+                    }
+                    
+                    .container-title {
+                        font-weight: bold;
+                        color: #003865;
+                        font-size: 11pt;
+                        text-align: center;
+                        margin-bottom: 3mm;
+                    }
+                    
+                    .participants-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 8mm;
+                    }
+                    
+                    .participant-group {
+                        background: white;
+                        padding: 3mm;
+                        border-radius: 3px;
+                        border: 1pt solid #ddd;
+                    }
+                    
+                    .group-label {
+                        font-weight: bold;
+                        color: #003865;
+                        font-size: 10pt;
+                        margin-bottom: 1mm;
+                        border-bottom: 1pt solid #ddd;
+                        padding-bottom: 1mm;
+                    }
+                    
+                    .group-content {
+                        min-height: 8mm;
+                        font-size: 10pt;
+                        line-height: 1.4;
+                    }
+                    
+                    /* ===== ZUSAMMENFASSUNG MIT AUSWERTUNG ===== */
+                    .summary-container {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 0 auto 10mm auto !important;
+                        background: linear-gradient(135deg, #f0f7ff 0%, #e6f0ff 100%);
+                        border: 1.5pt solid #003865;
+                        border-radius: 5px;
+                        padding: 5mm;
+                        box-sizing: border-box;
+                    }
+                    
+                    .summary-title {
+                        font-weight: bold;
+                        color: #003865;
+                        font-size: 12pt;
+                        text-align: center;
+                        margin-bottom: 5mm;
+                        text-transform: uppercase;
+                    }
+                    
+                    /* ERGEBNIS-ÜBERSICHT */
+                    .results-overview {
+                        display: grid;
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 4mm;
+                        margin-bottom: 6mm;
+                    }
+                    
+                    .result-item {
+                        background: white;
+                        padding: 3mm;
+                        border-radius: 3px;
+                        border: 1pt solid #003865;
+                        text-align: center;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        min-height: 20mm;
+                    }
+                    
+                    .result-value {
+                        font-size: 14pt;
+                        font-weight: bold;
+                        color: #003865;
+                        margin-bottom: 1mm;
+                    }
+                    
+                    .result-label {
+                        font-size: 8pt;
+                        color: #666;
+                        line-height: 1.3;
+                    }
+                    
+                    /* AUSWERTUNGS-DETAILS */
+                    .evaluation-details {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 6mm;
+                        margin-top: 6mm;
+                        padding-top: 4mm;
+                        border-top: 1pt dashed #003865;
+                    }
+                    
+                    .evaluation-column {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 3mm;
+                    }
+                    
+                    .grade-box {
+                        background: white;
+                        padding: 4mm;
+                        border-radius: 4px;
+                        border: 2pt solid ${gradeColor};
+                        text-align: center;
+                    }
+                    
+                    .grade-value {
+                        font-size: 24pt;
+                        font-weight: bold;
+                        color: ${gradeColor};
+                        margin-bottom: 1mm;
+                    }
+                    
+                    .grade-text {
+                        font-size: 10pt;
+                        font-weight: bold;
+                        color: ${gradeColor};
+                        margin-bottom: 1mm;
+                    }
+                    
+                    .grade-percentage {
+                        font-size: 12pt;
+                        font-weight: bold;
+                        color: #003865;
+                    }
+                    
+                    .points-distribution {
+                        background: white;
+                        padding: 3mm;
+                        border-radius: 3px;
+                        border: 1pt solid #ddd;
+                    }
+                    
+                    .distribution-title {
+                        font-weight: bold;
+                        color: #003865;
+                        font-size: 10pt;
+                        margin-bottom: 2mm;
+                        text-align: center;
+                    }
+                    
+                    .distribution-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 2mm;
+                    }
+                    
+                    .distribution-item {
+                        text-align: center;
+                        padding: 1mm;
+                        border-radius: 2px;
+                        background: #f8f9fa;
+                    }
+                    
+                    .distribution-points {
+                        font-weight: bold;
+                        font-size: 10pt;
+                        color: #003865;
+                    }
+                    
+                    .distribution-count {
+                        font-size: 9pt;
+                        color: #666;
+                    }
+                    
+                    .critical-issues {
+                        background: white;
+                        padding: 3mm;
+                        border-radius: 3px;
+                        border: 1pt solid #e74c3c;
+                        background-color: #fff5f5;
+                    }
+                    
+                    .critical-title {
+                        font-weight: bold;
+                        color: #e74c3c;
+                        font-size: 10pt;
+                        margin-bottom: 2mm;
+                        text-align: center;
+                    }
+                    
+                    .critical-list {
+                        font-size: 8pt;
+                        line-height: 1.4;
+                        max-height: 25mm;
+                        overflow-y: auto;
+                    }
+                    
+                    .critical-item {
+                        margin-bottom: 1mm;
+                        padding-bottom: 1mm;
+                        border-bottom: 0.5pt dotted #ffcccc;
+                    }
+                    
+                    .recommendations {
+                        background: white;
+                        padding: 3mm;
+                        border-radius: 3px;
+                        border: 1pt solid #f39c12;
+                        background-color: #fff9e6;
+                    }
+                    
+                    .recommendations-title {
+                        font-weight: bold;
+                        color: #f39c12;
+                        font-size: 10pt;
+                        margin-bottom: 2mm;
+                        text-align: center;
+                    }
+                    
+                    .recommendations-list {
+                        font-size: 8pt;
+                        line-height: 1.4;
+                    }
+                    
+                    /* ===== FRAGEN TABELLE ===== */
+                    .questions-container {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 0 auto !important;
+                        box-sizing: border-box;
+                    }
+                    
+                    .section {
+                        margin: 6mm 0;
+                        width: 100%;
+                    }
+                    
+                    .section-header {
+                        background-color: #003865;
+                        color: white;
+                        padding: 2.5mm 4mm;
+                        font-weight: bold;
+                        font-size: 11pt;
+                        margin: 5mm 0 3mm 0;
+                        border-radius: 3px;
+                        width: 100%;
+                    }
+                    
+                    .questions-table {
+                        width: 180mm !important;
+                        border-collapse: collapse;
+                        margin: 0;
+                        font-size: 9pt;
+                        table-layout: fixed;
+                    }
+                    
+                    .questions-table th {
+                        background-color: #e6f0ff;
+                        padding: 2.5mm 2mm;
+                        text-align: left;
+                        font-weight: bold;
+                        border-bottom: 1.5pt solid #003865;
+                        border-right: 1pt solid #ddd;
+                        color: #003865;
+                        height: 8mm;
+                    }
+                    
+                    .questions-table td {
+                        padding: 2.5mm 2mm;
+                        border-bottom: 0.5pt solid #eee;
+                        border-right: 1pt solid #eee;
+                        vertical-align: top;
+                        line-height: 1.4;
+                        word-wrap: break-word;
+                    }
+                    
+                    .status-indicator {
+                        display: inline-block;
+                        width: 6pt;
+                        height: 6pt;
+                        border-radius: 50%;
+                        margin-right: 1.5mm;
+                    }
+                    
+                    .status-ok { background-color: #38a169; }
+                    .status-nok { background-color: #e53e3e; }
+                    .status-na { background-color: #a0aec0; }
+                    
+                    .question-id {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                    }
+                    
+                    .image-row {
+                        background-color: #f9f9f9;
+                    }
+                    
+                    .report-image-container {
+                        padding: 2mm;
+                        text-align: center;
+                        border: 1pt dashed #ccc;
+                        border-radius: 3px;
+                        margin: 2mm 0;
+                        background-color: white;
+                        page-break-inside: avoid;
+                    }
+                    
+                    .report-image {
+                        max-width: 150mm;
+                        max-height: 100mm;
+                        height: auto;
+                        border: 1pt solid #ddd;
+                        border-radius: 2px;
+                    }
+                    
+                    /* ===== LEGENDE ===== */
+                    .legend-container {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 8mm auto 5mm auto !important;
+                        font-size: 8pt;
+                        color: #666;
+                        text-align: center;
+                        border-top: 1pt dashed #ccc;
+                        padding-top: 3mm;
+                        box-sizing: border-box;
+                    }
+                    
+                    /* ===== UNTERSCHRIFTEN ===== */
+                    .signature-container {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 10mm auto 0 auto !important;
+                        padding-top: 6mm;
+                        border-top: 1.5pt solid #003865;
+                        font-size: 9pt;
+                        box-sizing: border-box;
+                    }
+                    
+                    .signature-grid {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 8mm;
+                        width: 100%;
+                    }
+                    
+                    .signature-item {
+                        text-align: center;
+                        width: 85mm;
+                    }
+                    
+                    .signature-line {
+                        border-top: 1pt solid #000;
+                        padding-top: 2mm;
+                        margin-top: 12mm;
+                        min-height: 15mm;
+                    }
+                    
+                    /* ===== DRUCK-STEUERUNG ===== */
+                    .print-container {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 12mm auto 8mm auto !important;
+                        padding: 4mm;
+                        background: #f8f9fa;
+                        border-radius: 6px;
+                        border: 1pt solid #ddd;
+                        text-align: center;
+                        box-sizing: border-box;
+                    }
+                    
+                    .print-btn {
+                        padding: 6mm 12mm;
+                        background: #003865;
+                        color: white;
+                        border: none;
+                        border-radius: 4px;
+                        font-size: 11pt;
+                        font-weight: bold;
+                        cursor: pointer;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 4mm;
+                        min-width: 50mm;
+                    }
+                    
+                    .print-btn:hover {
+                        background: #00274d;
+                    }
+                    
+                    /* ===== FOOTER ===== */
+                    .footer-container {
+                        width: 180mm !important;
+                        max-width: 180mm !important;
+                        margin: 5mm auto 0 auto !important;
+                        font-size: 7pt;
+                        color: #666;
+                        text-align: center;
+                        padding-top: 2mm;
+                        border-top: 1pt solid #eee;
+                        box-sizing: border-box;
+                    }
+                    
+                    /* ===== DRUCK-STYLES ===== */
+                    @media print {
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            width: 210mm;
+                            height: 297mm;
+                            font-size: 10pt;
+                            -webkit-print-color-adjust: exact;
+                            print-color-adjust: exact;
+                        }
+                        
+                        .print-container {
+                            display: none !important;
+                        }
+                        
+                        .header-container,
+                        .meta-container,
+                        .participants-container,
+                        .summary-container,
+                        .questions-container,
+                        .legend-container,
+                        .signature-container,
+                        .footer-container {
+                            width: 180mm !important;
+                            max-width: 180mm !important;
+                            margin-left: auto !important;
+                            margin-right: auto !important;
+                        }
+                        
+                        .questions-table {
+                            width: 180mm !important;
+                        }
+                        
+                        .section, tr {
+                            page-break-inside: avoid;
+                        }
+                    }
+                    
+                    @media screen {
+                        body {
+                            background: #f5f5f5;
+                            padding: 20px;
+                        }
+                        
+                        .main-container {
+                            background: white;
+                            padding: 20px;
+                            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                            width: calc(180mm + 40px);
+                            margin: 0 auto;
+                        }
+                    }
+                </style>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const printBtn = document.getElementById('printReportButton');
+                        if (printBtn) {
+                            printBtn.addEventListener('click', function() {
+                                window.print();
+                            });
+                        }
+                    });
+                </script>
+            </head>
+            <body>
+                <div class="main-container">
+                    <!-- KOPFZEILE -->
+                    <div class="header-container report-element">
+                        <div class="title-section">
+                            <div class="report-title">Auditbericht: ${auditInfo.title}</div>
+                            <div class="report-subtitle">Zerstörungsfreie Prüfverfahren</div>
+                            <div class="report-standards">Standards: ${auditInfo.standards}</div>
+                        </div>
+                        <div class="logo-section">
+                            <img src="${schaefflerLogoURL}" 
+                                 class="schaeffler-logo" 
+                                 alt="Schaeffler Logo">
+                        </div>
+                    </div>
+                    
+                    <!-- METADATEN -->
+                    <div class="meta-container report-element">
+                        <div class="meta-grid">
+                            <div class="meta-column">
+                                <div class="meta-row">
+                                    <span class="meta-label">Audit-Verfahren:</span>
+                                    <span class="meta-value">${auditInfo.title}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Standards:</span>
+                                    <span class="meta-value">${auditInfo.standards}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Abteilung:</span>
+                                    <span class="meta-value">WI/SW2-PQT</span>
+                                </div>
+                            </div>
+                            <div class="meta-column">
+                                <div class="meta-row">
+                                    <span class="meta-label">Erstellt am:</span>
+                                    <span class="meta-value">${new Date().toLocaleDateString('de-DE')}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Geändert am:</span>
+                                    <span class="meta-value">${new Date(currentAuditData.meta.lastModified).toLocaleDateString('de-DE')}</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Dokument-ID:</span>
+                                    <span class="meta-value">AUD-${currentAuditType.toUpperCase()}-${Date.now().toString(36).toUpperCase()}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- TEILNEHMER -->
+                    <div class="participants-container report-element">
+                        <div class="container-title">Teilnehmer</div>
+                        <div class="participants-grid">
+                            <div class="participant-group">
+                                <div class="group-label">Auditoren:</div>
+                                <div class="group-content">${participants.auditors.join(', ') || 'Nicht angegeben'}</div>
+                            </div>
+                            <div class="participant-group">
+                                <div class="group-label">Auditierte Personen:</div>
+                                <div class="group-content">${participants.auditees.join(', ') || 'Nicht angegeben'}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ZUSAMMENFASSUNG MIT AUSWERTUNG -->
+                    <div class="summary-container report-element">
+                        <div class="summary-title">Zusammenfassung & Auswertung</div>
+                        
+                        <!-- ERGEBNIS-ÜBERSICHT -->
+                        <div class="results-overview">
+                            <div class="result-item">
+                                <div class="result-value">${totalPoints}/${maxPoints}</div>
+                                <div class="result-label">Gesamtpunkte<br>erreicht/maximal</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-value">${okCount}</div>
+                                <div class="result-label">
+                                    <span class="status-indicator status-ok"></span>
+                                    I.O.<br>(10 Punkte)
+                                </div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-value">${nokCount}</div>
+                                <div class="result-label">
+                                    <span class="status-indicator status-nok"></span>
+                                    N.I.O.<br>(&lt; 10 Punkte)
+                                </div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-value">${imageCount}</div>
+                                <div class="result-label">📷<br>Dokumentierte Bilder</div>
+                            </div>
+                        </div>
+                        
+                        <!-- AUSWERTUNGS-DETAILS -->
+                        <div class="evaluation-details">
+                            <!-- LINKE SPALTE: Bewertung & Punkteverteilung -->
+                            <div class="evaluation-column">
+                                <!-- BEWERTUNG -->
+                                <div class="grade-box">
+                                    <div class="grade-value">${grade}</div>
+                                    <div class="grade-text">${gradeText}</div>
+                                    <div class="grade-percentage">${percentage.toFixed(1)}% erreicht</div>
+                                </div>
+                                
+                                <!-- PUNKTEVERTEILUNG -->
+                                <div class="points-distribution">
+                                    <div class="distribution-title">Punkteverteilung</div>
+                                    <div class="distribution-grid">
+                                        <div class="distribution-item">
+                                            <div class="distribution-points">10 Pkte</div>
+                                            <div class="distribution-count">${pointsDistribution[10]} Fragen</div>
+                                        </div>
+                                        <div class="distribution-item">
+                                            <div class="distribution-points">8 Pkte</div>
+                                            <div class="distribution-count">${pointsDistribution[8]} Fragen</div>
+                                        </div>
+                                        <div class="distribution-item">
+                                            <div class="distribution-points">4 Pkte</div>
+                                            <div class="distribution-count">${pointsDistribution[4]} Fragen</div>
+                                        </div>
+                                        <div class="distribution-item">
+                                            <div class="distribution-points">2 Pkte</div>
+                                            <div class="distribution-count">${pointsDistribution[2]} Fragen</div>
+                                        </div>
+                                        <div class="distribution-item">
+                                            <div class="distribution-points">0 Pkte</div>
+                                            <div class="distribution-count">${pointsDistribution[0]} Fragen</div>
+                                        </div>
+                                        <div class="distribution-item">
+                                            <div class="distribution-points">Nicht bew.</div>
+                                            <div class="distribution-count">${pointsDistribution.null} Fragen</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- RECHTE SPALTE: Kritische Punkte & Empfehlungen -->
+                            <div class="evaluation-column">
+                                <!-- KRITISCHE FRAGEN -->
+                                <div class="critical-issues">
+                                    <div class="critical-title">Kritische Fragen (≤ 4 Punkte)</div>
+                                    <div class="critical-list">
+                                        ${criticalQuestions.length > 0 ? 
+                                            criticalQuestions.map(q => `
+                                                <div class="critical-item">
+                                                    <strong>${q.id} (${q.points} Pkte):</strong><br>
+                                                    ${q.text}<br>
+                                                    <em>${q.deviation}</em>
+                                                </div>
+                                            `).join('') 
+                                            : '<div style="text-align: center; color: #666; font-style: italic;">Keine kritischen Fragen</div>'
+                                        }
+                                    </div>
+                                </div>
+                                
+                                <!-- EMPFEHLUNGEN -->
+                                <div class="recommendations">
+                                    <div class="recommendations-title">Empfehlungen</div>
+                                    <div class="recommendations-list">
+                                        ${percentage >= 90 ? 
+                                            '<div>✅ Exzellentes Ergebnis. Der Prozess ist effektiv und gut dokumentiert.</div>' : 
+                                        percentage >= 80 ? 
+                                            '<div>⚠️ Gutes Ergebnis. Einige Verbesserungspotentiale vorhanden.</div>' : 
+                                        percentage >= 70 ? 
+                                            '<div>⚠️ Akzeptables Ergebnis. Es sollten Maßnahmen zur Verbesserung geplant werden.</div>' : 
+                                            '<div>❌ Kritisch. Dringende Maßnahmen erforderlich.</div>'
+                                        }
+                                        ${answeredQuestions < totalQuestions ? 
+                                            '<div>⚠️ Nicht alle Fragen wurden bewertet. Bitte vervollständigen Sie das Audit.</div>' : ''}
+                                        ${criticalQuestions.length > 0 ? 
+                                            `<div>⚠️ ${criticalQuestions.length} kritische Fragen sollten priorisiert angegangen werden.</div>` : ''}
+                                        ${imageCount > 0 ? 
+                                            '<div>✅ Bilder dokumentieren Abweichungen effektiv.</div>' : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FRAGEN TABELLE -->
+                    <div class="questions-container report-element">
+                        ${questionsHTML}
+                    </div>
+                    
+                    <!-- LEGENDE -->
+                    <div class="legend-container report-element">
+                        <span class="status-indicator status-ok"></span> = I.O. (10 Punkte) &nbsp;&nbsp; | &nbsp;&nbsp;
+                        <span class="status-indicator status-nok"></span> = N.I.O. (&lt; 10 Punkte) &nbsp;&nbsp; | &nbsp;&nbsp;
+                        <span class="status-indicator status-na"></span> = Nicht bewertet
+                    </div>
+                    
+                    <!-- UNTERSCHRIFTEN -->
+                    <div class="signature-container report-element">
+                        <div style="text-align: center; margin-bottom: 6mm; font-weight: bold; color: #003865;">
+                            Unterschriften zur Bestätigung der Audit-Ergebnisse
+                        </div>
+                        <div class="signature-grid">
+                            <div class="signature-item">
+                                Auditor / Prüfer<br>
+                                <div class="signature-line"></div>
+                                <div style="font-size: 8pt; margin-top: 1mm; color: #666;">
+                                    Name, Datum, Unterschrift
+                                </div>
+                            </div>
+                            <div class="signature-item">
+                                Auditierter / Bereichsverantwortlicher<br>
+                                <div class="signature-line"></div>
+                                <div style="font-size: 8pt; margin-top: 1mm; color: #666;">
+                                    Name, Datum, Unterschrift
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- DRUCK-STEUERUNG -->
+                    <div class="print-container report-element">
+                        <button class="print-btn" id="printReportButton">🖨️ BERICHTSDRUCK STARTEN</button>
+                    </div>
+                    
+                    <!-- FOOTER -->
+                    <div class="footer-container report-element">
+                        Schaeffler AG | WI/SW2-PQT | ZfP Audit-Checkliste AC - 01.12.2025<br>
+                        Erstellt mit ZfP Audit-Checkliste | Generiert am: ${new Date().toLocaleString('de-DE')}
+                    </div>
+                </div>
+            </body>
+            </html>
+            `;
+        }
+
+        function closeReport() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
+
+        function printReport() {
+            const reportFrame = document.getElementById('reportFrame');
+            if (reportFrame && reportFrame.contentWindow) {
+                reportFrame.contentWindow.focus();
+                reportFrame.contentWindow.print();
             }
-            
-            // Warten bis alle Bilder exportiert sind
-            await Promise.all(imagePromises);
-            
-            setTimeout(() => {
-                alert(`✅ Export erfolgreich!\n\n📁 Exportierte Dateien:\n• ${jsonFilename} (Audit-Daten)\n• ${imageCount} Bilddatei(en)\n\n⚠️ Wichtig: JSON-Datei und Bilder müssen im gleichen Ordner bleiben!`);
-            }, 500);
         }
 
-        function downloadFile(blob, filename) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-
-        // === AUDIT MANAGEMENT ===
+        // === URSPRÜNGLICHE FUNKTIONEN ===
         function loadAllAuditData() {
             Object.keys(AUDIT_TYPES).forEach(auditType => {
                 const saved = localStorage.getItem(`zfpAudit_${auditType}`);
@@ -1420,7 +2447,6 @@
             renderParticipants();
             setupMobileParticipants();
             
-            // Standard-Ansicht basierend auf Bildschirmgröße
             const isMobile = window.innerWidth <= 768;
             const toggleBtn = document.getElementById('toggleViewBtn');
             
@@ -1503,7 +2529,6 @@
             document.querySelector('.subtitle').textContent = 'Zerstörungsfreie Prüfverfahren - Schaeffler';
         }
 
-        // === FORTSCHRITTSANZEIGEN - KORRIGIERT ===
         function updateAuditProgressDisplays() {
             Object.keys(AUDIT_TYPES).forEach(auditType => {
                 const progress = calculateAuditProgress(auditType);
@@ -1561,7 +2586,6 @@
             }
         }
 
-        // === RENDERING FUNKTIONEN ===
         function renderAuditSections() {
             const container = document.getElementById('auditSections');
             container.innerHTML = '';
@@ -1639,7 +2663,6 @@
             }).join('');
         }
 
-        // === MOBILE FUNKTIONEN ===
         function renderMobileQuestion() {
             if (allQuestionElements.length === 0) return;
             
@@ -1696,7 +2719,6 @@
             document.getElementById('mobileCounter').textContent = `Frage ${currentMobileQuestion + 1}/${allQuestionElements.length}`;
             renderMobileSectionSelector();
             
-            // Event Listener für Mobile Question setzen
             setTimeout(() => {
                 setupMobileQuestionListeners(question.id);
             }, 10);
@@ -1736,7 +2758,6 @@
             });
         }
 
-        // === HELPER FUNKTIONEN ===
         function getQuestionData(questionId) {
             return allQuestions.find(q => q.id === questionId) || {
                 points: null,
@@ -1766,7 +2787,6 @@
                 } else if (field === 'points') {
                     question.points = value;
                     
-                    // Bei Punkteänderung Deviation-Sektion anzeigen/verstecken
                     const questionElement = document.querySelector(`.question[data-id="${questionId}"]`);
                     if (questionElement) {
                         const deviationSection = questionElement.querySelector('.deviation-section');
@@ -1784,7 +2804,6 @@
             }
         }
 
-        // === BILDVERARBEITUNG ===
         async function processAndLimitImage(file, maxWidth = 1200, maxHeight = 800, quality = 0.8) {
             return new Promise((resolve, reject) => {
                 const maxSize = 10 * 1024 * 1024;
@@ -1837,7 +2856,6 @@
             });
         }
 
-        // Desktop Bild-Upload Handler
         async function handleImageUploadDesktop(event, questionId) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1879,7 +2897,6 @@
             }
         }
 
-        // Mobile Bild-Upload Handler
         async function handleImageUploadMobile(event, questionId) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1931,27 +2948,23 @@
             
             saveCurrentAuditData();
             
-            // Desktop Preview
             const desktopPreview = document.getElementById(`desktop_preview-${questionId}`);
             if (desktopPreview) {
                 desktopPreview.style.display = 'none';
                 desktopPreview.src = '';
             }
             
-            // Mobile Preview
             const mobilePreview = document.getElementById(`mobile_preview-${questionId}`);
             if (mobilePreview) {
                 mobilePreview.style.display = 'none';
                 mobilePreview.src = '';
             }
             
-            // Wenn in Mobile-Ansicht, neu rendern
             if (document.getElementById('mobileView').style.display === 'block') {
                 renderMobileQuestion();
             }
         }
 
-        // === TEILNEHMER FUNKTIONEN - OPTIMIERT ===
         function renderParticipants() {
             renderParticipantList('auditor', 'auditorList');
             renderParticipantList('auditee', 'auditeeList');
@@ -2050,17 +3063,21 @@
             // Zurück-Button
             document.getElementById('backBtn').addEventListener('click', goBackToSelection);
 
+            // BERICHT-BUTTON
+            document.getElementById('reportBtn').addEventListener('click', createReport);
+
+            // Export-Buttons
+            document.getElementById('exportSingleBtn').addEventListener('click', exportSingleFile);
+            document.getElementById('exportImagesBtn').addEventListener('click', exportWithImagesSeparate);
+
+            // Reset Button (jetzt in controls-top)
+            document.getElementById('resetBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showResetConfirmation();
+            });
+
             // Ansicht umschalten
             document.getElementById('toggleViewBtn').addEventListener('click', toggleView);
-
-            // Export-Buttons - JETZT MIT DEN BEIDEN FUNKTIONEN
-            document.getElementById('exportSingleBtn').addEventListener('click', function() {
-                exportSingleFile();
-            });
-            
-            document.getElementById('exportImagesBtn').addEventListener('click', function() {
-                exportWithImagesSeparate();
-            });
 
             // Load Button
             document.getElementById('loadBtn').addEventListener('click', function() {
@@ -2070,15 +3087,6 @@
             document.getElementById('fileLoader').addEventListener('change', function(e) {
                 loadData(e);
             });
-
-            // Reset Button - KORRIGIERT für iOS
-            document.getElementById('resetBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                showResetConfirmation();
-            });
-
-            // Print Button
-            document.getElementById('printBtn').addEventListener('click', printAudit);
 
             // Evaluation Button
             document.getElementById('evaluationBtn').addEventListener('click', showEvaluation);
@@ -2102,9 +3110,7 @@
             window.addEventListener('resize', handleResize);
         }
 
-        // Setup für Desktop Event Listeners
         function setupDesktopEventListeners() {
-            // Punkte Optionen - Event Delegation
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('points-option')) {
                     const questionElement = e.target.closest('.question');
@@ -2137,14 +3143,12 @@
                         }
                     }
                     
-                    // Mobile Ansicht aktualisieren
                     if (document.getElementById('mobileView').style.display === 'block') {
                         renderMobileQuestion();
                     }
                 }
             });
 
-            // Evidence Textareas - Event Delegation
             document.addEventListener('input', function(e) {
                 if (e.target.classList.contains('evidence')) {
                     const questionId = e.target.closest('.question').dataset.id;
@@ -2152,7 +3156,6 @@
                 }
             });
 
-            // Deviation Textareas - Event Delegation
             document.addEventListener('input', function(e) {
                 if (e.target.classList.contains('deviation-field')) {
                     const questionId = e.target.closest('.question').dataset.id;
@@ -2160,7 +3163,6 @@
                 }
             });
 
-            // Responsible Inputs - Event Delegation
             document.addEventListener('input', function(e) {
                 if (e.target.classList.contains('responsible-field')) {
                     const questionId = e.target.closest('.question').dataset.id;
@@ -2169,15 +3171,12 @@
             });
         }
 
-        // Setup für Section Headers (Dropdowns)
         function setupSectionHeaders() {
             const sectionHeaders = document.querySelectorAll('.section-header');
             sectionHeaders.forEach(header => {
-                // Entferne alte Event Listener
                 const newHeader = header.cloneNode(true);
                 header.parentNode.replaceChild(newHeader, header);
                 
-                // Füge neuen Event Listener hinzu
                 newHeader.addEventListener('click', handleSectionClick);
             });
         }
@@ -2190,16 +3189,13 @@
             const span = this.querySelector('span');
             span.textContent = section.classList.contains('expanded') ? '▼' : '▶';
             
-            // Content anzeigen/verstecken
             const content = section.querySelector('.section-content');
             if (content) {
                 content.style.display = section.classList.contains('expanded') ? 'block' : 'none';
             }
         }
 
-        // Setup für Mobile Question Listeners
         function setupMobileQuestionListeners(questionId) {
-            // Punkte Optionen
             const pointsOptions = document.querySelectorAll('.points-option');
             pointsOptions.forEach(option => {
                 option.addEventListener('click', function() {
@@ -2228,13 +3224,11 @@
                         }
                     }
                     
-                    // Desktop Ansicht aktualisieren
                     renderAuditSections();
                     setupSectionHeaders();
                 });
             });
 
-            // Evidence Textarea
             const evidenceTextarea = document.querySelector('.evidence');
             if (evidenceTextarea) {
                 evidenceTextarea.addEventListener('input', function() {
@@ -2242,7 +3236,6 @@
                 });
             }
 
-            // Deviation Textarea
             const deviationTextarea = document.querySelector('.deviation-field');
             if (deviationTextarea) {
                 deviationTextarea.addEventListener('input', function() {
@@ -2250,7 +3243,6 @@
                 });
             }
 
-            // Responsible Input
             const responsibleInput = document.querySelector('.responsible-field');
             if (responsibleInput) {
                 responsibleInput.addEventListener('input', function() {
@@ -2298,9 +3290,7 @@
             }
         }
 
-        // === RESET BESTÄTIGUNG DIALOG - KORRIGIERT für iOS ===
         function showResetConfirmation() {
-            // Erstelle Bestätigungsdialog
             const dialogHtml = `
                 <div id="resetConfirmDialog" style="
                     position: fixed;
@@ -2354,12 +3344,10 @@
                 </div>
             `;
             
-            // Dialog einfügen
             const dialogContainer = document.createElement('div');
             dialogContainer.innerHTML = dialogHtml;
             document.body.appendChild(dialogContainer.firstElementChild);
             
-            // Event Listener für Dialog-Buttons
             document.getElementById('resetCancelBtn').addEventListener('click', function(e) {
                 e.preventDefault();
                 const dialog = document.getElementById('resetConfirmDialog');
@@ -2377,7 +3365,6 @@
                 resetAudit();
             });
             
-            // Dialog schließen bei Klick auf Hintergrund
             document.getElementById('resetConfirmDialog').addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.remove();
@@ -2385,7 +3372,111 @@
             });
         }
 
-        // === LOAD DATA FUNKTION ===
+        // === EXPORT FUNKTIONEN ===
+        async function exportSingleFile() {
+            if (!currentAuditType || !currentAuditData) return;
+            
+            saveCurrentAuditData();
+            
+            const exportData = { ...currentAuditData };
+            exportData.images = imageStorage;
+            
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            a.download = `ZfP-Audit_${AUDIT_TYPES[currentAuditType].title}_${timestamp}.json`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            const imageCount = Object.keys(imageStorage).length;
+            const answeredQuestions = allQuestions.filter(q => q.points !== null).length;
+            const totalQuestions = allQuestions.length;
+            
+            alert(`✅ Audit wurde exportiert\n\n📁 Dateiname: ${a.download}\n📊 Enthaltene Daten:\n• ${answeredQuestions}/${totalQuestions} Fragen bewertet\n• ${participants.auditors.length} Auditor(en)\n• ${participants.auditees.length} auditierte Person(en)\n• ${imageCount} Bild(er) als Base64 kodiert`);
+        }
+
+        async function exportWithImagesSeparate() {
+            if (!currentAuditType || !currentAuditData) return;
+            
+            saveCurrentAuditData();
+            
+            const exportData = { ...currentAuditData };
+            exportData.images = {};
+            exportData.meta.exportMode = 'separate';
+            exportData.meta.imageReferences = {};
+            
+            Object.keys(imageStorage).forEach(questionId => {
+                const imageData = imageStorage[questionId];
+                const matches = imageData.match(/^data:(image\/[a-zA-Z]*);base64,(.*)$/);
+                if (matches) {
+                    const mimeType = matches[1];
+                    const extension = mimeType.split('/')[1] || 'jpg';
+                    exportData.meta.imageReferences[questionId] = `${questionId}.${extension}`;
+                }
+            });
+            
+            const jsonStr = JSON.stringify(exportData, null, 2);
+            const jsonBlob = new Blob([jsonStr], { type: 'application/json' });
+            
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            const jsonFilename = `ZfP-Audit_${AUDIT_TYPES[currentAuditType].title}_${timestamp}.json`;
+            
+            downloadFile(jsonBlob, jsonFilename);
+            
+            let imageCount = 0;
+            const imagePromises = [];
+            
+            for (const [questionId, imageData] of Object.entries(imageStorage)) {
+                const matches = imageData.match(/^data:(image\/[a-zA-Z]*);base64,(.*)$/);
+                if (matches) {
+                    imagePromises.push(
+                        new Promise((resolve) => {
+                            setTimeout(() => {
+                                const mimeType = matches[1];
+                                const base64Data = matches[2];
+                                const extension = mimeType.split('/')[1] || 'jpg';
+                                
+                                const byteCharacters = atob(base64Data);
+                                const byteNumbers = new Array(byteCharacters.length);
+                                for (let i = 0; i < byteCharacters.length; i++) {
+                                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                                }
+                                const byteArray = new Uint8Array(byteNumbers);
+                                const blob = new Blob([byteArray], { type: mimeType });
+                                
+                                downloadFile(blob, `${questionId}.${extension}`);
+                                imageCount++;
+                                resolve();
+                            }, 300 * imageCount);
+                        })
+                    );
+                }
+            }
+            
+            await Promise.all(imagePromises);
+            
+            setTimeout(() => {
+                alert(`✅ Export erfolgreich!\n\n📁 Exportierte Dateien:\n• ${jsonFilename} (Audit-Daten)\n• ${imageCount} Bilddatei(en)\n\n⚠️ Wichtig: JSON-Datei und Bilder müssen im gleichen Ordner bleiben!`);
+            }, 500);
+        }
+
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
         function loadData(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -2470,11 +3561,6 @@
             updateCurrentAuditProgress();
             
             alert('✅ Audit wurde zurückgesetzt');
-        }
-
-        function printAudit() {
-            saveCurrentAuditData();
-            window.print();
         }
 
         function showEvaluation() {
