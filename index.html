@@ -2342,7 +2342,7 @@
         // === URSPRÜNGLICHE FUNKTIONEN (alle erhalten!) ===
         function loadAllAuditData() {
             Object.keys(AUDIT_TYPES).forEach(auditType => {
-                const saved = localStorage.getItem(`zfpAudit_${auditType}`);
+                const saved = localStorage.getItem(`zfpAuditReview_${auditType}`);
                 if (!saved) {
                     const sections = AUDIT_DATA[auditType];
                     const allQuestionsForAudit = sections.flatMap(section => 
@@ -2368,7 +2368,7 @@
                         questions: allQuestionsForAudit,
                         images: {}
                     };
-                    localStorage.setItem(`zfpAudit_${auditType}`, JSON.stringify(initialData));
+                    localStorage.setItem(`zfpAuditReview_${auditType}`, JSON.stringify(initialData));
                 }
             });
         }
@@ -2484,7 +2484,7 @@
         }
 
         function calculateAuditProgress(auditType) {
-            const saved = localStorage.getItem(`zfpAudit_${auditType}`);
+            const saved = localStorage.getItem(`zfpAuditReview_${auditType}`);
             if (!saved) {
                 const sections = AUDIT_DATA[auditType];
                 const total = sections.reduce((sum, section) => sum + section.questions.length, 0);
@@ -3433,7 +3433,9 @@
                     participants = currentAuditData.participants || { auditors: [], auditees: [] };
                     imageStorage = currentAuditData.images || {};
                     
-                    localStorage.setItem(`zfpAudit_${auditType}`, JSON.stringify(currentAuditData));
+                    localStorage.setItem(`zfpAuditReview_${auditType}`, JSON.stringify(currentAuditData));
+//                      ^^^^^^^^^^^
+//                  EINZIGARTIGES PRÄFIX
                     
                     renderAuditSections();
                     setupSectionHeaders();
