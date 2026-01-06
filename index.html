@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -5,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZfP Audit-Checkliste - Schaeffler</title>
     <style>
-        /* === ALLE EXISTIERENDEN STYLES BEIBEHALTEN === */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -44,21 +44,22 @@
             margin-bottom: 8px;
         }
 
-        /* === KONTROLLELEMENTE === */
-        .controls-top {
+        /* === ALLE BUTTONS IN EINER ZEILE === */
+        .controls-single-row {
             display: flex;
             gap: 4px;
             margin-bottom: 10px;
             flex-wrap: nowrap;
+            justify-content: space-between;
         }
-        .controls-top button {
-            padding: 5px 6px;
+        .controls-single-row button {
+            padding: 6px 8px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
             font-size: 0.75em;
-            min-height: 30px;
+            min-height: 32px;
             flex: 1;
             min-width: 0;
             white-space: nowrap;
@@ -66,35 +67,13 @@
             text-overflow: ellipsis;
         }
         .btn-back { background: #7f8c8d; color: white; }
-        .btn-report { background: #8e44ad; color: white; } /* NEU: Bericht-Button */
-        .btn-export-single { background: #27ae60; color: white; }
-        .btn-export-images { background: #3498db; color: white; }
+        .btn-report { background: #8e44ad; color: white; }
+        .btn-evaluation { background: #17a2b8; color: white; }
+        .btn-reset { background: #e74c3c; color: white; }
         .btn-desktop { background: #95a5a6; color: white; }
-        
-        .controls-bottom {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        .controls-bottom button {
-            padding: 6px 8px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.8em;
-            min-height: 32px;
-            flex: 1;
-            min-width: 70px;
-        }
-        .btn-warning { background: #f39c12; color: white; }
-        .btn-danger { background: #e74c3c; color: white; }
-        .btn-secondary { background: #95a5a6; color: white; }
-        .btn-info { background: #17a2b8; color: white; }
         button:hover { opacity: 0.9; }
 
-        /* === BERICHT-MODAL (Neu) === */
+        /* === BERICHT-MODAL === */
         .report-modal {
             display: none;
             position: fixed;
@@ -152,30 +131,37 @@
         
         .report-modal iframe {
             width: 100%;
-            height: calc(100vh - 1px);
+            height: calc(100vh - 40px);
             border: none;
             border-radius: 5px;
         }
 
-        /* === DRUCK-STYLES FÜR DEN BERICHT === */
+        /* === DRUCK-STYLES === */
         @media print {
             body * {
                 visibility: hidden;
             }
-            .report-container, .report-container * {
+            .report-modal,
+            .report-modal * {
                 visibility: visible;
             }
-            .report-container {
+            .report-modal {
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
+                height: 100%;
+                background: white;
                 margin: 0;
                 padding: 0;
             }
+            .report-modal-close,
+            .report-modal-print {
+                display: none !important;
+            }
         }
 
-        /* === REST DER EXISTIERENDEN STYLES (unverändert) === */
+        /* === AUDIT AUSWAHL === */
         .audit-selection {
             text-align: center;
             margin: 15px 0;
@@ -228,6 +214,7 @@
             min-width: 35px;
         }
 
+        /* === TEILNEHMER === */
         .participants-section {
             background: #f8f9fa;
             border: 1px solid #3498db;
@@ -313,6 +300,7 @@
             justify-content: center;
         }
 
+        /* === STATUSANZEIGE === */
         .audit-status {
             display: flex;
             justify-content: space-between;
@@ -350,6 +338,7 @@
             font-weight: bold;
         }
 
+        /* === SECTIONS UND FRAGEN === */
         .section {
             margin-bottom: 10px;
             border: 1px solid #bdc3c7;
@@ -535,6 +524,7 @@
             font-size: 0.75em;
         }
 
+        /* === MOBILE ANSICHT === */
         .mobile-view .participants-section {
             padding: 8px;
             margin-bottom: 8px;
@@ -687,6 +677,19 @@
                 display: block !important; 
             }
             
+            .controls-single-row {
+                flex-wrap: wrap;
+                gap: 3px;
+            }
+            
+            .controls-single-row button {
+                padding: 5px 6px;
+                font-size: 0.7em;
+                min-height: 28px;
+                min-width: 60px;
+                flex: 1 1 calc(50% - 3px);
+            }
+            
             .audit-buttons {
                 grid-template-columns: 1fr;
                 gap: 6px;
@@ -717,29 +720,6 @@
             .audit-btn.magnetpulver::before { content: "MT - "; }
             .audit-btn.nital::before { content: "NE - "; }
             .audit-btn.ultraschall::before { content: "UT - "; }
-            
-            .controls-top {
-                gap: 3px;
-                margin-bottom: 8px;
-            }
-            
-            .controls-top button {
-                padding: 4px 5px;
-                font-size: 0.7em;
-                min-height: 26px;
-            }
-            
-            .controls-bottom {
-                gap: 3px;
-                margin-bottom: 8px;
-            }
-            
-            .controls-bottom button {
-                padding: 4px 5px;
-                font-size: 0.7em;
-                min-height: 28px;
-                min-width: 60px;
-            }
             
             .participants-grid {
                 grid-template-columns: 1fr;
@@ -788,6 +768,20 @@
                 font-size: 0.8em;
                 padding: 5px 6px;
             }
+            
+            .report-modal-print {
+                right: 10px;
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+            
+            .report-modal-close {
+                top: 5px;
+                right: 5px;
+                width: 25px;
+                height: 25px;
+                font-size: 18px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -795,23 +789,17 @@
                 padding: 6px !important; 
             }
             
+            .controls-single-row button {
+                padding: 4px 5px;
+                font-size: 0.65em;
+                min-height: 26px;
+                min-width: 55px;
+            }
+            
             .audit-btn {
                 padding: 8px 5px;
                 min-height: 60px;
                 font-size: 0.8em;
-            }
-            
-            .controls-top button {
-                padding: 3px 4px;
-                font-size: 0.65em;
-                min-height: 24px;
-            }
-            
-            .controls-bottom button {
-                padding: 3px 4px;
-                font-size: 0.65em;
-                min-height: 26px;
-                min-width: 55px;
             }
             
             .question-text {
@@ -837,17 +825,10 @@
                 padding: 15px;
             }
             
-            .controls-top button {
+            .controls-single-row button {
                 padding: 8px 10px;
                 font-size: 0.85em;
                 min-height: 36px;
-            }
-            
-            .controls-bottom button {
-                padding: 8px 10px;
-                font-size: 0.85em;
-                min-height: 38px;
-                min-width: 80px;
             }
             
             .participants-section {
@@ -922,19 +903,13 @@
 
         <!-- AUDIT CONTENT -->
         <div id="auditContent" class="audit-content">
-            <!-- KONTROLLELEMENTE MIT BERICHT-BUTTON -->
-            <div class="controls-top">
+            <!-- ALLE BUTTONS IN EINER ZEILE -->
+            <div class="controls-single-row">
                 <button class="btn-back" id="backBtn">← Zurück</button>
                 <button class="btn-report" id="reportBtn">📋 Bericht</button>
-                <button class="btn-export-single" id="exportSingleBtn">📁 Einzeldatei</button>
-                <button class="btn-export-images" id="exportImagesBtn">🖼️ Mit Bildern</button>
+                <button class="btn-evaluation" id="evaluationBtn">📊 Auswertung</button>
+                <button class="btn-reset" id="resetBtn">🗑️ Reset</button>
                 <button class="btn-desktop" id="toggleViewBtn">🖥️ Desktop</button>
-            </div>
-
-            <div class="controls-bottom">
-                <button class="btn-warning" id="loadBtn">📂 Laden</button>
-                <button class="btn-danger" id="resetBtn">🗑️ Reset</button>
-                <button class="btn-info" id="evaluationBtn">📊 Auswertung</button>
             </div>
 
             <!-- Desktop Teilnehmer -->
@@ -1024,8 +999,6 @@
             <iframe id="reportFrame" title="Auditbericht"></iframe>
         </div>
     </div>
-
-    <input type="file" id="fileLoader" accept=".json" style="display: none;">
 
     <script>
         // === KONSTANTEN UND DATENSTRUKTUREN ===
@@ -1317,7 +1290,7 @@
             updateAuditProgressDisplays();
         }
 
-        // === NEUE BERICHT-FUNKTIONEN ===
+        // === BERICHT-FUNKTIONEN ===
         function generateReport() {
             if (!currentAuditType || !currentAuditData) {
                 alert("Bitte zuerst ein Audit auswählen und ausfüllen!");
@@ -1335,10 +1308,45 @@
             
             reportFrame.onload = function() {
                 reportFrame.style.height = 'calc(100vh - 40px)';
+                
+                const iframeDoc = reportFrame.contentDocument || reportFrame.contentWindow.document;
+                const printBtn = iframeDoc.querySelector('.print-btn');
+                if (printBtn) {
+                    printBtn.addEventListener('click', function() {
+                        printReport();
+                    });
+                }
             };
         }
 
-        // UPDATED: Bericht mit integrierter Auswertung in der Zusammenfassung
+        function closeReport() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
+
+        function printReport() {
+            const reportFrame = document.getElementById('reportFrame');
+            
+            try {
+                if (reportFrame.contentWindow) {
+                    reportFrame.contentWindow.focus();
+                    reportFrame.contentWindow.print();
+                } else {
+                    const reportHtml = createReportHTML();
+                    const printWindow = window.open('', '_blank');
+                    printWindow.document.write(reportHtml);
+                    printWindow.document.close();
+                    
+                    setTimeout(() => {
+                        printWindow.focus();
+                        printWindow.print();
+                    }, 500);
+                }
+            } catch (error) {
+                console.error('Druckfehler:', error);
+                alert('Druckfunktion konnte nicht gestartet werden. Bitte versuchen Sie es erneut.');
+            }
+        }
+
         function createReportHTML() {
             const auditInfo = AUDIT_TYPES[currentAuditType];
             const totalPoints = allQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
@@ -1353,10 +1361,8 @@
                 q.deviation && q.deviation.hasImage === true
             ).length;
             
-            // Berechnung der Auswertung
             const percentage = maxPoints > 0 ? (totalPoints / maxPoints * 100) : 0;
             
-            // Bestimmung der Note basierend auf Prozentsatz
             let grade = '';
             let gradeColor = '';
             let gradeText = '';
@@ -1387,7 +1393,6 @@
                 gradeText = 'Nicht bestanden';
             }
             
-            // Kritische Fragen (≤ 4 Punkte) für die Auswertung
             const criticalQuestions = allQuestions
                 .filter(q => q.points !== null && q.points <= 4)
                 .map(q => ({
@@ -1397,7 +1402,6 @@
                     deviation: q.deviation?.text || 'Keine Angabe'
                 }));
             
-            // Fragen nach Punktzahl gruppieren für Statistik
             const pointsDistribution = {
                 0: allQuestions.filter(q => q.points === 0).length,
                 2: allQuestions.filter(q => q.points === 2).length,
@@ -1407,14 +1411,11 @@
                 null: allQuestions.filter(q => q.points === null).length
             };
             
-            // Bewertete Fragen
             const answeredQuestions = allQuestions.filter(q => q.points !== null).length;
             const totalQuestions = allQuestions.length;
             
-            // Schaeffler Logo URL
             const schaefflerLogoURL = "https://upload.wikimedia.org/wikipedia/commons/7/72/Schaeffler_logo.svg";
             
-            // Bilder für den Bericht
             const imageData = {};
             Object.keys(imageStorage).forEach(questionId => {
                 if (imageStorage[questionId]) {
@@ -1434,7 +1435,6 @@
                 });
             });
             
-            // EXAKTE Breiten für die Tabelle
             const totalTableWidth = 180;
             const colWidths = {
                 id: 15,
@@ -1679,7 +1679,7 @@
                         line-height: 1.4;
                     }
                     
-                    /* ===== ZUSAMMENFASSUNG MIT AUSWERTUNG ===== */
+                    /* ===== ZUSAMMENFASSUNG ===== */
                     .summary-container {
                         width: 180mm !important;
                         max-width: 180mm !important;
@@ -1700,7 +1700,6 @@
                         text-transform: uppercase;
                     }
                     
-                    /* ERGEBNIS-ÜBERSICHT */
                     .results-overview {
                         display: grid;
                         grid-template-columns: repeat(4, 1fr);
@@ -1733,7 +1732,6 @@
                         line-height: 1.3;
                     }
                     
-                    /* AUSWERTUNGS-DETAILS */
                     .evaluation-details {
                         display: grid;
                         grid-template-columns: 1fr 1fr;
@@ -2167,7 +2165,7 @@
                         </div>
                     </div>
                     
-                    <!-- ZUSAMMENFASSUNG MIT AUSWERTUNG -->
+                    <!-- ZUSAMMENFASSUNG -->
                     <div class="summary-container report-element">
                         <div class="summary-title">Zusammenfassung & Auswertung</div>
                         
@@ -2199,7 +2197,7 @@
                         
                         <!-- AUSWERTUNGS-DETAILS -->
                         <div class="evaluation-details">
-                            <!-- LINKE SPALTE: Bewertung & Punkteverteilung -->
+                            <!-- LINKE SPALTE -->
                             <div class="evaluation-column">
                                 <!-- BEWERTUNG -->
                                 <div class="grade-box">
@@ -2240,7 +2238,7 @@
                                 </div>
                             </div>
                             
-                            <!-- RECHTE SPALTE: Kritische Punkte & Empfehlungen -->
+                            <!-- RECHTE SPALTE -->
                             <div class="evaluation-column">
                                 <!-- KRITISCHE FRAGEN -->
                                 <div class="critical-issues">
@@ -2334,7 +2332,7 @@
             `;
         }
 
-        // === URSPRÜNGLICHE FUNKTIONEN (alle erhalten!) ===
+        // === URSPRÜNGLICHE FUNKTIONEN ===
         function loadAllAuditData() {
             Object.keys(AUDIT_TYPES).forEach(auditType => {
                 const saved = localStorage.getItem(`zfpAudit_${auditType}`);
@@ -3005,26 +3003,15 @@
             // BERICHT-BUTTON
             document.getElementById('reportBtn').addEventListener('click', generateReport);
 
-            // Export-Buttons
-            document.getElementById('exportSingleBtn').addEventListener('click', exportSingleFile);
-            document.getElementById('exportImagesBtn').addEventListener('click', exportWithImagesSeparate);
-
             // Ansicht umschalten
             document.getElementById('toggleViewBtn').addEventListener('click', toggleView);
-
-            // Load Button
-            document.getElementById('loadBtn').addEventListener('click', function() {
-                document.getElementById('fileLoader').click();
-            });
-
-            document.getElementById('fileLoader').addEventListener('change', function(e) {
-                loadData(e);
-            });
 
             // Reset Button
             document.getElementById('resetBtn').addEventListener('click', function(e) {
                 e.preventDefault();
-                showResetConfirmation();
+                if (confirm('⚠️ Audit wirklich zurücksetzen?\nAlle Daten werden gelöscht.')) {
+                    resetAudit();
+                }
             });
 
             // Evaluation Button
@@ -3229,237 +3216,6 @@
             }
         }
 
-        function showResetConfirmation() {
-            const dialogHtml = `
-                <div id="resetConfirmDialog" style="
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0,0,0,0.5);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 10000;
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                ">
-                    <div style="
-                        background: white;
-                        padding: 20px;
-                        border-radius: 10px;
-                        max-width: 90%;
-                        width: 300px;
-                        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                    ">
-                        <h3 style="margin-bottom: 15px; color: #e74c3c; font-size: 1.1em;">⚠️ Audit zurücksetzen</h3>
-                        <p style="margin-bottom: 20px; color: #333; font-size: 0.9em; line-height: 1.4;">
-                            Sind Sie sicher?<br>
-                            Alle Daten für dieses Audit werden gelöscht.
-                        </p>
-                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                            <button id="resetCancelBtn" style="
-                                padding: 10px 16px;
-                                background: #95a5a6;
-                                color: white;
-                                border: none;
-                                border-radius: 5px;
-                                cursor: pointer;
-                                font-size: 0.9em;
-                                min-width: 80px;
-                            ">Abbrechen</button>
-                            <button id="resetConfirmBtn" style="
-                                padding: 10px 16px;
-                                background: #e74c3c;
-                                color: white;
-                                border: none;
-                                border-radius: 5px;
-                                cursor: pointer;
-                                font-size: 0.9em;
-                                min-width: 80px;
-                            ">Löschen</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            const dialogContainer = document.createElement('div');
-            dialogContainer.innerHTML = dialogHtml;
-            document.body.appendChild(dialogContainer.firstElementChild);
-            
-            document.getElementById('resetCancelBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                const dialog = document.getElementById('resetConfirmDialog');
-                if (dialog) {
-                    dialog.remove();
-                }
-            });
-            
-            document.getElementById('resetConfirmBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                const dialog = document.getElementById('resetConfirmDialog');
-                if (dialog) {
-                    dialog.remove();
-                }
-                resetAudit();
-            });
-            
-            document.getElementById('resetConfirmDialog').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.remove();
-                }
-            });
-        }
-
-        // === EXPORT FUNKTIONEN ===
-        async function exportSingleFile() {
-            if (!currentAuditType || !currentAuditData) return;
-            
-            saveCurrentAuditData();
-            
-            const exportData = { ...currentAuditData };
-            exportData.images = imageStorage;
-            
-            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            
-            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-            a.download = `ZfP-Audit_${AUDIT_TYPES[currentAuditType].title}_${timestamp}.json`;
-            
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            const imageCount = Object.keys(imageStorage).length;
-            const answeredQuestions = allQuestions.filter(q => q.points !== null).length;
-            const totalQuestions = allQuestions.length;
-            
-            alert(`✅ Audit wurde exportiert\n\n📁 Dateiname: ${a.download}\n📊 Enthaltene Daten:\n• ${answeredQuestions}/${totalQuestions} Fragen bewertet\n• ${participants.auditors.length} Auditor(en)\n• ${participants.auditees.length} auditierte Person(en)\n• ${imageCount} Bild(er) als Base64 kodiert`);
-        }
-
-        async function exportWithImagesSeparate() {
-            if (!currentAuditType || !currentAuditData) return;
-            
-            saveCurrentAuditData();
-            
-            const exportData = { ...currentAuditData };
-            exportData.images = {};
-            exportData.meta.exportMode = 'separate';
-            exportData.meta.imageReferences = {};
-            
-            Object.keys(imageStorage).forEach(questionId => {
-                const imageData = imageStorage[questionId];
-                const matches = imageData.match(/^data:(image\/[a-zA-Z]*);base64,(.*)$/);
-                if (matches) {
-                    const mimeType = matches[1];
-                    const extension = mimeType.split('/')[1] || 'jpg';
-                    exportData.meta.imageReferences[questionId] = `${questionId}.${extension}`;
-                }
-            });
-            
-            const jsonStr = JSON.stringify(exportData, null, 2);
-            const jsonBlob = new Blob([jsonStr], { type: 'application/json' });
-            
-            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-            const jsonFilename = `ZfP-Audit_${AUDIT_TYPES[currentAuditType].title}_${timestamp}.json`;
-            
-            downloadFile(jsonBlob, jsonFilename);
-            
-            let imageCount = 0;
-            const imagePromises = [];
-            
-            for (const [questionId, imageData] of Object.entries(imageStorage)) {
-                const matches = imageData.match(/^data:(image\/[a-zA-Z]*);base64,(.*)$/);
-                if (matches) {
-                    imagePromises.push(
-                        new Promise((resolve) => {
-                            setTimeout(() => {
-                                const mimeType = matches[1];
-                                const base64Data = matches[2];
-                                const extension = mimeType.split('/')[1] || 'jpg';
-                                
-                                const byteCharacters = atob(base64Data);
-                                const byteNumbers = new Array(byteCharacters.length);
-                                for (let i = 0; i < byteCharacters.length; i++) {
-                                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                                }
-                                const byteArray = new Uint8Array(byteNumbers);
-                                const blob = new Blob([byteArray], { type: mimeType });
-                                
-                                downloadFile(blob, `${questionId}.${extension}`);
-                                imageCount++;
-                                resolve();
-                            }, 300 * imageCount);
-                        })
-                    );
-                }
-            }
-            
-            await Promise.all(imagePromises);
-            
-            setTimeout(() => {
-                alert(`✅ Export erfolgreich!\n\n📁 Exportierte Dateien:\n• ${jsonFilename} (Audit-Daten)\n• ${imageCount} Bilddatei(en)\n\n⚠️ Wichtig: JSON-Datei und Bilder müssen im gleichen Ordner bleiben!`);
-            }, 500);
-        }
-
-        function downloadFile(blob, filename) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-
-        function loadData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const loadedData = JSON.parse(e.target.result);
-                    
-                    if (!loadedData.meta || !loadedData.meta.auditType) {
-                        throw new Error('Ungültiges Audit-Datenformat');
-                    }
-                    
-                    const auditType = loadedData.meta.auditType;
-                    
-                    if (currentAuditType !== auditType) {
-                        if (confirm(`Sie haben ein ${AUDIT_TYPES[auditType].title}-Audit geladen.\nMöchten Sie zu diesem Audit wechseln?`)) {
-                            startAudit(auditType);
-                        }
-                    }
-                    
-                    currentAuditData = loadedData;
-                    allQuestions = currentAuditData.questions || [];
-                    participants = currentAuditData.participants || { auditors: [], auditees: [] };
-                    imageStorage = currentAuditData.images || {};
-                    
-                    localStorage.setItem(`zfpAudit_${auditType}`, JSON.stringify(currentAuditData));
-                    
-                    renderAuditSections();
-                    setupSectionHeaders();
-                    renderParticipants();
-                    renderMobileQuestion();
-                    updateCurrentAuditProgress();
-                    
-                    alert(`✅ Audit wurde geladen:\n\n${loadedData.meta.title}\nStandards: ${loadedData.meta.standards}\nLetzte Änderung: ${new Date(loadedData.meta.lastModified).toLocaleDateString()}`);
-                    
-                } catch (error) {
-                    alert(`❌ Fehler beim Laden: ${error.message}`);
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
         function resetAudit() {
             if (!currentAuditType) return;
             
@@ -3500,11 +3256,6 @@
             updateCurrentAuditProgress();
             
             alert('✅ Audit wurde zurückgesetzt');
-        }
-
-        function printAudit() {
-            saveCurrentAuditData();
-            window.print();
         }
 
         function showEvaluation() {
