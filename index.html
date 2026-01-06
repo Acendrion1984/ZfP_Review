@@ -2409,7 +2409,7 @@
         }
 
         function loadCurrentAuditData() {
-            const saved = localStorage.getItem(`zfpAudit_${currentAuditType}`);
+            const saved = localStorage.getItem(`zfpAuditReview_${currentAuditType}`);
             if (saved) {
                 currentAuditData = JSON.parse(saved);
                 allQuestions = currentAuditData.questions || [];
@@ -2453,7 +2453,7 @@
             currentAuditData.images = imageStorage;
             currentAuditData.meta.lastModified = new Date().toISOString();
             
-            localStorage.setItem(`zfpAudit_${currentAuditType}`, JSON.stringify(currentAuditData));
+            localStorage.setItem(`zfpAuditReview_${currentAuditType}`, JSON.stringify(currentAuditData));
             updateAuditProgressDisplays();
             updateCurrentAuditProgress();
         }
@@ -3484,7 +3484,7 @@
                 images: imageStorage
             };
             
-            localStorage.setItem(`zfpAudit_${currentAuditType}`, JSON.stringify(currentAuditData));
+            localStorage.setItem(`zfpAuditReview_${currentAuditType}`, JSON.stringify(currentAuditData));
             
             renderAuditSections();
             setupSectionHeaders();
