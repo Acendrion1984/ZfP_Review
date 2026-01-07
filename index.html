@@ -970,8 +970,8 @@
         </div>
 
         <footer>
-            <p>ZfP Audit-Checkliste &copy; 2025 Schaeffler</p>
-            <div class="version-info">Version AC - 01.12.2025</div>
+            <p>ZfP Audit-Checkliste &copy; 2026 Schaeffler</p>
+            <div class="version-info">Version AD - 07.01.2026</div>
             <div class="creator-info">Ersteller: Daniel Häusner, WI/SW2-PQT</div>
         </footer>
     </div>
@@ -979,9 +979,9 @@
     <!-- === BERICHT-MODAL === -->
     <div id="reportModal" class="report-modal">
         <div class="report-modal-content">
-            <p>ZfP Review Audit &copy; 2026 Schaeffler</p>
-            <div class="version-info">Version AD - 07.01.2026</div>
-            <div class="creator-info">Ersteller: Daniel Häusner, WI/SW2-PQT</div>
+            <button class="report-modal-close" onclick="closeReport()">×</button>
+            <button class="report-modal-print" onclick="printReport()">🖨️ Drucken</button>
+            <iframe id="reportFrame" title="Auditbericht"></iframe>
         </div>
     </div>
 
@@ -1411,8 +1411,8 @@
                 id: 10,
                 question: 53,
                 evidence: 30,
-                deviation: 33,
-                responsible: 24,
+                deviation: 32,
+                responsible: 25,
                 points: 5
             };
             
