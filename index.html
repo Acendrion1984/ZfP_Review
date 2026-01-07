@@ -45,14 +45,14 @@
         }
 
         /* === KONTROLLELEMENTE === */
-        .controls-single-row {
+        .controls-row {
             display: flex;
             gap: 4px;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             flex-wrap: nowrap;
             justify-content: space-between;
         }
-        .controls-single-row button {
+        .controls-row button {
             padding: 5px 6px;
             border: none;
             border-radius: 4px;
@@ -71,6 +71,10 @@
         .btn-danger { background: #e74c3c; color: white; }
         .btn-info { background: #17a2b8; color: white; }
         .btn-desktop { background: #95a5a6; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-export { background: #3498db; color: white; }
+        .btn-import { background: #9b59b6; color: white; }
         button:hover { opacity: 0.9; }
 
         /* === BERICHT-MODAL (Neu) === */
@@ -696,27 +700,15 @@
             .audit-btn.nital::before { content: "NE - "; }
             .audit-btn.ultraschall::before { content: "UT - "; }
             
-            .controls-top {
+            .controls-row {
                 gap: 3px;
-                margin-bottom: 8px;
+                margin-bottom: 6px;
             }
             
-            .controls-top button {
+            .controls-row button {
                 padding: 4px 5px;
                 font-size: 0.7em;
                 min-height: 26px;
-            }
-            
-            .controls-bottom {
-                gap: 3px;
-                margin-bottom: 8px;
-            }
-            
-            .controls-bottom button {
-                padding: 4px 5px;
-                font-size: 0.7em;
-                min-height: 28px;
-                min-width: 60px;
             }
             
             .participants-grid {
@@ -779,17 +771,10 @@
                 font-size: 0.8em;
             }
             
-            .controls-top button {
+            .controls-row button {
                 padding: 3px 4px;
                 font-size: 0.65em;
                 min-height: 24px;
-            }
-            
-            .controls-bottom button {
-                padding: 3px 4px;
-                font-size: 0.65em;
-                min-height: 26px;
-                min-width: 55px;
             }
             
             .question-text {
@@ -815,17 +800,10 @@
                 padding: 15px;
             }
             
-            .controls-top button {
+            .controls-row button {
                 padding: 8px 10px;
                 font-size: 0.85em;
                 min-height: 36px;
-            }
-            
-            .controls-bottom button {
-                padding: 8px 10px;
-                font-size: 0.85em;
-                min-height: 38px;
-                min-width: 80px;
             }
             
             .participants-section {
@@ -900,14 +878,25 @@
 
         <!-- AUDIT CONTENT -->
         <div id="auditContent" class="audit-content">
-            <!-- EINE ZEILE FÜR ALLE BUTTONS -->
-            <div class="controls-single-row">
+            <!-- ERSTE ZEILE FÜR BUTTONS -->
+            <div class="controls-row">
                 <button class="btn-back" id="backBtn">← Zurück</button>
                 <button class="btn-report" id="reportBtn">📋 Bericht</button>
                 <button class="btn-danger" id="resetBtn">🗑️ Reset</button>
                 <button class="btn-info" id="evaluationBtn">📊 Auswertung</button>
-                <button class="btn-desktop" id="toggleViewBtn">🖥️ Desktop</button>
             </div>
+            
+            <!-- ZWEITE ZEILE FÜR BUTTONS -->
+            <div class="controls-row">
+                <button class="btn-desktop" id="toggleViewBtn">🖥️ Desktop</button>
+                <button class="btn-export" onclick="exportSingleFile()" title="Audit als JSON exportieren">📤 Export</button>
+                <button class="btn-import" onclick="document.getElementById('fileInput').click()" title="Audit aus JSON importieren">📥 Import</button>
+                <button class="btn-success" onclick="exportWithImagesSeparate()" title="Export mit separaten Bildern">🖼️ Export+Bilder</button>
+                <button class="btn-warning" onclick="printAudit()" title="Direkt drucken">🖨️ Drucken</button>
+            </div>
+            
+            <!-- Hidden File Input für Import -->
+            <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="loadData(event)">
 
             <!-- Desktop Teilnehmer -->
             <div class="participants-section desktop-view">
@@ -1287,8 +1276,6 @@
             loadAllAuditData();
             updateAuditProgressDisplays();
         }
-        // FÜGE DIESEN CODE AN DEN ANFANG DEINES BEREITS EXISTIERENDEN SKRIPTS (nach Zeile ~1300):
-        // (Suche nach: "=== NEUE BERICHT-FUNKTIONEN ===" und füge DAVOR ein)
 
         // 1. Definiere die einfachen Funktionen
         function closeReport() {
@@ -1301,26 +1288,6 @@
                 reportFrame.contentWindow.print();
             }
         }
-
-        // 2. Setze Event-Listener für die Buttons - DAS IST DAS WICHTIGSTE!
-        document.addEventListener('DOMContentLoaded', function() {
-            // Diese Funktion wird ausgeführt, wenn auf die Buttons geklickt wird
-            document.addEventListener('click', function(event) {
-                // Schließen-Button
-                if (event.target.classList.contains('report-modal-close')) {
-                    closeReport();
-                    event.stopPropagation();
-                }
-                
-                // Drucken-Button
-                if (event.target.classList.contains('report-modal-print')) {
-                    printReport();
-                    event.stopPropagation();
-                }
-            });
-        });
-
-        // 3. Ändere die generateReport() Funktion nicht - sie bleibt wie sie ist
 
         // === NEUE BERICHT-FUNKTIONEN ===
         function generateReport() {
@@ -1912,6 +1879,25 @@
                         border-right: 1pt solid #ddd;
                         color: #003865;
                         height: 8mm;
+                    }// Füge dies im Style-Bereich direkt nach der .questions-table th Definition ein:
+
+                    /* SPEZIFISCHE KORREKTUR FÜR MOBILE TABELLEN-HEADER */
+                    @media screen and (max-width: 768px), (max-device-width: 768px) {
+                        .questions-table th {
+                            font-size: 9pt !important;
+                            line-height: 1.1 !important;
+                            -webkit-text-size-adjust: none !important;
+                            text-size-adjust: none !important;
+                            font-weight: 600 !important; /* Statt bold für bessere Kontrolle */
+                        }
+                    }
+
+                    /* Für iOS Safari spezifisch */
+                    @supports (-webkit-touch-callout: none) {
+                        .questions-table th {
+                            font-size: 9pt !important;
+                            -webkit-text-size-adjust: none !important;
+                        }
                     }
                     
                     .questions-table td {
@@ -3434,8 +3420,6 @@
                     imageStorage = currentAuditData.images || {};
                     
                     localStorage.setItem(`zfpAuditReview_${auditType}`, JSON.stringify(currentAuditData));
-//                      ^^^^^^^^^^^
-//                  EINZIGARTIGES PRÄFIX
                     
                     renderAuditSections();
                     setupSectionHeaders();
