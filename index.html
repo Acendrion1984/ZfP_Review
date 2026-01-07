@@ -234,63 +234,6 @@
             transform: translateY(-1px);
         }
 
-        /* === BERICHT-MODAL === */
-        .report-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--modal-bg);
-            z-index: 10000;
-            overflow: auto;
-        }
-        
-        .report-modal-content {
-            background: var(--modal-content-bg);
-            margin: 20px auto;
-            width: 210mm;
-            min-height: 297mm;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            position: relative;
-            transition: background-color 0.3s ease;
-        }
-        
-        .report-modal-close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: var(--btn-danger);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-size: 20px;
-            cursor: pointer;
-            z-index: 10001;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-        
-        .report-modal-print {
-            position: absolute;
-            top: 10px;
-            right: 50px;
-            background: var(--btn-export);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            font-size: 14px;
-            cursor: pointer;
-            z-index: 10001;
-            transition: background-color 0.3s ease;
-        }
 
         /* === DRUCK-STYLES FÜR DEN BERICHT === */
         @media print {
@@ -1286,14 +1229,6 @@
         </footer>
     </div>
 
-    <!-- === BERICHT-MODAL === -->
-    <div id="reportModal" class="report-modal">
-        <div class="report-modal-content">
-            <button class="report-modal-close" onclick="closeReport()">×</button>
-            <button class="report-modal-print" onclick="printReport()">🖨️ Drucken</button>
-            <iframe id="reportFrame" title="Auditbericht"></iframe>
-        </div>
-    </div>
 
     <script>
         // === DARK MODE DETECTION AND INITIALIZATION ===
@@ -1691,7 +1626,6 @@
             }
         }
 
-        // === NEUE BERICHT-FUNKTIONEN ===
         function generateReport() {
             if (!currentAuditType || !currentAuditData) {
                 alert("Bitte zuerst ein Audit auswählen und ausfüllen!");
@@ -1701,15 +1635,23 @@
             saveCurrentAuditData();
             
             const reportHtml = createReportHTML();
-            const reportFrame = document.getElementById('reportFrame');
-            const reportModal = document.getElementById('reportModal');
             
-            reportFrame.srcdoc = reportHtml;
-            reportModal.style.display = 'block';
+            // Erstelle ein neues Fenster für den Druck
+            const printWindow = window.open('', '_blank');
             
-            reportFrame.onload = function() {
-                reportFrame.style.height = 'calc(100vh - 40px)';
-            };
+            // Schreibe den HTML-Inhalt in das neue Fenster
+            printWindow.document.open();
+            printWindow.document.write(reportHtml);
+            printWindow.document.close();
+            
+            // Warte kurz bis alles geladen ist und öffne dann den Druckdialog
+            setTimeout(() => {
+                printWindow.focus();
+                printWindow.print();
+                
+                // Optional: Fenster nach dem Druck schließen
+                // setTimeout(() => printWindow.close(), 1000);
+            }, 500);
         }
 
         // UPDATED: Bericht mit integrierter Auswertung in der Zusammenfassung
