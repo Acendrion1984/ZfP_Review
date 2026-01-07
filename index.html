@@ -5,41 +5,191 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZfP Audit-Checkliste - Schaeffler</title>
     <style>
-        /* === ALLE EXISTIERENDEN STYLES BEIBEHALTEN === */
+        /* === DARK MODE VARIABLEN === */
+        :root {
+            /* Light Mode Variablen */
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #7f8c8d;
+            --text-tertiary: #2c3e50;
+            --border-color: #bdc3c7;
+            --border-light: #ecf0f1;
+            --shadow-color: rgba(0,0,0,0.1);
+            
+            /* Header */
+            --header-border: #2c3e50;
+            --header-bg: #34495e;
+            
+            /* Buttons */
+            --btn-back: #7f8c8d;
+            --btn-report: #8e44ad;
+            --btn-danger: #e74c3c;
+            --btn-info: #17a2b8;
+            --btn-desktop: #f39c12;
+            --btn-success: #27ae60;
+            --btn-warning: #f39c12;
+            --btn-export: #3498db;
+            --btn-import: #9b59b6;
+            
+            /* Audit Buttons */
+            --audit-et: #3498db;
+            --audit-mt: #e74c3c;
+            --audit-ne: #2ecc71;
+            --audit-ut: #9b59b6;
+            
+            /* Progress */
+            --progress-bg: #ecf0f1;
+            --progress-100: #27ae60;
+            --progress-75: #2ecc71;
+            --progress-50: #f39c12;
+            --progress-25: #e67e22;
+            --progress-0: #e74c3c;
+            
+            /* Questions */
+            --question-border: #3498db;
+            --question-bg: #f8f9fa;
+            --points-0: #e74c3c;
+            --points-2: #e67e22;
+            --points-4: #f39c12;
+            --points-8: #2ecc71;
+            --points-10: #27ae60;
+            --points-na: #95a5a6;
+            
+            /* Deviation */
+            --deviation-bg: #fff3f3;
+            --deviation-border: #e74c3c;
+            
+            /* Input Fields */
+            --input-bg: #ffffff;
+            --input-border: #ddd;
+            --input-text: #333;
+            
+            /* Report Modal */
+            --modal-bg: rgba(0,0,0,0.8);
+            --modal-content-bg: #ffffff;
+            
+            /* Status Indicators */
+            --status-ok: #27ae60;
+            --status-nok: #e74c3c;
+            --status-na: #95a5a6;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Dark Mode Variablen */
+                --bg-primary: #121212;
+                --bg-secondary: #1e1e1e;
+                --bg-tertiary: #2d2d2d;
+                --text-primary: #e0e0e0;
+                --text-secondary: #a0a0a0;
+                --text-tertiary: #3498db;
+                --border-color: #444444;
+                --border-light: #333333;
+                --shadow-color: rgba(0,0,0,0.3);
+                
+                /* Header */
+                --header-border: #3498db;
+                --header-bg: #2c3e50;
+                
+                /* Buttons - Darker versions */
+                --btn-back: #5d6d7e;
+                --btn-report: #6c3483;
+                --btn-danger: #c0392b;
+                --btn-info: #117a8b;
+                --btn-desktop: #b9770e;
+                --btn-success: #229954;
+                --btn-warning: #b9770e;
+                --btn-export: #2874a6;
+                --btn-import: #7d3c98;
+                
+                /* Audit Buttons - Darker */
+                --audit-et: #2874a6;
+                --audit-mt: #c0392b;
+                --audit-ne: #239b56;
+                --audit-ut: #7d3c98;
+                
+                /* Progress */
+                --progress-bg: #34495e;
+                --progress-100: #27ae60;
+                --progress-75: #2ecc71;
+                --progress-50: #f39c12;
+                --progress-25: #e67e22;
+                --progress-0: #c0392b;
+                
+                /* Questions */
+                --question-border: #3498db;
+                --question-bg: #2d2d2d;
+                --points-0: #e74c3c;
+                --points-2: #e67e22;
+                --points-4: #f39c12;
+                --points-8: #2ecc71;
+                --points-10: #27ae60;
+                --points-na: #7f8c8d;
+                
+                /* Deviation */
+                --deviation-bg: #3a1f1f;
+                --deviation-border: #c0392b;
+                
+                /* Input Fields */
+                --input-bg: #2d2d2d;
+                --input-border: #444444;
+                --input-text: #e0e0e0;
+                
+                /* Report Modal */
+                --modal-bg: rgba(0,0,0,0.9);
+                --modal-content-bg: #1e1e1e;
+                
+                /* Status Indicators */
+                --status-ok: #27ae60;
+                --status-nok: #e74c3c;
+                --status-na: #7f8c8d;
+            }
+        }
+        
+        /* === ALLE EXISTIERENDEN STYLES MIT VARIABLEN === */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.4;
-            color: #333;
-            background-color: #f5f5f5;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
             padding: 6px;
             font-size: 14px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            background: var(--bg-secondary);
             padding: 10px;
             border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px var(--shadow-color);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
+        
         header {
             text-align: center;
             margin-bottom: 12px;
             padding-bottom: 8px;
-            border-bottom: 2px solid #2c3e50;
+            border-bottom: 2px solid var(--header-border);
         }
+        
         h1 {
-            color: #2c3e50;
+            color: var(--text-tertiary);
             margin-bottom: 4px;
             font-size: 1.3em;
         }
+        
         .subtitle {
-            color: #7f8c8d;
+            color: var(--text-secondary);
             font-size: 0.9em;
             margin-bottom: 8px;
         }
@@ -52,6 +202,7 @@
             flex-wrap: nowrap;
             justify-content: space-between;
         }
+        
         .controls-row button {
             padding: 5px 6px;
             border: none;
@@ -65,19 +216,25 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: all 0.2s ease;
         }
-        .btn-back { background: #7f8c8d; color: white; }
-        .btn-report { background: #8e44ad; color: white; }
-        .btn-danger { background: #e74c3c; color: white; }
-        .btn-info { background: #17a2b8; color: white; }
-        .btn-desktop { background: #f39c12; color: white; }
-        .btn-success { background: #27ae60; color: white; }
-        .btn-warning { background: #f39c12; color: white; }
-        .btn-export { background: #3498db; color: white; }
-        .btn-import { background: #9b59b6; color: white; }
-        button:hover { opacity: 0.9; }
+        
+        .btn-back { background: var(--btn-back); color: white; }
+        .btn-report { background: var(--btn-report); color: white; }
+        .btn-danger { background: var(--btn-danger); color: white; }
+        .btn-info { background: var(--btn-info); color: white; }
+        .btn-desktop { background: var(--btn-desktop); color: white; }
+        .btn-success { background: var(--btn-success); color: white; }
+        .btn-warning { background: var(--btn-warning); color: white; }
+        .btn-export { background: var(--btn-export); color: white; }
+        .btn-import { background: var(--btn-import); color: white; }
+        
+        button:hover { 
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
 
-        /* === BERICHT-MODAL (Neu) === */
+        /* === BERICHT-MODAL === */
         .report-modal {
             display: none;
             position: fixed;
@@ -85,26 +242,27 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: var(--modal-bg);
             z-index: 10000;
             overflow: auto;
         }
         
         .report-modal-content {
-            background: white;
+            background: var(--modal-content-bg);
             margin: 20px auto;
-            width: 210mm;  /* Feste A4 Breite */
+            width: 210mm;
             min-height: 297mm;
             border-radius: 5px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             position: relative;
+            transition: background-color 0.3s ease;
         }
         
         .report-modal-close {
             position: absolute;
             top: 10px;
             right: 15px;
-            background: #e74c3c;
+            background: var(--btn-danger);
             color: white;
             border: none;
             border-radius: 50%;
@@ -116,13 +274,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.3s ease;
         }
         
         .report-modal-print {
             position: absolute;
             top: 10px;
             right: 50px;
-            background: #3498db;
+            background: var(--btn-export);
             color: white;
             border: none;
             border-radius: 4px;
@@ -130,13 +289,7 @@
             font-size: 14px;
             cursor: pointer;
             z-index: 10001;
-        }
-        
-        .report-modal iframe {
-            width: 100%;
-            height: calc(100vh - 1px);
-            border: none;
-            border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
 
         /* === DRUCK-STYLES FÜR DEN BERICHT === */
@@ -157,25 +310,28 @@
             }
         }
 
-        /* === REST DER EXISTIERENDEN STYLES (unverändert) === */
+        /* === REST DER EXISTIERENDEN STYLES === */
         .audit-selection {
             text-align: center;
             margin: 15px 0;
         }
+        
         .audit-selection h2 {
-            color: #2c3e50;
+            color: var(--text-tertiary);
             margin-bottom: 12px;
             font-size: 1.1em;
         }
+        
         .audit-buttons {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 8px;
             margin-bottom: 15px;
         }
+        
         .audit-btn {
             padding: 12px 8px;
-            background: #3498db;
+            background: var(--audit-et);
             color: white;
             border: none;
             border-radius: 5px;
@@ -189,18 +345,22 @@
             justify-content: center;
             min-height: 80px;
         }
+        
         .audit-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
-        .audit-btn.wirbelstrom { background: #3498db; }
-        .audit-btn.magnetpulver { background: #e74c3c; }
-        .audit-btn.nital { background: #2ecc71; }
-        .audit-btn.ultraschall { background: #9b59b6; }
+        
+        .audit-btn.wirbelstrom { background: var(--audit-et); }
+        .audit-btn.magnetpulver { background: var(--audit-mt); }
+        .audit-btn.nital { background: var(--audit-ne); }
+        .audit-btn.ultraschall { background: var(--audit-ut); }
+        
         .audit-btn .btn-icon {
             font-size: 1.6em;
             margin-bottom: 6px;
         }
+        
         .audit-btn .btn-progress {
             margin-top: 4px;
             font-size: 0.7em;
@@ -211,52 +371,64 @@
         }
 
         .participants-section {
-            background: #f8f9fa;
-            border: 1px solid #3498db;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--btn-export);
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 10px;
+            transition: all 0.3s ease;
         }
+        
         .participants-section h3 {
-            color: #2c3e50;
+            color: var(--text-tertiary);
             margin-bottom: 8px;
             text-align: center;
             font-size: 0.9em;
         }
+        
         .participants-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             margin-bottom: 8px;
         }
+        
         .participant-group {
-            background: white;
+            background: var(--bg-secondary);
             padding: 8px;
             border-radius: 4px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-light);
+            transition: background-color 0.3s ease;
         }
+        
         .participant-group h4 {
-            color: #2c3e50;
+            color: var(--text-tertiary);
             margin-bottom: 5px;
-            border-bottom: 1px solid #ecf0f1;
+            border-bottom: 1px solid var(--border-light);
             padding-bottom: 3px;
             font-size: 0.8em;
         }
+        
         .participant-input-container {
             display: flex;
             gap: 4px;
             margin-bottom: 4px;
         }
+        
         .participant-input {
             flex: 1;
             padding: 4px 5px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--input-border);
             border-radius: 3px;
             font-family: inherit;
             font-size: 0.8em;
+            background: var(--input-bg);
+            color: var(--input-text);
+            transition: all 0.3s ease;
         }
+        
         .add-participant {
-            background: #27ae60;
+            background: var(--btn-success);
             color: white;
             border: none;
             border-radius: 3px;
@@ -267,22 +439,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.3s ease;
         }
+        
         .participant-list {
             margin-top: 5px;
             max-height: 80px;
             overflow-y: auto;
             font-size: 0.75em;
         }
+        
         .participant-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 2px 0;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid var(--border-light);
         }
+        
         .remove-participant {
-            background: #e74c3c;
+            background: var(--btn-danger);
             color: white;
             border: none;
             padding: 1px 5px;
@@ -293,6 +469,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.3s ease;
         }
 
         .audit-status {
@@ -300,30 +477,33 @@
             justify-content: space-between;
             margin-bottom: 10px;
             font-size: 0.8em;
-            background: #f8f9fa;
+            background: var(--bg-tertiary);
             padding: 6px;
             border-radius: 4px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-light);
             flex-wrap: wrap;
         }
+        
         .audit-status span {
             flex: 1;
             text-align: center;
             min-width: 100px;
             margin: 2px 0;
         }
+        
         .audit-progress-container {
             margin: 10px 0;
-            background: #ecf0f1;
+            background: var(--progress-bg);
             border-radius: 5px;
             height: 10px;
             overflow: hidden;
         }
+        
         .audit-progress-bar {
             height: 100%;
-            background: #27ae60;
+            background: var(--progress-100);
             border-radius: 5px;
-            transition: width 0.3s ease;
+            transition: width 0.3s ease, background-color 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -334,36 +514,45 @@
 
         .section {
             margin-bottom: 10px;
-            border: 1px solid #bdc3c7;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             overflow: hidden;
+            transition: border-color 0.3s ease;
         }
+        
         .section-header {
-            background: #34495e;
+            background: var(--header-bg);
             color: white;
             padding: 8px 10px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background-color 0.3s ease;
         }
+        
         .section-header:hover {
-            background: #2c3e50;
+            background: var(--header-border);
         }
+        
         .section-header h2 { 
             margin: 0; 
             font-size: 1em;
         }
+        
         .section-header span {
             transition: transform 0.3s;
         }
+        
         .section.expanded .section-header span {
             transform: rotate(90deg);
         }
+        
         .section-content {
             padding: 8px;
             display: none;
         }
+        
         .section.expanded .section-content { 
             display: block; 
         }
@@ -371,69 +560,120 @@
         .question {
             margin-bottom: 8px;
             padding: 10px;
-            background: #f8f9fa;
+            background: var(--question-bg);
             border-radius: 4px;
-            border-left: 3px solid #3498db;
+            border-left: 3px solid var(--question-border);
+            transition: background-color 0.3s ease;
         }
+        
         .question-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 8px;
         }
+        
         .question-text { 
             flex: 1; 
             font-weight: 500;
             font-size: 0.95em;
             line-height: 1.4;
         }
+        
         .question-id {
-            background: #3498db;
+            background: var(--question-border);
             color: white;
             padding: 2px 6px;
             border-radius: 3px;
             font-size: 0.75em;
             margin-left: 8px;
             white-space: nowrap;
+            transition: background-color 0.3s ease;
         }
+        
         .points-options {
             display: flex;
             gap: 5px;
             margin-bottom: 8px;
             flex-wrap: wrap;
         }
+        
         .points-option {
             flex: 1;
             min-width: 40px;
             padding: 6px 2px;
-            border: 2px solid #ddd;
+            border: 2px solid var(--border-color);
             border-radius: 3px;
-            background: white;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             cursor: pointer;
             text-align: center;
             font-weight: bold;
             transition: all 0.2s;
             font-size: 0.9em;
         }
+        
         .points-option:hover {
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         .points-option.selected {
-            border-color: #3498db;
-            background: #3498db;
+            border-color: var(--question-border);
+            background: var(--question-border);
             color: white;
         }
-        .points-option[data-points="0"] { border-color: #e74c3c; color: #e74c3c; }
-        .points-option[data-points="0"].selected { background: #e74c3c; color: white; }
-        .points-option[data-points="2"] { border-color: #e67e22; color: #e67e22; }
-        .points-option[data-points="2"].selected { background: #e67e22; color: white; }
-        .points-option[data-points="4"] { border-color: #f1c40f; color: #f1c40f; }
-        .points-option[data-points="4"].selected { background: #f1c40f; color: #333; }
-        .points-option[data-points="8"] { border-color: #2ecc71; color: #2ecc71; }
-        .points-option[data-points="8"].selected { background: #2ecc71; color: white; }
-        .points-option[data-points="10"] { border-color: #27ae60; color: #27ae60; }
-        .points-option[data-points="10"].selected { background: #27ae60; color: white; }
+        
+        .points-option[data-points="0"] { 
+            border-color: var(--points-0); 
+            color: var(--points-0); 
+        }
+        
+        .points-option[data-points="0"].selected { 
+            background: var(--points-0); 
+            color: white; 
+        }
+        
+        .points-option[data-points="2"] { 
+            border-color: var(--points-2); 
+            color: var(--points-2); 
+        }
+        
+        .points-option[data-points="2"].selected { 
+            background: var(--points-2); 
+            color: white; 
+        }
+        
+        .points-option[data-points="4"] { 
+            border-color: var(--points-4); 
+            color: var(--points-4); 
+        }
+        
+        .points-option[data-points="4"].selected { 
+            background: var(--points-4); 
+            color: #333; 
+        }
+        
+        .points-option[data-points="8"] { 
+            border-color: var(--points-8); 
+            color: var(--points-8); 
+        }
+        
+        .points-option[data-points="8"].selected { 
+            background: var(--points-8); 
+            color: white; 
+        }
+        
+        .points-option[data-points="10"] { 
+            border-color: var(--points-10); 
+            color: var(--points-10); 
+        }
+        
+        .points-option[data-points="10"].selected { 
+            background: var(--points-10); 
+            color: white; 
+        }
+        
         .points-display {
             font-size: 0.85em;
             font-weight: bold;
@@ -441,73 +681,94 @@
             text-align: center;
             padding: 6px;
             border-radius: 3px;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
         }
+        
         .evidence {
             width: 100%;
             padding: 6px 8px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--input-border);
             border-radius: 3px;
             resize: vertical;
             min-height: 40px;
             font-family: inherit;
             margin-bottom: 8px;
             font-size: 0.85em;
+            background: var(--input-bg);
+            color: var(--input-text);
+            transition: all 0.3s ease;
         }
+        
         .deviation-section {
             display: none;
             margin-top: 8px;
             padding: 8px;
-            background-color: #fff3f3;
+            background-color: var(--deviation-bg);
             border-radius: 3px;
-            border-left: 3px solid #e74c3c;
+            border-left: 3px solid var(--deviation-border);
+            transition: background-color 0.3s ease;
         }
+        
         .deviation-section h4 { 
-            color: #c0392b; 
+            color: var(--deviation-border); 
             margin-bottom: 5px; 
             font-size: 0.85em;
         }
+        
         .deviation-field, .responsible-field {
             width: 100%;
             padding: 6px 8px;
-            border: 1px solid #e74c3c;
+            border: 1px solid var(--deviation-border);
             border-radius: 3px;
             resize: vertical;
             min-height: 40px;
             font-family: inherit;
             margin-bottom: 8px;
             font-size: 0.85em;
+            background: var(--input-bg);
+            color: var(--input-text);
+            transition: all 0.3s ease;
         }
+        
         .responsible-field {
-            border-color: #ddd;
+            border-color: var(--input-border);
             min-height: auto;
         }
-        .image-upload { margin-bottom: 8px; }
+        
+        .image-upload { 
+            margin-bottom: 8px; 
+        }
+        
         .file-input-wrapper {
             position: relative;
             display: inline-block;
             margin-top: 5px;
         }
+        
         .file-input-label {
             display: inline-block;
             padding: 5px 8px;
-            background: #3498db;
+            background: var(--question-border);
             color: white;
             border-radius: 3px;
             cursor: pointer;
             font-size: 0.8em;
+            transition: background-color 0.3s ease;
         }
+        
         .image-preview {
             max-width: 100%;
             max-height: 150px;
             margin-top: 8px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             border-radius: 3px;
             display: none;
         }
+        
         .remove-image {
-            background: #e74c3c;
+            background: var(--btn-danger);
             color: white;
             border: none;
             padding: 3px 6px;
@@ -515,45 +776,57 @@
             cursor: pointer;
             margin-top: 5px;
             font-size: 0.75em;
+            transition: background-color 0.3s ease;
         }
 
         .mobile-view .participants-section {
             padding: 8px;
             margin-bottom: 8px;
         }
+        
         .mobile-participant-type {
             display: flex;
             gap: 4px;
             margin-bottom: 4px;
         }
+        
         .mobile-participant-type-btn {
             flex: 1;
             padding: 4px;
-            border: 1px solid #3498db;
+            border: 1px solid var(--question-border);
             border-radius: 3px;
-            background: white;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             cursor: pointer;
             text-align: center;
             font-size: 0.7em;
+            transition: all 0.3s ease;
         }
+        
         .mobile-participant-type-btn.active {
-            background: #3498db;
+            background: var(--question-border);
             color: white;
         }
+        
         .mobile-participant-input-container {
             display: flex;
             gap: 4px;
             margin-bottom: 6px;
         }
+        
         .mobile-participant-input {
             flex: 1;
             padding: 4px 5px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--input-border);
             border-radius: 3px;
             font-size: 0.8em;
+            background: var(--input-bg);
+            color: var(--input-text);
+            transition: all 0.3s ease;
         }
+        
         .mobile-add-participant {
-            background: #27ae60;
+            background: var(--btn-success);
             color: white;
             border: none;
             padding: 4px 8px;
@@ -564,6 +837,7 @@
             align-items: center;
             justify-content: center;
             width: 30px;
+            transition: background-color 0.3s ease;
         }
 
         .mobile-nav {
@@ -572,16 +846,19 @@
             margin-top: 10px;
             align-items: center;
         }
+        
         .mobile-nav button {
             padding: 6px 10px;
             font-size: 0.8em;
             min-width: 80px;
             border: none;
             border-radius: 4px;
-            background: #95a5a6;
+            background: var(--btn-back);
             color: white;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+        
         #mobileCounter {
             font-size: 0.85em;
             padding: 0 10px;
@@ -595,6 +872,7 @@
             gap: 3px;
             margin-bottom: 8px;
         }
+        
         .section-btn { 
             flex: 1; 
             min-width: 60px; 
@@ -606,23 +884,30 @@
             text-overflow: ellipsis;
             border: none;
             border-radius: 3px;
-            background: #3498db;
+            background: var(--question-border);
             color: white;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         .evaluation {
             display: none;
             margin-top: 12px;
-            border: 1px solid #bdc3c7;
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             padding: 10px;
+            background: var(--bg-secondary);
+            transition: background-color 0.3s ease;
         }
-        .evaluation.active { display: block; }
+        
+        .evaluation.active { 
+            display: block; 
+        }
+        
         .evaluation h2 {
             font-size: 1em;
             margin-bottom: 8px;
-            color: #2c3e50;
+            color: var(--text-tertiary);
         }
 
         .desktop-view { display: block; }
@@ -636,20 +921,45 @@
             text-align: center;
             margin-top: 12px;
             padding-top: 8px;
-            border-top: 1px solid #ecf0f1;
-            color: #7f8c8d;
+            border-top: 1px solid var(--border-light);
+            color: var(--text-secondary);
             font-size: 0.85em;
         }
+        
         .creator-info {
             font-weight: bold;
-            color: #2c3e50;
+            color: var(--text-tertiary);
             margin-top: 4px;
             font-size: 0.9em;
         }
+        
         .version-info {
             margin-top: 2px;
             font-size: 0.8em;
-            color: #7f8c8d;
+            color: var(--text-secondary);
+        }
+
+        /* Dark Mode Optimierungen */
+        @media (prefers-color-scheme: dark) {
+            .points-option[data-points="4"].selected {
+                color: #1a1a1a !important;
+            }
+            
+            .file-input-wrapper input[type="file"] {
+                color: var(--text-primary);
+            }
+            
+            .image-preview {
+                background: #1a1a1a;
+            }
+            
+            .remove-image:hover {
+                background: #e74c3c;
+            }
+            
+            .mobile-participant-type-btn {
+                border-color: var(--border-color);
+            }
         }
 
         @media (max-width: 768px) {
@@ -985,15 +1295,107 @@
         </div>
     </div>
 
-
     <script>
+        // === DARK MODE DETECTION AND INITIALIZATION ===
+        function initializeDarkMode() {
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            // Update CSS variables based on current scheme
+            function updateColorScheme(e) {
+                const isDark = e.matches;
+                document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+                
+                // Update progress bar colors based on theme
+                updateProgressBarColor();
+            }
+            
+            // Set initial theme
+            updateColorScheme(prefersDarkScheme);
+            
+            // Listen for theme changes
+            prefersDarkScheme.addListener(updateColorScheme);
+            
+            // Add theme indicator to body for easier debugging
+            document.body.classList.add(prefersDarkScheme.matches ? 'dark-mode' : 'light-mode');
+        }
+        
+        function updateProgressBarColor() {
+            const progressBar = document.getElementById('auditProgressBar');
+            if (!progressBar) return;
+            
+            const width = parseInt(progressBar.style.width) || 0;
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (width === 100) {
+                progressBar.style.backgroundColor = 'var(--progress-100)';
+            } else if (width >= 75) {
+                progressBar.style.backgroundColor = 'var(--progress-75)';
+            } else if (width >= 50) {
+                progressBar.style.backgroundColor = 'var(--progress-50)';
+            } else if (width >= 25) {
+                progressBar.style.backgroundColor = 'var(--progress-25)';
+            } else {
+                progressBar.style.backgroundColor = 'var(--progress-0)';
+            }
+        }
+        
+        // Modified updateCurrentAuditProgress function
+        function updateCurrentAuditProgress() {
+            if (!allQuestions.length) return;
+            
+            const total = allQuestions.length;
+            const answered = allQuestions.filter(q => q.points !== null).length;
+            const points = allQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
+            const maxPoints = total * 10;
+            const percent = total > 0 ? Math.round((answered / total) * 100) : 0;
+            
+            document.getElementById('answeredCount').textContent = answered;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('progressText').textContent = `${percent}%`;
+            document.getElementById('pointsTotal').textContent = points;
+            document.getElementById('pointsMax').textContent = maxPoints;
+            
+            const progressBar = document.getElementById('auditProgressBar');
+            progressBar.style.width = `${percent}%`;
+            progressBar.textContent = `${percent}%`;
+            
+            // Use CSS variables for progress bar color
+            if (percent === 100) {
+                progressBar.style.backgroundColor = 'var(--progress-100)';
+            } else if (percent >= 75) {
+                progressBar.style.backgroundColor = 'var(--progress-75)';
+            } else if (percent >= 50) {
+                progressBar.style.backgroundColor = 'var(--progress-50)';
+            } else if (percent >= 25) {
+                progressBar.style.backgroundColor = 'var(--progress-25)';
+            } else {
+                progressBar.style.backgroundColor = 'var(--progress-0)';
+            }
+            
+            if (currentAuditType) {
+                updateAuditProgressDisplays();
+            }
+        }
+        
+        // Modified getPointsColor function to use CSS variables
+        function getPointsColor(points) {
+            const colors = {
+                0: "var(--points-0)",
+                2: "var(--points-2)", 
+                4: "var(--points-4)",
+                8: "var(--points-8)",
+                10: "var(--points-10)"
+            };
+            return colors[points] || "var(--points-na)";
+        }
+
         // === KONSTANTEN UND DATENSTRUKTUREN ===
         const AUDIT_TYPES = {
             wirbelstrom: {
                 id: 'wirbelstrom',
                 title: 'Wirbelstromprüfung',
                 short: 'ET',
-                color: '#3498db',
+                color: 'var(--audit-et)',
                 icon: '⚡',
                 standards: 'S245006-1 / S245008-1 / S245007-1 / S245012'
             },
@@ -1001,7 +1403,7 @@
                 id: 'magnetpulver',
                 title: 'Magnetpulverprüfung',
                 short: 'MT',
-                color: '#e74c3c',
+                color: 'var(--audit-mt)',
                 icon: '🧲',
                 standards: 'S245008-2 / S245012'
             },
@@ -1009,7 +1411,7 @@
                 id: 'nital',
                 title: 'Nital-Ätzen',
                 short: 'NE',
-                color: '#2ecc71',
+                color: 'var(--audit-ne)',
                 icon: '🧪',
                 standards: 'S245013-1 / S245012-1'
             },
@@ -1017,13 +1419,13 @@
                 id: 'ultraschall',
                 title: 'Ultraschallprüfung',
                 short: 'UT',
-                color: '#9b59b6',
+                color: 'var(--audit-ut)',
                 icon: '📡',
                 standards: 'S245009-3 / S245012'
             }
         };
 
-        // VOLLSTÄNDIGE AUDIT-DATEN
+        // VOLLSTÄNDIGE AUDIT-DATEN (bleibt unverändert)
         const AUDIT_DATA = {
             wirbelstrom: [
                 {
@@ -1267,6 +1669,7 @@
 
         // === INITIALISIERUNG ===
         document.addEventListener('DOMContentLoaded', function() {
+            initializeDarkMode(); // Dark Mode initialisieren
             initializeApp();
             setupEventListeners();
         });
@@ -1878,8 +2281,8 @@
                         border-right: 1pt solid #ddd;
                         color: #003865;
                         height: 8mm;
-                    }// Füge dies im Style-Bereich direkt nach der .questions-table th Definition ein:
-
+                    }
+                    
                     /* SPEZIFISCHE KORREKTUR FÜR MOBILE TABELLEN-HEADER */
                     @media screen and (max-width: 768px), (max-device-width: 768px) {
                         .questions-table th {
@@ -2487,34 +2890,6 @@
             return { answered, total, percent, points, maxPoints };
         }
 
-        function updateCurrentAuditProgress() {
-            if (!allQuestions.length) return;
-            
-            const total = allQuestions.length;
-            const answered = allQuestions.filter(q => q.points !== null).length;
-            const points = allQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
-            const maxPoints = total * 10;
-            const percent = total > 0 ? Math.round((answered / total) * 100) : 0;
-            
-            document.getElementById('answeredCount').textContent = answered;
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('progressText').textContent = `${percent}%`;
-            document.getElementById('pointsTotal').textContent = points;
-            document.getElementById('pointsMax').textContent = maxPoints;
-            
-            const progressBar = document.getElementById('auditProgressBar');
-            progressBar.style.width = `${percent}%`;
-            progressBar.textContent = `${percent}%`;
-            progressBar.style.backgroundColor = percent === 100 ? '#27ae60' : 
-                                              percent >= 75 ? '#2ecc71' :
-                                              percent >= 50 ? '#f39c12' :
-                                              percent >= 25 ? '#e67e22' : '#e74c3c';
-            
-            if (currentAuditType) {
-                updateAuditProgressDisplays();
-            }
-        }
-
         function renderAuditSections() {
             const container = document.getElementById('auditSections');
             container.innerHTML = '';
@@ -2693,17 +3068,6 @@
                 evidence: "",
                 deviation: { text: "", responsible: "", hasImage: false }
             };
-        }
-
-        function getPointsColor(points) {
-            const colors = {
-                0: "#e74c3c",
-                2: "#e67e22", 
-                4: "#f39c12",
-                8: "#2ecc71",
-                10: "#27ae60"
-            };
-            return colors[points] || "#95a5a6";
         }
 
         function updateQuestionData(questionId, field, value) {
