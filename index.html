@@ -42,8 +42,10 @@
             --audit-mt: #e74c3c;
             --audit-ne: #2ecc71;
             --audit-ut: #9b59b6;
-            --audit-cloud: #f39c12;
-            --audit-deviations: #e74c3c;
+
+            /* Anforderung: dunkleres Orange/Rot für Cloud/Abweichungen */
+            --audit-cloud: #d35400;       /* vorher #f39c12 */
+            --audit-deviations: #c0392b;  /* vorher #e74c3c */
             
             /* Progress */
             --progress-bg: #ecf0f1;
@@ -82,6 +84,14 @@
             --status-ok: #27ae60;
             --status-nok: #e74c3c;
             --status-na: #95a5a6;
+
+            /* Glass-Tints  */
+            --audit-et-glass: #3498db;
+            --audit-mt-glass: #e74c3c;
+            --audit-ne-glass: #2ecc71;
+            --audit-ut-glass: #9b59b6;
+            --audit-cloud-glass: #d35400;       /* dunkleres Orange */
+            --audit-deviations-glass: #c0392b;  /* dunkleres Rot */
         }
         
         @media (prefers-color-scheme: dark) {
@@ -161,6 +171,14 @@
                 --status-ok: #27ae60;
                 --status-nok: #e74c3c;
                 --status-na: #7f8c8d;
+
+                /* Glass-Tints (Dark) */
+                --audit-et-glass: #2874a6E6;
+                --audit-mt-glass: #c0392bE6;
+                --audit-ne-glass: #239b56E6;
+                --audit-ut-glass: #7d3c98E6;
+                --audit-cloud-glass: #e67e22E6;
+                --audit-deviations-glass: #c0392bE6;
             }
         }
         
@@ -443,7 +461,7 @@
             width: 150px;
             min-width: 150px;
             max-width: 150px;
-            text-align: left;
+            text-align: left.
         }
 
         .deviations-table th:nth-child(4),
@@ -1157,7 +1175,6 @@
             background: var(--question-bg);
             border-radius: 4px;
             border-left: 3px solid var(--question-border);
-            transition: background-color 0.3s ease;
         }
         
         .question-header {
@@ -1182,7 +1199,6 @@
             font-size: 0.75em;
             margin-left: 8px;
             white-space: nowrap;
-            transition: background-color 0.3s ease;
         }
         
         .points-options {
@@ -1267,7 +1283,6 @@
             border-radius: 3px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border-light);
-            transition: all 0.3s ease;
         }
         
         .evidence {
@@ -1282,7 +1297,6 @@
             font-size: 0.85em;
             background: var(--input-bg);
             color: var(--input-text);
-            transition: all 0.3s ease;
         }
         
         .deviation-section {
@@ -1292,7 +1306,6 @@
             background-color: var(--deviation-bg);
             border-radius: 3px;
             border-left: 3px solid var(--deviation-border);
-            transition: background-color 0.3s ease;
         }
         
         .deviation-section h4 { 
@@ -1313,7 +1326,6 @@
             font-size: 0.85em;
             background: var(--input-bg);
             color: var(--input-text);
-            transition: all 0.3s ease;
         }
         
         .responsible-field {
@@ -1339,7 +1351,6 @@
             border-radius: 3px;
             cursor: pointer;
             font-size: 0.8em;
-            transition: background-color 0.3s ease;
         }
         
         .image-preview {
@@ -1360,7 +1371,6 @@
             cursor: pointer;
             margin-top: 5px;
             font-size: 0.75em;
-            transition: background-color 0.3s ease;
         }
 
         .mobile-view .participants-section {
@@ -1384,7 +1394,6 @@
             cursor: pointer;
             text-align: center;
             font-size: 0.7em;
-            transition: all 0.3s ease;
         }
         
         .mobile-participant-type-btn.active {
@@ -1406,7 +1415,6 @@
             font-size: 0.8em;
             background: var(--input-bg);
             color: var(--input-text);
-            transition: all 0.3s ease;
         }
         
         .mobile-add-participant {
@@ -1421,7 +1429,6 @@
             align-items: center;
             justify-content: center;
             width: 30px;
-            transition: background-color 0.3s ease;
         }
 
         .mobile-nav {
@@ -1440,7 +1447,6 @@
             background: var(--btn-back);
             color: white;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
         
         #mobileCounter {
@@ -1471,7 +1477,6 @@
             background: var(--question-border);
             color: white;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
         .evaluation {
@@ -1481,7 +1486,6 @@
             border-radius: 5px;
             padding: 10px;
             background: var(--bg-secondary);
-            transition: background-color 0.3s ease;
         }
         
         .evaluation.active { 
@@ -1527,27 +1531,6 @@
         @media (prefers-color-scheme: dark) {
             .points-option[data-points="4"].selected {
                 color: #1a1a1a !important;
-            }
-            
-            .file-input-wrapper input[type="file"] {
-                color: var(--text-primary);
-            }
-            
-            .image-preview {
-                background: #1a1a1a;
-            }
-            
-            .remove-image:hover {
-                background: #e74c3c;
-            }
-            
-            .mobile-participant-type-btn {
-                border-color: var(--border-color);
-            }
-            
-            .audit-btn.cloud,
-            .audit-btn.deviations {
-                background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(41, 128, 185, 0.3));
             }
         }
 
@@ -1720,6 +1703,139 @@
                 min-height: 45px;
             }
         }
+
+        /* === GLASS-EFFECT: ALLE 6 KACHELN (ET/MT/NE/UT + Cloud + Abweichungen) === */
+        .audit-buttons .audit-btn.glass {
+          position: relative;
+          color: #fff;
+          border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.35);
+          border-right-color: rgba(255,255,255,0.25);
+          border-bottom-color: rgba(255,255,255,0.25);
+          box-shadow:
+            0 8px 18px rgba(0,0,0,0.18),
+            inset 0 1px 0 rgba(255,255,255,0.25);
+          transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+          isolation: isolate;
+        }
+        .audit-buttons .audit-btn.wirbelstrom.glass {
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.01), rgba(255,255,255,0.08)),
+            linear-gradient(0deg, var(--audit-et-glass), var(--audit-et-glass));
+        }
+        .audit-buttons .audit-btn.magnetpulver.glass {
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.01), rgba(255,255,255,0.08)),
+            linear-gradient(0deg, var(--audit-mt-glass), var(--audit-mt-glass));
+        }
+        .audit-buttons .audit-btn.nital.glass {
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.01), rgba(255,255,255,0.08)),
+            linear-gradient(0deg, var(--audit-ne-glass), var(--audit-ne-glass));
+        }
+        .audit-buttons .audit-btn.ultraschall.glass {
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.01), rgba(255,255,255,0.08)),
+            linear-gradient(0deg, var(--audit-ut-glass), var(--audit-ut-glass));
+        }
+
+        .cloud-button-wrapper .audit-btn.cloud.glass,
+        .deviations-button-wrapper .audit-btn.deviations.glass {
+          position: relative;
+          color: #fff;
+          border-radius: 12px;
+          border: 1px solid rgba(255,255,255,0.1);
+          border-right-color: rgba(255,255,255,0.1);
+          border-bottom-color: rgba(255,255,255,0.1);
+          box-shadow:
+            0 8px 18px rgba(0,0,0,0.18),
+            inset 0 1px 0 rgba(255,255,255,0.25);
+          transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+          isolation: isolate;
+        }
+        .cloud-button-wrapper .audit-btn.cloud.glass {
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08)),
+            linear-gradient(0deg, var(--audit-cloud-glass), var(--audit-cloud-glass));
+        }
+        .deviations-button-wrapper .audit-btn.deviations.glass {
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08)),
+            linear-gradient(0deg, var(--audit-deviations-glass), var(--audit-deviations-glass));
+        }
+
+        .audit-buttons .audit-btn.glass::before,
+        .cloud-button-wrapper .audit-btn.cloud.glass::before,
+        .deviations-button-wrapper .audit-btn.deviations.glass::before {
+          content: "";
+          position: absolute;
+          inset: 2px 2px auto 2px;
+          height: 45%;
+          border-radius: 8px;
+          background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.15));
+          pointer-events: none;
+        }
+
+        .audit-buttons .audit-btn.glass:hover,
+        .cloud-button-wrapper .audit-btn.cloud.glass:hover,
+        .deviations-button-wrapper .audit-btn.deviations.glass:hover {
+          transform: translateY(-2px);
+          box-shadow:
+            0 10px 22px rgba(0,0,0,0.01),
+            inset 0 1px 0 rgba(255,255,255,0.01);
+        }
+        .audit-buttons .audit-btn.glass:active,
+        .cloud-button-wrapper .audit-btn.cloud.glass:active,
+        .deviations-button-wrapper .audit-btn.deviations.glass:active {
+          transform: translateY(0);
+          box-shadow:
+            0 6px 14px rgba(0,0,0,0.18),
+            inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+
+        .audit-buttons .audit-btn.glass .btn-icon,
+        .audit-buttons .audit-btn.glass span,
+        .audit-buttons .audit-btn.glass .btn-progress,
+        .cloud-button-wrapper .audit-btn.cloud.glass .btn-icon,
+        .cloud-button-wrapper .audit-btn.cloud.glass span,
+        .cloud-button-wrapper .audit-btn.cloud.glass .btn-progress,
+        .deviations-button-wrapper .audit-btn.deviations.glass .btn-icon,
+        .deviations-button-wrapper .audit-btn.deviations.glass span,
+        .deviations-button-wrapper .audit-btn.deviations.glass .btn-progress {
+          text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+        }
+        .audit-buttons .audit-btn.glass .btn-progress,
+        .cloud-button-wrapper .audit-btn.cloud.glass .btn-progress,
+        .deviations-button-wrapper .audit-btn.deviations.glass .btn-progress {
+          background: rgba(255,255,255,0.22);
+          border-radius: 999px;
+          padding: 2px 8px;
+        }
+
+        @supports ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+          .audit-buttons .audit-btn.glass,
+          .cloud-button-wrapper .audit-btn.cloud.glass,
+          .deviations-button-wrapper .audit-btn.deviations.glass {
+            backdrop-filter: blur(10px) saturate(140%);
+            -webkit-backdrop-filter: blur(10px) saturate(140%);
+          }
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .audit-buttons .audit-btn.glass,
+          .cloud-button-wrapper .audit-btn.cloud.glass,
+          .deviations-button-wrapper .audit-btn.deviations.glass {
+            border-color: rgba(255,255,255,0.28);
+            box-shadow:
+              0 8px 18px rgba(0,0,0,0.5),
+              inset 0 1px 0 rgba(255,255,255,0.08);
+          }
+          .audit-buttons .audit-btn.glass::before,
+          .cloud-button-wrapper .audit-btn.cloud.glass::before,
+          .deviations-button-wrapper .audit-btn.deviations.glass::before {
+            background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06));
+          }
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-YcsIPi8X4O6R2pPu8Q1V2VuJ28PSIP22sQ6rM9GKUvKBpU384j4Uo2nN1I6V7b1WJR1iZsZ/bxpJQXQ0xZbQ0g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
@@ -1736,7 +1852,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--border-light); padding-bottom: 15px;">
                     <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
                         <span style="font-size: 1.3em;">☁️</span>
-                        <span>Cloud-Audits</span>
+                        <span>abgeschlossene Audits</span>
                     </h3>
                     <button onclick="closeCloudModal()" style="background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--text-secondary); padding: 5px 10px; border-radius: 50%;">
                         ×
@@ -1837,22 +1953,22 @@
         <div id="auditSelection" class="audit-selection active">
             <h2>Audit-Verfahren auswählen:</h2>
             <div class="audit-buttons">
-                <button class="audit-btn wirbelstrom" data-audit="wirbelstrom">
+                <button class="audit-btn wirbelstrom glass" data-audit="wirbelstrom">
                     <div class="btn-icon">⚡</div>
                     <span>Wirbelstromprüfung</span>
                     <div class="btn-progress" id="wirbelstromProgress">0%</div>
                 </button>
-                <button class="audit-btn magnetpulver" data-audit="magnetpulver">
+                <button class="audit-btn magnetpulver glass" data-audit="magnetpulver">
                     <div class="btn-icon">🧲</div>
                     <span>Magnetpulverprüfung</span>
                     <div class="btn-progress" id="magnetpulverProgress">0%</div>
                 </button>
-                <button class="audit-btn nital" data-audit="nital">
+                <button class="audit-btn nital glass" data-audit="nital">
                     <div class="btn-icon">🧪</div>
                     <span>Nital-Ätzen</span>
                     <div class="btn-progress" id="nitalProgress">0%</div>
                 </button>
-                <button class="audit-btn ultraschall" data-audit="ultraschall">
+                <button class="audit-btn ultraschall glass" data-audit="ultraschall">
                     <div class="btn-icon">📡</div>
                     <span>Ultraschallprüfung</span>
                     <div class="btn-progress" id="ultraschallProgress">0%</div>
@@ -1860,15 +1976,15 @@
             </div>
             
             <div class="cloud-button-wrapper">
-                <button class="audit-btn cloud" onclick="openCloudModal()">
+                <button class="audit-btn cloud glass" onclick="openCloudModal()">
                     <div class="btn-icon">☁️</div>
-                    <span>Cloud-Audits</span>
+                    <span>abgeschlossene Audits</span>
                     <div class="btn-progress" id="cloudProgress">0 Audits</div>
                 </button>
             </div>
             
             <div class="deviations-button-wrapper">
-                <button class="audit-btn deviations" onclick="openDeviationsModal()">
+                <button class="audit-btn deviations glass" onclick="openDeviationsModal()">
                     <div class="btn-icon">⚠️</div>
                     <span>Abweichungen</span>
                     <div class="btn-progress" id="deviationsProgress">0</div>
@@ -1887,7 +2003,6 @@
                     <button class="btn-info" id="evaluationBtn">📊 Auswertung</button>
                     <button class="btn-desktop" id="toggleViewBtn">🖥️ Desktop</button>
                     <button class="btn-cloud" onclick="saveAuditToCloud()" title="In Cloud speichern">💾 Speichern</button>
-                    <button class="btn-pdf" onclick="saveAndGeneratePDF()" title="PDF in Cloud speichern">📄 PDF</button>
                 </div>
             </div>
 
@@ -2286,11 +2401,8 @@
         }
 
         // === ABWEICHUNGEN CLOUD-SYNCHRONISIERUNG ===
-        
         async function loadDeviationsFromCloud() {
             try {
-                console.log('Lade Abweichungen von Cloud...');
-                
                 const response = await fetch(
                     `${SUPABASE_URL}/rest/v1/deviations?select=*&order=updated_at.desc`,
                     {
@@ -2303,7 +2415,6 @@
                 
                 if (response.ok) {
                     const cloudDeviations = await response.json();
-                    console.log(`${cloudDeviations.length} Abweichungen von Cloud empfangen`);
                     
                     const savedDeviations = localStorage.getItem('zfpAuditDeviations');
                     let localDeviations = savedDeviations ? JSON.parse(savedDeviations) : [];
@@ -2349,12 +2460,7 @@
                     
                     deviations = mergedDeviations;
                     saveDeviations();
-                    
-                    console.log(`${mergedDeviations.length} Abweichungen nach Merge`);
                     updateDeviationsProgressDisplay();
-                    
-                } else {
-                    console.log('Keine Abweichungen in Cloud oder Fehler');
                 }
             } catch (error) {
                 console.error('Fehler beim Laden der Abweichungen:', error);
@@ -2363,19 +2469,13 @@
         
         async function syncDeviationsWithCloud() {
             try {
-                console.log('Starte komplette Synchronisierung...');
-                
                 await loadDeviationsFromCloud();
-                
                 const localDeviations = deviations.filter(d => !d.fromCloud);
                 
                 if (localDeviations.length > 0) {
-                    console.log(`Lade ${localDeviations.length} lokale Abweichungen hoch...`);
-                    
                     for (const deviation of localDeviations) {
                         await saveSingleDeviationToCloud(deviation);
                     }
-                    
                     alert(`✅ Synchronisierung abgeschlossen!\n\n${localDeviations.length} lokale Abweichungen hochgeladen.`);
                 } else {
                     alert('✅ Synchronisierung abgeschlossen!\n\nAlle Abweichungen sind bereits in der Cloud.');
@@ -2389,99 +2489,96 @@
             }
         }
         
-async function saveSingleDeviationToCloud(deviation) {
-  try {
-    // 1) Korrekte Audit-ID für die Cloud ermitteln (Cloud-ID > lokale Fallback)
-    const auditIdForCloud = deviation.audit_id || deviation.auditId; // audit_id (UUID) bevorzugen
-    if (!auditIdForCloud) {
-      throw new Error('Keine audit_id für Abweichung vorhanden');
-    }
+        async function saveSingleDeviationToCloud(deviation) {
+          try {
+            const auditIdForCloud = deviation.audit_id || deviation.auditId;
+            if (!auditIdForCloud) {
+              throw new Error('Keine audit_id für Abweichung vorhanden');
+            }
 
-    // 2) Existing-Check (idempotent per audit_id + question_id)
-    const checkUrl = `${SUPABASE_URL}/rest/v1/deviations?audit_id=eq.${encodeURIComponent(auditIdForCloud)}&question_id=eq.${encodeURIComponent(deviation.questionId)}`;
-    const checkResponse = await fetch(checkUrl, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
-      }
-    });
-    if (!checkResponse.ok) throw new Error(`Check fehlgeschlagen: ${checkResponse.status}`);
-    const existing = await checkResponse.json();
+            const checkUrl = `${SUPABASE_URL}/rest/v1/deviations?audit_id=eq.${encodeURIComponent(auditIdForCloud)}&question_id=eq.${encodeURIComponent(deviation.questionId)}`;
+            const checkResponse = await fetch(checkUrl, {
+              headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+              }
+            });
+            if (!checkResponse.ok) throw new Error(`Check fehlgeschlagen: ${checkResponse.status}`);
+            const existing = await checkResponse.json();
 
-    // 3) Payload aufbauen
-    const deviationData = {
-      audit_id: auditIdForCloud,
-      audit_title: deviation.auditTitle,
-      audit_number: deviation.auditNumber,
-      department: deviation.department,
-      question_id: deviation.questionId,
-      question_text: deviation.questionText,
-      deviation_text: deviation.deviationText,
-      responsible: deviation.responsible,
-      status: deviation.status || 'offen',
-      points: deviation.points,
-      has_image: deviation.hasImage || false,
-      image_data: deviation.imageData,
-      completed_at: deviation.completedAt,
-      completed_by: deviation.completedBy,
-      reopened_at: deviation.reopenedAt,
-      password: AUDIT_PASSWORD,
-      updated_at: new Date().toISOString()
-    };
+            const deviationData = {
+              audit_id: auditIdForCloud,
+              audit_title: deviation.auditTitle,
+              audit_number: deviation.auditNumber,
+              department: deviation.department,
+              question_id: deviation.questionId,
+              question_text: deviation.questionText,
+              deviation_text: deviation.deviationText,
+              responsible: deviation.responsible,
+              status: deviation.status || 'offen',
+              points: deviation.points,
+              has_image: deviation.hasImage || false,
+              image_data: deviation.imageData,
+              completed_at: deviation.completedAt,
+              completed_by: deviation.completedBy,
+              reopened_at: deviation.reopenedAt,
+              password: AUDIT_PASSWORD,
+              updated_at: new Date().toISOString()
+            };
 
-    // 4) Update oder Insert
-    if (existing.length > 0) {
-      const updateResponse = await fetch(
-        `${SUPABASE_URL}/rest/v1/deviations?id=eq.${existing[0].id}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Prefer': 'return=representation'
-          },
-          body: JSON.stringify(deviationData)
-        }
-      );
-      if (!updateResponse.ok) {
-        const txt = await updateResponse.text();
-        throw new Error(`Update fehlgeschlagen: ${updateResponse.status} - ${txt}`);
-      }
-      const updated = await updateResponse.json();
-      deviation.cloudId = updated?.[0]?.id || existing[0].id;
-      deviation.fromCloud = true;
-      saveDeviations();
-      return true;
-    } else {
-      deviationData.created_at = new Date().toISOString();
-      const createResponse = await fetch(`${SUPABASE_URL}/rest/v1/deviations`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Prefer': 'return=representation'
-        },
-        body: JSON.stringify(deviationData)
-      });
-      if (!createResponse.ok) {
-        const txt = await createResponse.text();
-        throw new Error(`Insert fehlgeschlagen: ${createResponse.status} - ${txt}`);
-      }
-      const result = await createResponse.json();
-      if (result && result[0]) {
-        deviation.cloudId = result[0].id;
-        deviation.fromCloud = true;
-        saveDeviations();
-      }
-      return true;
-    }
-  } catch (error) {
-    console.error('Fehler beim Speichern der Abweichung in Cloud:', error);
-    throw error;
-  }
-}        
+            if (existing.length > 0) {
+              const updateResponse = await fetch(
+                `${SUPABASE_URL}/rest/v1/deviations?id=eq.${existing[0].id}`,
+                {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Prefer': 'return=representation'
+                  },
+                  body: JSON.stringify(deviationData)
+                }
+              );
+              if (!updateResponse.ok) {
+                const txt = await updateResponse.text();
+                throw new Error(`Update fehlgeschlagen: ${updateResponse.status} - ${txt}`);
+              }
+              const updated = await updateResponse.json();
+              deviation.cloudId = updated?.[0]?.id || existing[0].id;
+              deviation.fromCloud = true;
+              saveDeviations();
+              return true;
+            } else {
+              deviationData.created_at = new Date().toISOString();
+              const createResponse = await fetch(`${SUPABASE_URL}/rest/v1/deviations`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'apikey': SUPABASE_KEY,
+                  'Authorization': `Bearer ${SUPABASE_KEY}`,
+                  'Prefer': 'return=representation'
+                },
+                body: JSON.stringify(deviationData)
+              });
+              if (!createResponse.ok) {
+                const txt = await createResponse.text();
+                throw new Error(`Insert fehlgeschlagen: ${createResponse.status} - ${txt}`);
+              }
+              const result = await createResponse.json();
+              if (result && result[0]) {
+                deviation.cloudId = result[0].id;
+                deviation.fromCloud = true;
+                saveDeviations();
+              }
+              return true;
+            }
+          } catch (error) {
+            console.error('Fehler beim Speichern der Abweichung in Cloud:', error);
+            throw error;
+          }
+        }        
+
         async function deleteDeviationFromCloud(deviationId) {
             try {
                 const deviation = deviations.find(d => d.id === deviationId);
@@ -2518,11 +2615,7 @@ async function saveSingleDeviationToCloud(deviation) {
         // === ABWEICHUNGS-FUNKTIONEN (LOKAL) ===
         function loadDeviations() {
             const savedDeviations = localStorage.getItem('zfpAuditDeviations');
-            if (savedDeviations) {
-                deviations = JSON.parse(savedDeviations);
-            } else {
-                deviations = [];
-            }
+            deviations = savedDeviations ? JSON.parse(savedDeviations) : [];
             updateDeviationsProgressDisplay();
         }
         
@@ -2724,7 +2817,9 @@ async function saveSingleDeviationToCloud(deviation) {
             
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.textContent.toLowerCase().includes(filter)) {
+                if ((filter === 'all' && btn.textContent.trim().toLowerCase() === 'alle')
+                    || (filter === 'open' && btn.textContent.trim().toLowerCase().includes('offen'))
+                    || (filter === 'completed' && btn.textContent.trim().toLowerCase().includes('abgeschlossen'))) {
                     btn.classList.add('active');
                 }
             });
@@ -2836,23 +2931,23 @@ async function saveSingleDeviationToCloud(deviation) {
                     throw new Error('PDF-Generierung fehlgeschlagen');
                 }
                 
-const auditTypeLocal = (currentAuditData.meta.audit_type || currentAuditData.meta.auditType || currentAuditType);
-const auditData = {
-    meta: {
-        ...currentAuditData.meta,
-        audit_type: auditTypeLocal,
-        saved_at: new Date().toISOString(),
-        password: AUDIT_PASSWORD,
-        department: extractDepartment(),
-        audit_number: generateAuditNumber(),
-        has_pdf: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-    },
-    participants: currentAuditData.participants,
-    questions: currentAuditData.questions,
-    images: currentAuditData.images
-};              
+                const auditTypeLocal = (currentAuditData.meta.audit_type || currentAuditData.meta.auditType || currentAuditType);
+                const auditData = {
+                    meta: {
+                        ...currentAuditData.meta,
+                        audit_type: auditTypeLocal,
+                        saved_at: new Date().toISOString(),
+                        password: AUDIT_PASSWORD,
+                        department: extractDepartment(),
+                        audit_number: generateAuditNumber(),
+                        has_pdf: true,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    },
+                    participants: currentAuditData.participants,
+                    questions: currentAuditData.questions,
+                    images: currentAuditData.images
+                };              
                 const auditResponse = await fetch(`${SUPABASE_URL}/rest/v1/audits`, {
                     method: 'POST',
                     headers: {
@@ -2904,22 +2999,24 @@ const auditData = {
                 alert(`❌ Fehler: ${error.message}\n\nVersuchen Sie es erneut oder speichern Sie nur das Audit.`);
             }
         }
-// Normalisiert Audit-Typen (Cloud/Lokal, Aliase)
-function normalizeAuditType(value) {
-  if (typeof value !== 'string') return null;
-  const v = value.trim().toLowerCase();
-  const map = {
-    wirbelstrom: 'wirbelstrom',
-    magnetpulver: 'magnetpulver',
-    nital: 'nital',
-    ultraschall: 'ultraschall',
-    et: 'wirbelstrom',
-    mt: 'magnetpulver',
-    ne: 'nital',
-    ut: 'ultraschall',
-  };
-  return map[v] || null;
-}
+
+        // Normalisiert Audit-Typen (Cloud/Lokal, Aliase)
+        function normalizeAuditType(value) {
+          if (typeof value !== 'string') return null;
+          const v = value.trim().toLowerCase();
+          const map = {
+            wirbelstrom: 'wirbelstrom',
+            magnetpulver: 'magnetpulver',
+            nital: 'nital',
+            ultraschall: 'ultraschall',
+            et: 'wirbelstrom',
+            mt: 'magnetpulver',
+            ne: 'nital',
+            ut: 'ultraschall',
+          };
+          return map[v] || null;
+        }
+
         // === HILFSFUNKTIONEN ===
         function extractDeviationsForLocal() {
             const newDeviations = [];
@@ -2981,7 +3078,7 @@ function normalizeAuditType(value) {
                         const element = printWindow.document.querySelector('.main-container');
                         
                         const opt = {
-                            margin: [15, 10, 15, 15],
+                            margin:[15, 10, 15, 15],
                             filename: `ZfP-Audit_${AUDIT_TYPES[currentAuditType].title}_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.pdf`,
                             image: { type: 'jpeg', quality: 0.98 },
                             html2canvas: { 
@@ -3071,20 +3168,20 @@ function normalizeAuditType(value) {
                         }))
                     );
                     
-const initialData = {
-    meta: {
-        created: new Date().toISOString(),
-        lastModified: new Date().toISOString(),
-        auditType: auditType,   // legacy
-        audit_type: auditType,  // neu und konsistent
-        title: AUDIT_TYPES[auditType].title,
-        standards: AUDIT_TYPES[auditType].standards,
-        auditNumber: generateAuditNumber()
-    },
-    participants: { auditors: [], auditees: [] },
-    questions: allQuestionsForAudit,
-    images: {}
-};
+                    const initialData = {
+                        meta: {
+                            created: new Date().toISOString(),
+                            lastModified: new Date().toISOString(),
+                            auditType: auditType,
+                            audit_type: auditType,
+                            title: AUDIT_TYPES[auditType].title,
+                            standards: AUDIT_TYPES[auditType].standards,
+                            auditNumber: generateAuditNumber()
+                        },
+                        participants: { auditors: [], auditees: [] },
+                        questions: allQuestionsForAudit,
+                        images: {}
+                    };
                     localStorage.setItem(`zfpAuditReview_${auditType}`, JSON.stringify(initialData));
                 }
             });
@@ -3092,6 +3189,7 @@ const initialData = {
 
         function startAudit(auditType) {
             currentAuditType = auditType;
+            currentMobileQuestion = 0; // Fix: mobile startet bei Frage 1
             
             document.getElementById('auditSelection').classList.remove('active');
             document.getElementById('auditContent').classList.add('active');
@@ -3103,7 +3201,7 @@ const initialData = {
             document.querySelector('.subtitle').textContent = auditInfo.standards;
             
             renderAuditSections();
-            setupDesktopEventListeners();
+            setupDesktopEventListeners(); // No-Op, verhindert Fehler
             updateCurrentAuditProgress();
             renderParticipants();
             setupMobileParticipants();
@@ -3296,8 +3394,7 @@ const initialData = {
                         if (hasAnswers) {
                             count++;
                         }
-                    } catch (e) {
-                    }
+                    } catch (e) {}
                 }
             });
             return count;
@@ -3355,6 +3452,12 @@ const initialData = {
             window.addEventListener('resize', handleResize);
         }
 
+        // === (Fix) DESKTOP EVENT LISTENERS NO-OP ===
+        function setupDesktopEventListeners() {
+            // Absichtlich leer: verhindert ReferenceError
+            // Alle relevanten Events werden inline oder in renderAuditSections() gesetzt
+        }
+
         // === RENDER FUNKTIONEN ===
         function renderAuditSections() {
             const sectionsContainer = document.getElementById('auditSections');
@@ -3381,7 +3484,7 @@ const initialData = {
                 const sectionContent = document.createElement('div');
                 sectionContent.className = 'section-content';
                 
-                const questionsHTML = section.questions.map((question, questionIndex) => {
+                const questionsHTML = section.questions.map((question) => {
                     const questionData = getQuestionData(question.id);
                     const points = questionData?.points;
                     
@@ -3492,12 +3595,6 @@ const initialData = {
                 });
             });
             
-            // Erste Section öffnen
-            if (sectionsContainer.firstChild) {
-                sectionsContainer.firstChild.classList.add('expanded');
-            }
-            
-            // Nach dem Rendern Event Listener setzen
             setupDesktopEventListeners();
         }
 
@@ -3510,6 +3607,10 @@ const initialData = {
                 counter.textContent = '0/0';
                 return;
             }
+
+            // Sicherheitshalber index begrenzen
+            if (currentMobileQuestion < 0) currentMobileQuestion = 0;
+            if (currentMobileQuestion > allQuestionElements.length - 1) currentMobileQuestion = 0;
             
             const question = allQuestionElements[currentMobileQuestion];
             const questionData = getQuestionData(question.id);
@@ -3599,7 +3700,6 @@ const initialData = {
             
             counter.textContent = `Frage ${currentMobileQuestion + 1}/${allQuestionElements.length}`;
             
-            // Navigation Buttons aktualisieren
             document.getElementById('prevBtn').disabled = currentMobileQuestion === 0;
             document.getElementById('nextBtn').disabled = currentMobileQuestion === allQuestionElements.length - 1;
         }
@@ -3608,7 +3708,6 @@ const initialData = {
         function selectPoints(questionId, points) {
             updateQuestionData(questionId, 'points', points);
             
-            // Frage-Element aktualisieren
             const questionElement = document.querySelector(`[data-question-id="${questionId}"]`);
             if (questionElement) {
                 const pointsDisplay = questionElement.querySelector('.points-display');
@@ -3616,7 +3715,6 @@ const initialData = {
                 const deviationSection = questionElement.querySelector('.deviation-section');
                 const questionIdBadge = questionElement.querySelector('.question-id');
                 
-                // Punkte-Display aktualisieren
                 if (points !== null) {
                     pointsDisplay.style.display = 'block';
                     pointsDisplay.style.borderColor = getPointsColor(points);
@@ -3627,10 +3725,8 @@ const initialData = {
                     pointsDisplay.style.display = 'none';
                 }
                 
-                // Question ID Badge aktualisieren
                 questionIdBadge.style.background = getPointsColor(points);
                 
-                // Options aktualisieren
                 pointsOptions.forEach(option => {
                     option.classList.remove('selected');
                     if (parseInt(option.dataset.points) === points) {
@@ -3638,7 +3734,6 @@ const initialData = {
                     }
                 });
                 
-                // Abweichungs-Sektion anzeigen/verstecken
                 if (deviationSection) {
                     deviationSection.style.display = (points !== null && points <= 8) ? 'block' : 'none';
                 }
@@ -3650,11 +3745,7 @@ const initialData = {
 
         function selectPointsMobile(questionId, points) {
             selectPoints(questionId, points);
-            // Nach Auswahl zur nächsten Frage springen, wenn nicht letzte Frage
-            if (currentMobileQuestion < allQuestionElements.length - 1) {
-                currentMobileQuestion++;
-                renderMobileQuestion();
-            }
+            renderMobileQuestion();
         }
 
         function getQuestionData(questionId) {
@@ -3686,7 +3777,6 @@ const initialData = {
             
             current[fieldPath[fieldPath.length - 1]] = value;
             
-            // Spezielle Behandlung für Abweichungen
             if (field === 'deviation.text' && value.trim() !== '') {
                 if (!question.deviation.hasImage) {
                     question.deviation.hasImage = false;
@@ -3704,7 +3794,7 @@ const initialData = {
                     return;
                 }
                 
-                if (file.size > 5 * 1024 * 1024) { // 5MB Limit
+                if (file.size > 5 * 1024 * 1024) {
                     reject(new Error('Bild darf maximal 5MB groß sein'));
                     return;
                 }
@@ -3716,7 +3806,6 @@ const initialData = {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         
-                        // Maximalgröße 1200x1200
                         let width = img.width;
                         let height = img.height;
                         const maxSize = 1200;
@@ -3735,7 +3824,6 @@ const initialData = {
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Als JPEG mit 80% Qualität
                         const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
                         resolve(compressedDataUrl);
                     };
@@ -3756,7 +3844,6 @@ const initialData = {
                 imageStorage[questionId] = compressedImage;
                 updateQuestionData(questionId, 'deviation.hasImage', true);
                 
-                // Bild-Vorschau aktualisieren
                 const questionElement = document.querySelector(`[data-question-id="${questionId}"]`);
                 if (questionElement) {
                     let previewContainer = questionElement.querySelector('.image-preview-container');
@@ -3785,13 +3872,11 @@ const initialData = {
                 alert('❌ Fehler: ' + error.message);
             }
             
-            // Reset file input
             event.target.value = '';
         }
 
         async function handleImageUploadMobile(event, questionId) {
             await handleImageUploadDesktop(event, questionId);
-            // Nach Upload die Frage neu rendern
             renderMobileQuestion();
         }
 
@@ -3808,7 +3893,6 @@ const initialData = {
                 delete imageStorage[questionId];
                 updateQuestionData(questionId, 'deviation.hasImage', false);
                 
-                // Bild-Vorschau entfernen
                 const questionElement = document.querySelector(`[data-question-id="${questionId}"]`);
                 if (questionElement) {
                     const previewContainer = questionElement.querySelector('.image-preview-container');
@@ -3819,7 +3903,6 @@ const initialData = {
                 
                 saveCurrentAuditData();
                 
-                // Bei Mobile die Frage neu rendern
                 if (window.innerWidth <= 768) {
                     renderMobileQuestion();
                 }
@@ -3919,32 +4002,25 @@ const initialData = {
         function resetAudit() {
             if (!currentAuditType) return;
             
-            // Nur Fragen zurücksetzen, Teilnehmer behalten
             allQuestions.forEach(question => {
                 question.points = null;
                 question.evidence = '';
                 question.deviation = { text: '', responsible: '', hasImage: false };
             });
             
-            // Bilder löschen
             imageStorage = {};
             
-            // Audit-Daten aktualisieren
             currentAuditData.questions = allQuestions;
             currentAuditData.images = {};
             currentAuditData.meta.lastModified = new Date().toISOString();
             
-            // Speichern
             saveCurrentAuditData();
-            
-            // UI aktualisieren
             renderAuditSections();
             if (window.innerWidth <= 768) {
+                currentMobileQuestion = 0; // sicherer Start
                 renderMobileQuestion();
             }
-            
             updateCurrentAuditProgress();
-            
             alert('✅ Audit wurde zurückgesetzt!');
         }
 
@@ -3961,10 +4037,6 @@ const initialData = {
             const maxPoints = totalQuestions * 10;
             const percentage = maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0;
             
-            const deviationsCount = allQuestions.filter(q => 
-                q.points !== null && q.points <= 8 && q.deviation && q.deviation.text && q.deviation.text.trim() !== ''
-            ).length;
-            
             const pointsDistribution = {
                 10: allQuestions.filter(q => q.points === 10).length,
                 8: allQuestions.filter(q => q.points === 8).length,
@@ -3976,6 +4048,8 @@ const initialData = {
             const criticalQuestions = allQuestions.filter(q => 
                 q.points !== null && q.points <= 4 && q.deviation && q.deviation.text && q.deviation.text.trim() !== ''
             );
+            
+            const imagesCount = Object.keys(imageStorage).length;
             
             let grade = '';
             let gradeText = '';
@@ -3992,35 +4066,33 @@ const initialData = {
             } else {
                 grade = 'E'; gradeText = 'Ausreichend'; gradeColor = '#e74c3c';
             }
-            
-            let recommendations = [];
+
+            const recommendations = [];
             if (percentage >= 80) {
-                recommendations = [
+                recommendations.push(
                     '✅ Sehr gutes Ergebnis. Alle wesentlichen Anforderungen erfüllt.',
                     '✅ Prozesse sind gut dokumentiert und umgesetzt.',
                     '⚠️ Geringfügige Abweichungen sollten trotzdem behoben werden.'
-                ];
+                );
             } else if (percentage >= 70) {
-                recommendations = [
+                recommendations.push(
                     '⚠️ Gutes Ergebnis. Einige Verbesserungspotentiale vorhanden.',
                     '⚠️ Kritische Fragen sollten priorisiert angegangen werden.',
                     '✅ Bilder dokumentieren Abweichungen effektiv.'
-                ];
+                );
             } else if (percentage >= 60) {
-                recommendations = [
+                recommendations.push(
                     '⚠️ Verbesserungsbedarf vorhanden. Mehrere kritische Abweichungen.',
                     '🔴 Priorisierte Maßnahmen zur Behebung erforderlich.',
                     '📋 Regelmäßige Nachverfolgung der Maßnahmen empfohlen.'
-                ];
+                );
             } else {
-                recommendations = [
+                recommendations.push(
                     '🔴 Erheblicher Handlungsbedarf. Audit nicht bestanden.',
                     '🔴 Sofortmaßnahmen zur Prozessverbesserung erforderlich.',
                     '📋 Intensive Nachbetreuung und Follow-up-Audit notwendig.'
-                ];
+                );
             }
-            
-            const imagesCount = Object.keys(imageStorage).length;
             
             return `<!DOCTYPE html>
 <html lang="de">
@@ -4056,7 +4128,6 @@ const initialData = {
             box-sizing: border-box;
         }
         
-        /* ===== KOPFZEILE ===== */
         .header-container {
             width: 180mm !important;
             max-width: 180mm !important;
@@ -4106,7 +4177,6 @@ const initialData = {
             height: auto;
         }
         
-        /* ===== METADATEN ===== */
         .meta-container {
             width: 180mm !important;
             max-width: 180mm !important;
@@ -4154,7 +4224,6 @@ const initialData = {
             flex: 1;
         }
         
-        /* ===== TEILNEHMER ===== */
         .participants-container {
             width: 180mm !important;
             max-width: 180mm !important;
@@ -4202,7 +4271,6 @@ const initialData = {
             line-height: 1.4;
         }
         
-        /* ===== ZUSAMMENFASSUNG MIT AUSWERTUNG ===== */
         .summary-container {
             width: 180mm !important;
             max-width: 180mm !important;
@@ -4223,7 +4291,6 @@ const initialData = {
             text-transform: uppercase;
         }
         
-        /* ERGEBNIS-ÜBERSICHT */
         .results-overview {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -4256,7 +4323,6 @@ const initialData = {
             line-height: 1.3;
         }
         
-        /* AUSWERTUNGS-DETAILS */
         .evaluation-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -4389,7 +4455,6 @@ const initialData = {
             line-height: 1.4;
         }
         
-        /* ===== FRAGEN TABELLE ===== */
         .questions-container {
             width: 180mm !important;
             max-width: 180mm !important;
@@ -4482,7 +4547,6 @@ const initialData = {
             border-radius: 2px;
         }
         
-        /* ===== LEGENDE ===== */
         .legend-container {
             width: 180mm !important;
             max-width: 180mm !important;
@@ -4495,7 +4559,6 @@ const initialData = {
             box-sizing: border-box;
         }
         
-        /* ===== UNTERSCHRIFTEN ===== */
         .signature-container {
             width: 180mm !important;
             max-width: 180mm !important;
@@ -4525,7 +4588,6 @@ const initialData = {
             min-height: 15mm;
         }
         
-        /* ===== DRUCK-STEUERUNG ===== */
         .print-container {
             width: 180mm !important;
             max-width: 180mm !important;
@@ -4557,7 +4619,6 @@ const initialData = {
             background: #00274d;
         }
         
-        /* ===== FOOTER ===== */
         .footer-container {
             width: 180mm !important;
             max-width: 180mm !important;
@@ -4570,7 +4631,6 @@ const initialData = {
             box-sizing: border-box;
         }
         
-        /* ===== DRUCK-STYLES ===== */
         @media print {
             body {
                 margin: 0;
@@ -4627,7 +4687,6 @@ const initialData = {
 </head>
 <body>
     <div class="main-container">
-        <!-- KOPFZEILE -->
         <div class="header-container">
             <div class="title-section">
                 <div class="report-title">Auditbericht: ${auditInfo.title}</div>
@@ -4641,7 +4700,6 @@ const initialData = {
             </div>
         </div>
         
-        <!-- METADATEN -->
         <div class="meta-container">
             <div class="meta-grid">
                 <div class="meta-column">
@@ -4675,7 +4733,6 @@ const initialData = {
             </div>
         </div>
         
-        <!-- TEILNEHMER -->
         <div class="participants-container">
             <div class="container-title">Teilnehmer</div>
             <div class="participants-grid">
@@ -4690,11 +4747,9 @@ const initialData = {
             </div>
         </div>
         
-        <!-- ZUSAMMENFASSUNG MIT AUSWERTUNG -->
         <div class="summary-container">
             <div class="summary-title">Zusammenfassung & Auswertung</div>
             
-            <!-- ERGEBNIS-ÜBERSICHT -->
             <div class="results-overview">
                 <div class="result-item">
                     <div class="result-value">${totalPoints}/${maxPoints}</div>
@@ -4720,18 +4775,14 @@ const initialData = {
                 </div>
             </div>
             
-            <!-- AUSWERTUNGS-DETAILS -->
             <div class="evaluation-details">
-                <!-- LINKE SPALTE: Bewertung & Punkteverteilung -->
                 <div class="evaluation-column">
-                    <!-- BEWERTUNG -->
                     <div class="grade-box">
                         <div class="grade-value">${grade}</div>
                         <div class="grade-text">${gradeText}</div>
                         <div class="grade-percentage">${percentage}% erreicht</div>
                     </div>
                     
-                    <!-- PUNKTEVERTEILUNG -->
                     <div class="points-distribution">
                         <div class="distribution-title">Punkteverteilung</div>
                         <div class="distribution-grid">
@@ -4759,9 +4810,7 @@ const initialData = {
                     </div>
                 </div>
                 
-                <!-- RECHTE SPALTE: Kritische Punkte & Empfehlungen -->
                 <div class="evaluation-column">
-                    <!-- KRITISCHE FRAGEN -->
                     <div class="critical-issues">
                         <div class="critical-title">Kritische Fragen (≤ 4 Punkte)</div>
                         <div class="critical-list">
@@ -4779,7 +4828,6 @@ const initialData = {
                         </div>
                     </div>
                     
-                    <!-- EMPFEHLUNGEN -->
                     <div class="recommendations">
                         <div class="recommendations-title">Empfehlungen</div>
                         <div class="recommendations-list">
@@ -4790,9 +4838,8 @@ const initialData = {
             </div>
         </div>
         
-        <!-- FRAGEN TABELLE -->
         <div class="questions-container">
-            ${AUDIT_DATA[currentAuditType].map((section, sectionIndex) => `
+            ${AUDIT_DATA[currentAuditType].map((section) => `
                 <div class="section">
                     <div class="section-header">${section.title}</div>
                     <table class="questions-table" style="width: 180mm;">
@@ -4850,14 +4897,12 @@ const initialData = {
             `).join('')}
         </div>
         
-        <!-- LEGENDE -->
         <div class="legend-container">
             <span class="status-indicator status-ok"></span> = I.O. (10 Punkte) &nbsp;&nbsp; | &nbsp;&nbsp;
             <span class="status-indicator status-nok"></span> = N.I.O. (&lt; 10 Punkte) &nbsp;&nbsp; | &nbsp;&nbsp;
             <span class="status-indicator status-na"></span> = Nicht bewertet
         </div>
         
-        <!-- UNTERSCHRIFTEN -->
         <div class="signature-container">
             <div style="text-align: center; margin-bottom: 6mm; font-weight: bold; color: #003865;">
                 Unterschriften zur Bestätigung der Audit-Ergebnisse
@@ -4880,12 +4925,10 @@ const initialData = {
             </div>
         </div>
         
-        <!-- DRUCK-STEUERUNG -->
         <div class="print-container">
             <button class="print-btn" onclick="window.print();">🖨️ BERICHTSDRUCK STARTEN</button>
         </div>
         
-        <!-- FOOTER -->
         <div class="footer-container">
             Häusner Daniel | WI/SW2-PQT | ZfP Audit-Checkliste AE - 27.01.2026<br>
             Erstellt mit ZfP Audit-Checkliste | Generiert am: ${new Date().toLocaleDateString('de-DE')}, ${new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
@@ -4896,7 +4939,6 @@ const initialData = {
         }
 
         // === AUDITS CLOUD-SYNCHRONISIERUNG ===
-        
         async function saveAuditToCloud() {
             if (!currentAuditType || !currentAuditData) {
                 alert("Bitte zuerst ein Audit auswählen und Daten eingeben!");
@@ -4920,22 +4962,22 @@ const initialData = {
             
             saveDeviations();
             
-const auditTypeLocal = (currentAuditData.meta.audit_type || currentAuditData.meta.auditType || currentAuditType);
-const auditData = {
-    meta: {
-        ...currentAuditData.meta,
-        audit_type: auditTypeLocal,
-        saved_at: new Date().toISOString(),
-        password: AUDIT_PASSWORD,
-        department: extractDepartment(),
-        audit_number: generateAuditNumber(),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-    },
-    participants: currentAuditData.participants,
-    questions: currentAuditData.questions,
-    images: currentAuditData.images
-};
+            const auditTypeLocal = (currentAuditData.meta.audit_type || currentAuditData.meta.auditType || currentAuditType);
+            const auditData = {
+                meta: {
+                    ...currentAuditData.meta,
+                    audit_type: auditTypeLocal,
+                    saved_at: new Date().toISOString(),
+                    password: AUDIT_PASSWORD,
+                    department: extractDepartment(),
+                    audit_number: generateAuditNumber(),
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                },
+                participants: currentAuditData.participants,
+                questions: currentAuditData.questions,
+                images: currentAuditData.images
+            };
             
             try {
                 const auditResponse = await fetch(`${SUPABASE_URL}/rest/v1/audits`, {
@@ -4990,6 +5032,9 @@ const auditData = {
                 desktopView.style.display = 'none';
                 mobileView.style.display = 'block';
                 toggleBtn.textContent = '🖥️ Desktop';
+                if (currentMobileQuestion < 0 || currentMobileQuestion >= allQuestionElements.length) {
+                    currentMobileQuestion = 0;
+                }
                 renderMobileQuestion();
             } else {
                 desktopView.style.display = 'block';
@@ -5011,6 +5056,9 @@ const auditData = {
                 mobileView.style.display = 'block';
                 toggleBtn.textContent = '🖥️ Desktop';
                 if (allQuestionElements.length > 0) {
+                    if (currentMobileQuestion < 0 || currentMobileQuestion >= allQuestionElements.length) {
+                        currentMobileQuestion = 0;
+                    }
                     renderMobileQuestion();
                 }
             } else {
@@ -5218,7 +5266,7 @@ const auditData = {
                                     </button>
                                 ` : ''}
                                 <button onclick="viewAuditReport('${audit.id}')" class="action-btn view" title="Bericht ansehen">
-                                    📋
+                                    🖨️
                                 </button>
                                 <button onclick="deleteAuditFromCloud('${audit.id}')" class="action-btn delete" title="Audit löschen">
                                     🗑️
@@ -5251,46 +5299,46 @@ const auditData = {
                 });
                 
                 if (response.ok) {
-const audits = await response.json();
-if (audits.length > 0) {
-    const audit = audits[0];
+                    const audits = await response.json();
+                    if (audits.length > 0) {
+                        const audit = audits[0];
 
-    if (audit.meta?.password !== AUDIT_PASSWORD) {
-        alert('❌ Ungültiges Passwort für dieses Audit');
-        return;
-    }
+                        if (audit.meta?.password !== AUDIT_PASSWORD) {
+                            alert('❌ Ungültiges Passwort für dieses Audit');
+                            return;
+                        }
 
-    const auditTypeRaw = audit.meta?.audit_type || audit.meta?.auditType;
-    const auditType = normalizeAuditType(auditTypeRaw);
+                        const auditTypeRaw = audit.meta?.audit_type || audit.meta?.auditType;
+                        const auditType = normalizeAuditType(auditTypeRaw);
 
-    if (!auditType || !AUDIT_TYPES[auditType]) {
-        alert(`❌ Ungültiger Audit-Typ: "${auditTypeRaw ?? ''}"`);
-        return;
-    }
+                        if (!auditType || !AUDIT_TYPES[auditType]) {
+                            alert(`❌ Ungültiger Audit-Typ: "${auditTypeRaw ?? ''}"`);
+                            return;
+                        }
 
-    const auditDate = new Date(audit.meta?.saved_at || audit.created_at);
+                        const auditDate = new Date(audit.meta?.saved_at || audit.created_at);
 
-    closeCloudModal();
+                        closeCloudModal();
 
-    setTimeout(() => {
-        currentAuditData = {
-            meta: audit.meta,
-            participants: audit.participants || { auditors: [], auditees: [] },
-            questions: audit.questions || [],
-            images: audit.images || {}
-        };
+                        setTimeout(() => {
+                            currentAuditData = {
+                                meta: audit.meta,
+                                participants: audit.participants || { auditors: [], auditees: [] },
+                                questions: audit.questions || [],
+                                images: audit.images || {}
+                            };
 
-        allQuestions = currentAuditData.questions || [];
-        participants = currentAuditData.participants || { auditors: [], auditees: [] };
-        imageStorage = currentAuditData.images || {};
+                            allQuestions = currentAuditData.questions || [];
+                            participants = currentAuditData.participants || { auditors: [], auditees: [] };
+                            imageStorage = currentAuditData.images || {};
 
-        localStorage.setItem(`zfpAuditReview_${auditType}`, JSON.stringify(currentAuditData));
+                            localStorage.setItem(`zfpAuditReview_${auditType}`, JSON.stringify(currentAuditData));
 
-        startAudit(auditType);
+                            startAudit(auditType);
 
-        alert(`✅ Audit wurde geladen:\n\n${audit.meta?.title || 'Unbekannt'}\n${audit.meta?.department || ''}\n${auditDate.toLocaleDateString('de-DE')}`);
-    }, 300);
-}
+                            alert(`✅ Audit wurde geladen:\n\n${audit.meta?.title || 'Unbekannt'}\n${audit.meta?.department || ''}\n${auditDate.toLocaleDateString('de-DE')}`);
+                        }, 300);
+                    }
                 }
             } catch (error) {
                 console.error('Ladefehler:', error);
@@ -5313,31 +5361,31 @@ if (audits.length > 0) {
                 
                 if (response.ok) {
                     const audits = await response.json();
-if (audits.length > 0) {
-    const audit = audits[0];
+                    if (audits.length > 0) {
+                        const audit = audits[0];
 
-    const originalAuditType = currentAuditType;
-    const originalAuditData = currentAuditData;
+                        const originalAuditType = currentAuditType;
+                        const originalAuditData = currentAuditData;
 
-    const auditTypeRaw = audit.meta?.audit_type || audit.meta?.auditType;
-    const normalizedType = normalizeAuditType(auditTypeRaw);
-    if (!normalizedType) { alert('❌ Ungültiger Audit-Typ'); return; }
+                        const auditTypeRaw = audit.meta?.audit_type || audit.meta?.auditType;
+                        const normalizedType = normalizeAuditType(auditTypeRaw);
+                        if (!normalizedType) { alert('❌ Ungültiger Audit-Typ'); return; }
 
-    currentAuditType = normalizedType;
-    currentAuditData = {
-        meta: audit.meta,
-        participants: audit.participants || { auditors: [], auditees: [] },
-        questions: audit.questions || [],
-        images: audit.images || {}
-    };
+                        currentAuditType = normalizedType;
+                        currentAuditData = {
+                            meta: audit.meta,
+                            participants: audit.participants || { auditors: [], auditees: [] },
+                            questions: audit.questions || [],
+                            images: audit.images || {}
+                        };
 
-    allQuestions = currentAuditData.questions || [];
+                        allQuestions = currentAuditData.questions || [];
 
-    generateReport();
+                        generateReport();
 
-    currentAuditType = originalAuditType;
-    currentAuditData = originalAuditData;
-}
+                        currentAuditType = originalAuditType;
+                        currentAuditData = originalAuditData;
+                    }
                 }
             } catch (error) {
                 console.error('Fehler beim Laden für Report:', error);
@@ -5571,7 +5619,7 @@ if (audits.length > 0) {
         }
 
         // Initialisierung abschließen
-        initializeApp();
+        initializeApp(); // belassen, idempotent
     </script>
 </body>
 </html>
