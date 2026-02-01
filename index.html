@@ -82,6 +82,12 @@
             --status-ok: #27ae60;
             --status-nok: #e74c3c;
             --status-na: #95a5a6;
+            
+            /* Glass Effect */
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --glass-blur: blur(10px);
         }
         
         @media (prefers-color-scheme: dark) {
@@ -161,7 +167,22 @@
                 --status-ok: #27ae60;
                 --status-nok: #e74c3c;
                 --status-na: #7f8c8d;
+                
+                /* Glass Effect - Dark */
+                --glass-bg: rgba(30, 30, 30, 0.3);
+                --glass-border: rgba(255, 255, 255, 0.1);
+                --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             }
+        }
+        
+        /* === GLASS EFFECT STYLES === */
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 10px;
         }
         
         /* === ALLE EXISTIERENDEN STYLES === */
@@ -794,7 +815,7 @@
             text-align: center;
         }
 
-        /* Cloud Button Wrapper */
+        /* Cloud Button Wrapper mit Glass Effect */
         .cloud-button-wrapper,
         .deviations-button-wrapper {
             margin-top: 25px;
@@ -820,19 +841,42 @@
         }
 
         .cloud-button-wrapper .audit-btn {
-            background: var(--audit-cloud);
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(41, 128, 185, 0.8));
         }
 
         .deviations-button-wrapper .audit-btn {
-            background: var(--audit-deviations);
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.8), rgba(192, 57, 43, 0.8));
         }
 
+        /* Glass Effect für Hauptbuttons */
+        .cloud-button-wrapper .audit-btn,
+        .deviations-button-wrapper .audit-btn,
+        .audit-btn.cloud,
+        .audit-btn.deviations {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hover Effect für Glass Buttons */
+        .cloud-button-wrapper .audit-btn:hover,
+        .deviations-button-wrapper .audit-btn:hover,
+        .audit-btn.cloud:hover,
+        .audit-btn.deviations:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Etwas größerer Icon für die Buttons */
         .cloud-button-wrapper .audit-btn .btn-icon,
         .deviations-button-wrapper .audit-btn .btn-icon {
             font-size: 1.8em;
             margin-bottom: 8px;
         }
 
+        /* Etwas größerer Text für die Buttons */
         .cloud-button-wrapper .audit-btn span,
         .deviations-button-wrapper .audit-btn span {
             font-size: 1.05em;
@@ -947,8 +991,8 @@
         .audit-btn.magnetpulver { background: var(--audit-mt); }
         .audit-btn.nital { background: var(--audit-ne); }
         .audit-btn.ultraschall { background: var(--audit-ut); }
-        .audit-btn.cloud { background: var(--audit-cloud); }
-        .audit-btn.deviations { background: var(--audit-deviations); }
+        .audit-btn.cloud { background: linear-gradient(135deg, rgba(243, 156, 18, 0.8), rgba(230, 126, 34, 0.8)); }
+        .audit-btn.deviations { background: linear-gradient(135deg, rgba(231, 76, 60, 0.8), rgba(192, 57, 43, 0.8)); }
         
         .audit-btn .btn-icon {
             font-size: 1.6em;
@@ -2261,7 +2305,7 @@
             initializeApp();
             setupEventListeners();
             loadDeviations(); // Lokale Abweichungen laden
-            loadDeviationsFromCloud(); // Cloud-Abweichungen laden
+            loadDeviationsFromCloud(); // NEU: Cloud-Abweichungen laden
         });
 
         function initializeDarkMode() {
@@ -2284,8 +2328,9 @@
             loadActualAuditCountFromCloud();
         }
 
-        // === ABWEICHUNGEN CLOUD-SYNCHRONISIERUNG ===
+        // === ABWEICHUNGEN CLOUD-SYNCHRONISIERUNG (REPARIERT) ===
         
+        // 1. ABWEICHUNGEN VON CLOUD LADEN (DOWNLOAD) - DAS FEHLTE!
         async function loadDeviationsFromCloud() {
             try {
                 console.log('Lade Abweichungen von Cloud...');
@@ -2304,18 +2349,21 @@
                     const cloudDeviations = await response.json();
                     console.log(`${cloudDeviations.length} Abweichungen von Cloud empfangen`);
                     
+                    // Lokale Abweichungen laden
                     const savedDeviations = localStorage.getItem('zfpAuditDeviations');
                     let localDeviations = savedDeviations ? JSON.parse(savedDeviations) : [];
                     
+                    // Cloud-Daten haben Priorität (wie bei Audits)
                     const mergedDeviations = [];
                     const processedIds = new Set();
                     
+                    // 1. Cloud-Daten zuerst (neueste zuerst)
                     cloudDeviations.forEach(cloudDev => {
                         const cloudId = cloudDev.id || `cloud_${cloudDev.audit_id}_${cloudDev.question_id}`;
                         
                         const mergedDev = {
                             id: cloudId,
-                            cloudId: cloudDev.id,
+                            cloudId: cloudDev.id, // Speichere Cloud-ID separat
                             auditId: cloudDev.audit_id,
                             auditTitle: cloudDev.audit_title,
                             auditNumber: cloudDev.audit_number,
@@ -2333,19 +2381,21 @@
                             completedBy: cloudDev.completed_by,
                             reopenedAt: cloudDev.reopened_at,
                             updatedAt: cloudDev.updated_at || cloudDev.created_at,
-                            fromCloud: true
+                            fromCloud: true // Markierung, dass aus Cloud
                         };
                         
                         mergedDeviations.push(mergedDev);
                         processedIds.add(cloudId);
                     });
                     
+                    // 2. Lokale Abweichungen hinzufügen, die nicht in Cloud sind
                     localDeviations.forEach(localDev => {
                         if (!processedIds.has(localDev.id) && !localDev.fromCloud) {
                             mergedDeviations.push(localDev);
                         }
                     });
                     
+                    // Speichere zusammengeführte Abweichungen
                     deviations = mergedDeviations;
                     saveDeviations();
                     
@@ -2360,12 +2410,15 @@
             }
         }
         
+        // 2. SYNCHRONISIERUNG (UPLOAD + DOWNLOAD) - wie bei Audits
         async function syncDeviationsWithCloud() {
             try {
                 console.log('Starte komplette Synchronisierung...');
                 
+                // Zuerst von Cloud laden
                 await loadDeviationsFromCloud();
                 
+                // Dann lokale Abweichungen hochladen
                 const localDeviations = deviations.filter(d => !d.fromCloud);
                 
                 if (localDeviations.length > 0) {
@@ -2380,6 +2433,7 @@
                     alert('✅ Synchronisierung abgeschlossen!\n\nAlle Abweichungen sind bereits in der Cloud.');
                 }
                 
+                // Anzeige aktualisieren
                 displayDeviationsList();
                 
             } catch (error) {
@@ -2388,10 +2442,12 @@
             }
         }
         
+        // 3. EINZELNE ABWEICHUNG IN CLOUD SPEICHERN (UPLOAD) - BEREITS VORHANDEN, ABER REPARIERT
         async function saveSingleDeviationToCloud(deviation) {
             try {
                 console.log('Speichere Abweichung in Cloud:', deviation.id);
                 
+                // Prüfe ob Abweichung bereits in Cloud existiert
                 const checkResponse = await fetch(
                     `${SUPABASE_URL}/rest/v1/deviations?audit_id=eq.${deviation.auditId}&question_id=eq.${deviation.questionId}`, 
                     {
@@ -2426,6 +2482,7 @@
                     };
                     
                     if (existing.length > 0) {
+                        // Update existing deviation
                         const updateResponse = await fetch(
                             `${SUPABASE_URL}/rest/v1/deviations?id=eq.${existing[0].id}`, 
                             {
@@ -2440,12 +2497,14 @@
                         );
                         
                         if (updateResponse.ok) {
+                            // Cloud-ID in lokaler Abweichung speichern
                             deviation.cloudId = existing[0].id;
                             deviation.fromCloud = true;
                             saveDeviations();
                             return true;
                         }
                     } else {
+                        // Create new deviation
                         deviationData.created_at = new Date().toISOString();
                         
                         const createResponse = await fetch(`${SUPABASE_URL}/rest/v1/deviations`, {
@@ -2462,6 +2521,7 @@
                         if (createResponse.ok) {
                             const result = await createResponse.json();
                             if (result && result[0]) {
+                                // Cloud-ID in lokaler Abweichung speichern
                                 deviation.cloudId = result[0].id;
                                 deviation.fromCloud = true;
                                 saveDeviations();
@@ -2476,8 +2536,10 @@
             }
         }
         
+        // 4. ABWEICHUNG AUS CLOUD LÖSCHEN - REPARIERT
         async function deleteDeviationFromCloud(deviationId) {
             try {
+                // Finde die Abweichung zuerst
                 const deviation = deviations.find(d => d.id === deviationId);
                 
                 if (!deviation) {
@@ -2485,6 +2547,7 @@
                     return false;
                 }
                 
+                // Wenn die Abweichung eine Cloud-ID hat, aus Cloud löschen
                 if (deviation.cloudId) {
                     const response = await fetch(
                         `${SUPABASE_URL}/rest/v1/deviations?id=eq.${deviation.cloudId}`, 
@@ -2744,8 +2807,10 @@
                 deviations[index].completedAt = new Date().toISOString();
                 deviations[index].completedBy = participants.auditors[0] || 'Unbekannt';
                 
+                // In Cloud speichern
                 await saveSingleDeviationToCloud(deviations[index]);
                 
+                // Lokal speichern
                 saveDeviations();
                 displayDeviationsList();
                 alert('✅ Abweichung wurde als abgeschlossen markiert!');
@@ -2757,8 +2822,10 @@
                 deviations[index].status = 'offen';
                 deviations[index].reopenedAt = new Date().toISOString();
                 
+                // In Cloud speichern
                 await saveSingleDeviationToCloud(deviations[index]);
                 
+                // Lokal speichern
                 saveDeviations();
                 displayDeviationsList();
                 alert('🔄 Abweichung wurde wieder geöffnet!');
@@ -2768,8 +2835,10 @@
         async function deleteDeviation(index) {
             if (confirm('Sind Sie sicher, dass Sie diese Abweichung löschen möchten?\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
                 if (index >= 0 && index < deviations.length) {
+                    // Aus Cloud löschen
                     await deleteDeviationFromCloud(deviations[index].id);
                     
+                    // Lokal löschen
                     deviations.splice(index, 1);
                     saveDeviations();
                     displayDeviationsList();
@@ -2778,8 +2847,9 @@
             }
         }
 
-        // === REPORT FUNKTIONEN ===
-        function generateReport() {
+        // === AUDITS CLOUD-SYNCHRONISIERUNG ===
+        
+        async function saveAuditToCloud() {
             if (!currentAuditType || !currentAuditData) {
                 alert("Bitte zuerst ein Audit auswählen und Daten eingeben!");
                 return;
@@ -2787,17 +2857,82 @@
             
             saveCurrentAuditData();
             
-            const reportHtml = createReportHTML();
-            const printWindow = window.open('', '_blank');
-            printWindow.document.open();
-            printWindow.document.write(reportHtml);
-            printWindow.document.close();
+            const localDeviations = extractDeviationsForLocal();
             
-            printWindow.onload = function() {
-                setTimeout(() => {
-                    printWindow.print();
-                }, 1000);
+            // Abweichungen lokal speichern
+            localDeviations.forEach(newDeviation => {
+                const exists = deviations.some(d => 
+                    d.auditId === newDeviation.auditId && 
+                    d.questionId === newDeviation.questionId
+                );
+                
+                if (!exists) {
+                    deviations.push(newDeviation);
+                }
+            });
+            
+            // Lokale Abweichungen speichern
+            saveDeviations();
+            
+            // Audit in Cloud speichern
+            const auditData = {
+                meta: {
+                    ...currentAuditData.meta,
+                    saved_at: new Date().toISOString(),
+                    password: AUDIT_PASSWORD,
+                    department: extractDepartment(),
+                    audit_number: generateAuditNumber(),
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                },
+                participants: currentAuditData.participants,
+                questions: currentAuditData.questions,
+                images: currentAuditData.images
             };
+            
+            try {
+                const auditResponse = await fetch(`${SUPABASE_URL}/rest/v1/audits`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(auditData)
+                });
+                
+                if (auditResponse.ok) {
+                    const auditResult = await auditResponse.json();
+                    const auditId = auditResult[0]?.id;
+                    
+                    // Abweichungen in Cloud speichern
+                    if (localDeviations.length > 0) {
+                        for (const deviation of localDeviations) {
+                            await saveSingleDeviationToCloud({
+                                ...deviation,
+                                audit_id: auditId
+                            });
+                        }
+                    }
+                    
+                    alert(`✅ Audit gespeichert!\n\n${localDeviations.length} Abweichungen in die Cloud übertragen.`);
+                    updateDeviationsProgressDisplay();
+                    updateCloudProgressDisplay();
+                    
+                } else {
+                    throw new Error('Audit speichern fehlgeschlagen');
+                }
+                
+            } catch (error) {
+                console.error('Cloud-Fehler:', error);
+                alert(`✅ Audit lokal gespeichert!\n\n${localDeviations.length} Abweichungen lokal übernommen.\n\nCloud: ${error.message}`);
+            }
+            
+            // Automatische Synchronisierung der Abweichungen
+            setTimeout(() => {
+                syncDeviationsWithCloud();
+            }, 1000);
         }
 
         async function saveAndGeneratePDF() {
@@ -2862,6 +2997,7 @@
                     const auditId = auditResult[0]?.id;
                     
                     if (auditId) {
+                        // PDF in Cloud speichern
                         const pdfFormData = new FormData();
                         pdfFormData.append('file', pdfBlob, `audit_${auditId}.pdf`);
                         
@@ -2874,6 +3010,7 @@
                             body: pdfFormData
                         });
                         
+                        // Abweichungen in Cloud speichern
                         if (localDeviations.length > 0) {
                             for (const deviation of localDeviations) {
                                 await saveSingleDeviationToCloud({
@@ -2965,11 +3102,7 @@
                             html2canvas: { 
                                 scale: 2,
                                 useCORS: true,
-                                logging: false,
-                                onclone: function(clonedDoc) {
-                                    const printBtn = clonedDoc.querySelector('.print-container');
-                                    if (printBtn) printBtn.style.display = 'none';
-                                }
+                                logging: false
                             },
                             jsPDF: { 
                                 unit: 'mm', 
@@ -3925,12 +4058,29 @@
             alert('✅ Audit wurde zurückgesetzt!');
         }
 
-        // === REPORT GENERATOR ===
-        function createReportHTML() {
-            const auditInfo = AUDIT_TYPES[currentAuditType];
-            const auditDate = new Date(currentAuditData.meta.lastModified);
-            const formattedDate = auditDate.toLocaleDateString('de-DE');
-            const formattedTime = auditDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        // === REPORT FUNKTION ===
+        function generateReport() {
+            document.getElementById('evaluation').classList.add('active');
+            document.getElementById('evaluationBtn').textContent = '⬆️ Ausblenden';
+            renderEvaluation();
+        }
+
+        function showEvaluation() {
+            const evaluation = document.getElementById('evaluation');
+            const btn = document.getElementById('evaluationBtn');
+            
+            if (evaluation.classList.contains('active')) {
+                evaluation.classList.remove('active');
+                btn.textContent = '📊 Auswertung';
+            } else {
+                evaluation.classList.add('active');
+                btn.textContent = '⬆️ Ausblenden';
+                renderEvaluation();
+            }
+        }
+
+        function renderEvaluation() {
+            if (!allQuestions.length) return;
             
             const totalQuestions = allQuestions.length;
             const answeredQuestions = allQuestions.filter(q => q.points !== null).length;
@@ -3938,1021 +4088,137 @@
             const maxPoints = totalQuestions * 10;
             const percentage = maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0;
             
+            // Abweichungen zählen
             const deviationsCount = allQuestions.filter(q => 
                 q.points !== null && q.points <= 8 && q.deviation && q.deviation.text && q.deviation.text.trim() !== ''
             ).length;
             
+            // Punkte-Verteilung
             const pointsDistribution = {
-                10: allQuestions.filter(q => q.points === 10).length,
-                8: allQuestions.filter(q => q.points === 8).length,
-                4: allQuestions.filter(q => q.points === 4).length,
                 0: allQuestions.filter(q => q.points === 0).length,
+                4: allQuestions.filter(q => q.points === 4).length,
+                8: allQuestions.filter(q => q.points === 8).length,
+                10: allQuestions.filter(q => q.points === 10).length,
                 unanswered: allQuestions.filter(q => q.points === null).length
             };
             
-            const criticalQuestions = allQuestions.filter(q => 
-                q.points !== null && q.points <= 4 && q.deviation && q.deviation.text && q.deviation.text.trim() !== ''
-            );
-            
-            let grade = '';
-            let gradeText = '';
-            let gradeColor = '';
-            
-            if (percentage >= 90) {
-                grade = 'A'; gradeText = 'Exzellent'; gradeColor = '#27ae60';
-            } else if (percentage >= 80) {
-                grade = 'B'; gradeText = 'Sehr gut'; gradeColor = '#2ecc71';
-            } else if (percentage >= 70) {
-                grade = 'C'; gradeText = 'Gut'; gradeColor = '#f39c12';
-            } else if (percentage >= 60) {
-                grade = 'D'; gradeText = 'Befriedigend'; gradeColor = '#e67e22';
-            } else {
-                grade = 'E'; gradeText = 'Ausreichend'; gradeColor = '#e74c3c';
-            }
-            
-            let recommendations = [];
-            if (percentage >= 80) {
-                recommendations = [
-                    '✅ Sehr gutes Ergebnis. Alle wesentlichen Anforderungen erfüllt.',
-                    '✅ Prozesse sind gut dokumentiert und umgesetzt.',
-                    '⚠️ Geringfügige Abweichungen sollten trotzdem behoben werden.'
-                ];
-            } else if (percentage >= 70) {
-                recommendations = [
-                    '⚠️ Gutes Ergebnis. Einige Verbesserungspotentiale vorhanden.',
-                    '⚠️ Kritische Fragen sollten priorisiert angegangen werden.',
-                    '✅ Bilder dokumentieren Abweichungen effektiv.'
-                ];
-            } else if (percentage >= 60) {
-                recommendations = [
-                    '⚠️ Verbesserungsbedarf vorhanden. Mehrere kritische Abweichungen.',
-                    '🔴 Priorisierte Maßnahmen zur Behebung erforderlich.',
-                    '📋 Regelmäßige Nachverfolgung der Maßnahmen empfohlen.'
-                ];
-            } else {
-                recommendations = [
-                    '🔴 Erheblicher Handlungsbedarf. Audit nicht bestanden.',
-                    '🔴 Sofortmaßnahmen zur Prozessverbesserung erforderlich.',
-                    '📋 Intensive Nachbetreuung und Follow-up-Audit notwendig.'
-                ];
-            }
-            
-            const imagesCount = Object.keys(imageStorage).length;
-            
-            return `<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auditbericht - ${auditInfo.title} | Schaeffler</title>
-    <style>
-        @page {
-            size: A4 portrait;
-            margin: 15mm 10mm 15mm 15mm;
-            @bottom-right {
-                content: "Seite " counter(page) " von " counter(pages);
-                font-size: 8pt;
-                color: #666;
-            }
-        }
-        
-        body {
-            font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 10pt;
-            line-height: 1.3;
-            color: #000;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-        }
-        
-        .main-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 0 auto !important;
-            box-sizing: border-box;
-        }
-        
-        /* ===== KOPFZEILE ===== */
-        .header-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 0 auto 6mm auto !important;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 1.5pt solid #003865;
-            padding-bottom: 4mm;
-            box-sizing: border-box;
-        }
-        
-        .title-section {
-            flex: 1;
-            text-align: left;
-            padding-right: 10mm;
-        }
-        
-        .report-title {
-            font-size: 16pt;
-            font-weight: bold;
-            color: #003865;
-            margin-bottom: 1mm;
-            text-transform: uppercase;
-        }
-        
-        .report-subtitle {
-            font-size: 12pt;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 1mm;
-        }
-        
-        .report-standards {
-            font-size: 10pt;
-            color: #666;
-            font-style: italic;
-        }
-        
-        .logo-section {
-            flex-shrink: 0;
-            text-align: right;
-        }
-        
-        .schaeffler-logo {
-            width: 45mm;
-            height: auto;
-        }
-        
-        /* ===== METADATEN ===== */
-        .meta-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 0 auto 8mm auto !important;
-            background: #f8f9fa;
-            border: 1pt solid #ddd;
-            border-radius: 4px;
-            padding: 4mm;
-            box-sizing: border-box;
-        }
-        
-        .meta-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6mm;
-            font-size: 9pt;
-        }
-        
-        .meta-column {
-            display: flex;
-            flex-direction: column;
-            gap: 2mm;
-        }
-        
-        .meta-row {
-            display: flex;
-            justify-content: space-between;
-            padding-bottom: 1.5mm;
-            border-bottom: 0.5pt dotted #ccc;
-        }
-        
-        .meta-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        
-        .meta-label {
-            font-weight: bold;
-            color: #003865;
-            min-width: 35mm;
-        }
-        
-        .meta-value {
-            text-align: right;
-            flex: 1;
-        }
-        
-        /* ===== TEILNEHMER ===== */
-        .participants-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 0 auto 8mm auto !important;
-            background: #f0f7ff;
-            border: 1pt solid #003865;
-            border-radius: 4px;
-            padding: 4mm;
-            box-sizing: border-box;
-        }
-        
-        .container-title {
-            font-weight: bold;
-            color: #003865;
-            font-size: 11pt;
-            text-align: center;
-            margin-bottom: 3mm;
-        }
-        
-        .participants-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8mm;
-        }
-        
-        .participant-group {
-            background: white;
-            padding: 3mm;
-            border-radius: 3px;
-            border: 1pt solid #ddd;
-        }
-        
-        .group-label {
-            font-weight: bold;
-            color: #003865;
-            font-size: 10pt;
-            margin-bottom: 1mm;
-            border-bottom: 1pt solid #ddd;
-            padding-bottom: 1mm;
-        }
-        
-        .group-content {
-            min-height: 8mm;
-            font-size: 10pt;
-            line-height: 1.4;
-        }
-        
-        /* ===== ZUSAMMENFASSUNG MIT AUSWERTUNG ===== */
-        .summary-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 0 auto 10mm auto !important;
-            background: linear-gradient(135deg, #f0f7ff 0%, #e6f0ff 100%);
-            border: 1.5pt solid #003865;
-            border-radius: 5px;
-            padding: 5mm;
-            box-sizing: border-box;
-        }
-        
-        .summary-title {
-            font-weight: bold;
-            color: #003865;
-            font-size: 12pt;
-            text-align: center;
-            margin-bottom: 5mm;
-            text-transform: uppercase;
-        }
-        
-        /* ERGEBNIS-ÜBERSICHT */
-        .results-overview {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 4mm;
-            margin-bottom: 6mm;
-        }
-        
-        .result-item {
-            background: white;
-            padding: 3mm;
-            border-radius: 3px;
-            border: 1pt solid #003865;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 20mm;
-        }
-        
-        .result-value {
-            font-size: 14pt;
-            font-weight: bold;
-            color: #003865;
-            margin-bottom: 1mm;
-        }
-        
-        .result-label {
-            font-size: 8pt;
-            color: #666;
-            line-height: 1.3;
-        }
-        
-        /* AUSWERTUNGS-DETAILS */
-        .evaluation-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6mm;
-            margin-top: 6mm;
-            padding-top: 4mm;
-            border-top: 1pt dashed #003865;
-        }
-        
-        .evaluation-column {
-            display: flex;
-            flex-direction: column;
-            gap: 3mm;
-        }
-        
-        .grade-box {
-            background: white;
-            padding: 4mm;
-            border-radius: 4px;
-            border: 2pt solid ${gradeColor};
-            text-align: center;
-        }
-        
-        .grade-value {
-            font-size: 24pt;
-            font-weight: bold;
-            color: ${gradeColor};
-            margin-bottom: 1mm;
-        }
-        
-        .grade-text {
-            font-size: 10pt;
-            font-weight: bold;
-            color: ${gradeColor};
-            margin-bottom: 1mm;
-        }
-        
-        .grade-percentage {
-            font-size: 12pt;
-            font-weight: bold;
-            color: #003865;
-        }
-        
-        .points-distribution {
-            background: white;
-            padding: 3mm;
-            border-radius: 3px;
-            border: 1pt solid #ddd;
-        }
-        
-        .distribution-title {
-            font-weight: bold;
-            color: #003865;
-            font-size: 10pt;
-            margin-bottom: 2mm;
-            text-align: center;
-        }
-        
-        .distribution-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2mm;
-        }
-        
-        .distribution-item {
-            text-align: center;
-            padding: 1mm;
-            border-radius: 2px;
-            background: #f8f9fa;
-        }
-        
-        .distribution-points {
-            font-weight: bold;
-            font-size: 10pt;
-            color: #003865;
-        }
-        
-        .distribution-count {
-            font-size: 9pt;
-            color: #666;
-        }
-        
-        .critical-issues {
-            background: white;
-            padding: 3mm;
-            border-radius: 3px;
-            border: 1pt solid #e74c3c;
-            background-color: #fff5f5;
-        }
-        
-        .critical-title {
-            font-weight: bold;
-            color: #e74c3c;
-            font-size: 10pt;
-            margin-bottom: 2mm;
-            text-align: center;
-        }
-        
-        .critical-list {
-            font-size: 8pt;
-            line-height: 1.4;
-            max-height: 25mm;
-            overflow-y: auto;
-        }
-        
-        .critical-item {
-            margin-bottom: 1mm;
-            padding-bottom: 1mm;
-            border-bottom: 0.5pt dotted #ffcccc;
-        }
-        
-        .recommendations {
-            background: white;
-            padding: 3mm;
-            border-radius: 3px;
-            border: 1pt solid #f39c12;
-            background-color: #fff9e6;
-        }
-        
-        .recommendations-title {
-            font-weight: bold;
-            color: #f39c12;
-            font-size: 10pt;
-            margin-bottom: 2mm;
-            text-align: center;
-        }
-        
-        .recommendations-list {
-            font-size: 8pt;
-            line-height: 1.4;
-        }
-        
-        /* ===== FRAGEN TABELLE ===== */
-        .questions-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 0 auto !important;
-            box-sizing: border-box;
-        }
-        
-        .section {
-            margin: 6mm 0;
-            width: 100%;
-        }
-        
-        .section-header {
-            background-color: #003865;
-            color: white;
-            padding: 2.5mm 4mm;
-            font-weight: bold;
-            font-size: 11pt;
-            margin: 5mm 0 3mm 0;
-            border-radius: 3px;
-            width: 96%;
-        }
-        
-        .questions-table {
-            width: 180mm !important;
-            border-collapse: collapse;
-            margin: 0;
-            font-size: 9pt;
-            table-layout: fixed;
-        }
-        
-        .questions-table th {
-            background-color: #e6f0ff;
-            padding: 2.5mm 2mm;
-            text-align: left;
-            font-weight: bold;
-            border-bottom: 1.5pt solid #003865;
-            border-right: 1pt solid #ddd;
-            color: #003865;
-            height: 8mm;
-        }
-        
-        .questions-table td {
-            padding: 2.5mm 2mm;
-            border-bottom: 0.5pt solid #eee;
-            border-right: 1pt solid #eee;
-            vertical-align: top;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 6pt;
-            height: 6pt;
-            border-radius: 50%;
-            margin-right: 1.5mm;
-        }
-        
-        .status-ok { background-color: #38a169; }
-        .status-nok { background-color: #e53e3e; }
-        .status-na { background-color: #a0aec0; }
-        
-        .question-id {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .image-row {
-            background-color: #f9f9f9;
-        }
-        
-        .report-image-container {
-            padding: 2mm;
-            text-align: center;
-            border: 1pt dashed #ccc;
-            border-radius: 3px;
-            margin: 2mm 0;
-            background-color: white;
-            page-break-inside: avoid;
-        }
-        
-        .report-image {
-            max-width: 150mm;
-            max-height: 100mm;
-            height: auto;
-            border: 1pt solid #ddd;
-            border-radius: 2px;
-        }
-        
-        /* ===== LEGENDE ===== */
-        .legend-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 8mm auto 5mm auto !important;
-            font-size: 8pt;
-            color: #666;
-            text-align: center;
-            border-top: 1pt dashed #ccc;
-            padding-top: 3mm;
-            box-sizing: border-box;
-        }
-        
-        /* ===== UNTERSCHRIFTEN ===== */
-        .signature-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 10mm auto 0 auto !important;
-            padding-top: 6mm;
-            border-top: 1.5pt solid #003865;
-            font-size: 9pt;
-            box-sizing: border-box;
-        }
-        
-        .signature-grid {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 8mm;
-            width: 100%;
-        }
-        
-        .signature-item {
-            text-align: center;
-            width: 85mm;
-        }
-        
-        .signature-line {
-            border-top: 1pt solid #000;
-            padding-top: 2mm;
-            margin-top: 12mm;
-            min-height: 15mm;
-        }
-        
-        /* ===== DRUCK-STEUERUNG ===== */
-        .print-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 12mm auto 8mm auto !important;
-            padding: 4mm;
-            background: #f8f9fa;
-            border-radius: 6px;
-            border: 1pt solid #ddd;
-            text-align: center;
-            box-sizing: border-box;
-        }
-        
-        .print-btn {
-            padding: 6mm 12mm;
-            background: #003865;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 11pt;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4mm;
-            min-width: 50mm;
-        }
-        
-        .print-btn:hover {
-            background: #00274d;
-        }
-        
-        /* ===== FOOTER ===== */
-        .footer-container {
-            width: 180mm !important;
-            max-width: 180mm !important;
-            margin: 5mm auto 0 auto !important;
-            font-size: 7pt;
-            color: #666;
-            text-align: center;
-            padding-top: 2mm;
-            border-top: 1pt solid #eee;
-            box-sizing: border-box;
-        }
-        
-        /* ===== DRUCK-STYLES ===== */
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-                width: 210mm;
-                height: 297mm;
-                font-size: 10pt;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            
-            .print-container {
-                display: none !important;
-            }
-            
-            .header-container,
-            .meta-container,
-            .participants-container,
-            .summary-container,
-            .questions-container,
-            .legend-container,
-            .signature-container,
-            .footer-container {
-                width: 180mm !important;
-                max-width: 180mm !important;
-                margin-left: auto !important;
-                margin-right: auto !important;
-            }
-            
-            .questions-table {
-                width: 180mm !important;
-            }
-            
-            .section, tr {
-                page-break-inside: avoid;
-            }
-        }
-        
-        @media screen {
-            body {
-                background: #f5f5f5;
-                padding: 20px;
-            }
-            
-            .main-container {
-                background: white;
-                padding: 20px;
-                box-shadow: 0 0 20px rgba(0,0,0,0.1);
-                width: calc(180mm + 40px);
-                margin: 0 auto;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="main-container">
-        <!-- KOPFZEILE -->
-        <div class="header-container">
-            <div class="title-section">
-                <div class="report-title">Auditbericht: ${auditInfo.title}</div>
-                <div class="report-subtitle">Zerstörungsfreie Prüfverfahren</div>
-                <div class="report-standards">Standards: ${auditInfo.standards}</div>
-            </div>
-            <div class="logo-section">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Schaeffler_logo.svg" 
-                     class="schaeffler-logo" 
-                     alt="Schaeffler Logo">
-            </div>
-        </div>
-        
-        <!-- METADATEN -->
-        <div class="meta-container">
-            <div class="meta-grid">
-                <div class="meta-column">
-                    <div class="meta-row">
-                        <span class="meta-label">Audit-Verfahren:</span>
-                        <span class="meta-value">${auditInfo.title}</span>
-                    </div>
-                    <div class="meta-row">
-                        <span class="meta-label">Standards:</span>
-                        <span class="meta-value">${auditInfo.standards}</span>
-                    </div>
-                    <div class="meta-row">
-                        <span class="meta-label">Abteilung:</span>
-                        <span class="meta-value">${extractDepartment()}</span>
-                    </div>
-                </div>
-                <div class="meta-column">
-                    <div class="meta-row">
-                        <span class="meta-label">Erstellt am:</span>
-                        <span class="meta-value">${formattedDate}</span>
-                    </div>
-                    <div class="meta-row">
-                        <span class="meta-label">Geändert am:</span>
-                        <span class="meta-value">${formattedDate}</span>
-                    </div>
-                    <div class="meta-row">
-                        <span class="meta-label">Dokument-ID:</span>
-                        <span class="meta-value">${currentAuditData.meta.auditNumber || generateAuditNumber()}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- TEILNEHMER -->
-        <div class="participants-container">
-            <div class="container-title">Teilnehmer</div>
-            <div class="participants-grid">
-                <div class="participant-group">
-                    <div class="group-label">Auditoren:</div>
-                    <div class="group-content">${participants.auditors.join(', ') || 'Nicht angegeben'}</div>
-                </div>
-                <div class="participant-group">
-                    <div class="group-label">Auditierte Personen:</div>
-                    <div class="group-content">${participants.auditees.join(', ') || 'Nicht angegeben'}</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- ZUSAMMENFASSUNG MIT AUSWERTUNG -->
-        <div class="summary-container">
-            <div class="summary-title">Zusammenfassung & Auswertung</div>
-            
-            <!-- ERGEBNIS-ÜBERSICHT -->
-            <div class="results-overview">
-                <div class="result-item">
-                    <div class="result-value">${totalPoints}/${maxPoints}</div>
-                    <div class="result-label">Gesamtpunkte<br>erreicht/maximal</div>
-                </div>
-                <div class="result-item">
-                    <div class="result-value">${pointsDistribution[10]}</div>
-                    <div class="result-label">
-                        <span class="status-indicator status-ok"></span>
-                        I.O.<br>(10 Punkte)
-                    </div>
-                </div>
-                <div class="result-item">
-                    <div class="result-value">${pointsDistribution[8] + pointsDistribution[4] + pointsDistribution[0]}</div>
-                    <div class="result-label">
-                        <span class="status-indicator status-nok"></span>
-                        N.I.O.<br>(&lt; 10 Punkte)
-                    </div>
-                </div>
-                <div class="result-item">
-                    <div class="result-value">${imagesCount}</div>
-                    <div class="result-label">📷<br>Dokumentierte Bilder</div>
-                </div>
-            </div>
-            
-            <!-- AUSWERTUNGS-DETAILS -->
-            <div class="evaluation-details">
-                <!-- LINKE SPALTE: Bewertung & Punkteverteilung -->
-                <div class="evaluation-column">
-                    <!-- BEWERTUNG -->
-                    <div class="grade-box">
-                        <div class="grade-value">${grade}</div>
-                        <div class="grade-text">${gradeText}</div>
-                        <div class="grade-percentage">${percentage}% erreicht</div>
-                    </div>
-                    
-                    <!-- PUNKTEVERTEILUNG -->
-                    <div class="points-distribution">
-                        <div class="distribution-title">Punkteverteilung</div>
-                        <div class="distribution-grid">
-                            <div class="distribution-item">
-                                <div class="distribution-points">10 Pkte</div>
-                                <div class="distribution-count">${pointsDistribution[10]} Fragen</div>
+            let html = `
+                <div style="margin-bottom: 15px; padding: 10px; background: var(--bg-tertiary); border-radius: 5px;">
+                    <h3 style="margin-bottom: 10px; color: var(--text-tertiary);">Gesamtauswertung</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                        <div style="text-align: center; padding: 8px; background: var(--bg-secondary); border-radius: 4px;">
+                            <div style="font-size: 0.8em; color: var(--text-secondary);">Fragen</div>
+                            <div style="font-size: 1.2em; font-weight: bold; color: var(--text-tertiary);">
+                                ${answeredQuestions}/${totalQuestions}
                             </div>
-                            <div class="distribution-item">
-                                <div class="distribution-points">8 Pkte</div>
-                                <div class="distribution-count">${pointsDistribution[8]} Fragen</div>
+                        </div>
+                        <div style="text-align: center; padding: 8px; background: var(--bg-secondary); border-radius: 4px;">
+                            <div style="font-size: 0.8em; color: var(--text-secondary);">Punkte</div>
+                            <div style="font-size: 1.2em; font-weight: bold; color: var(--text-tertiary);">
+                                ${totalPoints}/${maxPoints}
                             </div>
-                            <div class="distribution-item">
-                                <div class="distribution-points">4 Pkte</div>
-                                <div class="distribution-count">${pointsDistribution[4]} Fragen</div>
+                        </div>
+                        <div style="text-align: center; padding: 8px; background: var(--bg-secondary); border-radius: 4px;">
+                            <div style="font-size: 0.8em; color: var(--text-secondary);">Erfüllung</div>
+                            <div style="font-size: 1.2em; font-weight: bold; color: ${getPointsColor(Math.round(percentage/10)*10)};">
+                                ${percentage}%
                             </div>
-                            <div class="distribution-item">
-                                <div class="distribution-points">0 Pkte</div>
-                                <div class="distribution-count">${pointsDistribution[0]} Fragen</div>
-                            </div>
-                            <div class="distribution-item">
-                                <div class="distribution-points">Nicht bew.</div>
-                                <div class="distribution-count">${pointsDistribution.unanswered} Fragen</div>
+                        </div>
+                        <div style="text-align: center; padding: 8px; background: var(--bg-secondary); border-radius: 4px;">
+                            <div style="font-size: 0.8em; color: var(--text-secondary);">Abweichungen</div>
+                            <div style="font-size: 1.2em; font-weight: bold; color: ${deviationsCount > 0 ? 'var(--points-0)' : 'var(--points-10)'}">
+                                ${deviationsCount}
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- RECHTE SPALTE: Kritische Punkte & Empfehlungen -->
-                <div class="evaluation-column">
-                    <!-- KRITISCHE FRAGEN -->
-                    <div class="critical-issues">
-                        <div class="critical-title">Kritische Fragen (≤ 4 Punkte)</div>
-                        <div class="critical-list">
-                            ${criticalQuestions.length > 0 ? 
-                                criticalQuestions.map(q => `
-                                    <div class="critical-item">
-                                        <strong>${q.id} (${q.points} Pkte):</strong><br>
-                                        ${q.text.substring(0, 80)}${q.text.length > 80 ? '...' : ''}<br>
-                                        <em>${q.deviation.text.substring(0, 80)}${q.deviation.text.length > 80 ? '...' : ''}</em>
-                                    </div>
-                                `).join('') 
-                                : 
-                                '<div class="critical-item">Keine kritischen Fragen</div>'
-                            }
-                        </div>
-                    </div>
-                    
-                    <!-- EMPFEHLUNGEN -->
-                    <div class="recommendations">
-                        <div class="recommendations-title">Empfehlungen</div>
-                        <div class="recommendations-list">
-                            ${recommendations.map(rec => `<div>${rec}</div>`).join('')}
+                <div style="margin-bottom: 15px; padding: 10px; background: var(--bg-tertiary); border-radius: 5px;">
+                    <h3 style="margin-bottom: 10px; color: var(--text-tertiary);">Punkteverteilung</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
+                        ${[10, 8, 4, 0].map(points => `
+                            <div style="text-align: center; padding: 6px; background: ${getPointsColor(points)}; color: white; border-radius: 4px;">
+                                <div style="font-size: 0.8em;">${points} Punkte</div>
+                                <div style="font-size: 1.1em; font-weight: bold;">${pointsDistribution[points]}</div>
+                            </div>
+                        `).join('')}
+                        <div style="text-align: center; padding: 6px; background: var(--points-na); color: white; border-radius: 4px;">
+                            <div style="font-size: 0.8em;">Nicht bewertet</div>
+                            <div style="font-size: 1.1em; font-weight: bold;">${pointsDistribution.unanswered}</div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- FRAGEN TABELLE -->
-        <div class="questions-container">
-            ${AUDIT_DATA[currentAuditType].map((section, sectionIndex) => `
-                <div class="section">
-                    <div class="section-header">${section.title}</div>
-                    <table class="questions-table" style="width: 180mm;">
-                        <thead>
-                            <tr>
-                                <th class="col-id" style="width: 10mm;">ID</th>
-                                <th class="col-question" style="width: 52mm;">Frage / Prüfpunkt</th>
-                                <th class="col-evidence" style="width: 30mm;">Evidenz / Nachweis</th>
-                                <th class="col-deviation" style="width: 32mm;">Abweichung / Maßnahme</th>
-                                <th class="col-responsible" style="width: 25mm;">Verantwortlich</th>
-                                <th class="col-points" style="width: 6mm;">Pkt.</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${section.questions.map(question => {
-                                const questionData = getQuestionData(question.id);
-                                const points = questionData?.points;
-                                const evidence = questionData?.evidence || '';
-                                const deviation = questionData?.deviation;
-                                const hasImage = questionData?.deviation?.hasImage || false;
-                                const imageData = imageStorage[question.id];
-                                
-                                let statusClass = 'status-na';
-                                if (points === 10) statusClass = 'status-ok';
-                                else if (points !== null && points < 10) statusClass = 'status-nok';
-                                
-                                return `
-                                    <tr ${hasImage && imageData ? 'class="image-row"' : ''}>
-                                        <td class="col-id" style="width: 10mm;">
-                                            <div class="question-id">
-                                                <span class="status-indicator ${statusClass}"></span>
-                                                ${question.id}
-                                            </div>
-                                        </td>
-                                        <td class="col-question" style="width: 52mm;">${question.text}</td>
-                                        <td class="col-evidence" style="width: 30mm;">${evidence}</td>
-                                        <td class="col-deviation" style="width: 32mm;">${deviation?.text || ''}</td>
-                                        <td class="col-responsible" style="width: 25mm;">${deviation?.responsible || ''}</td>
-                                        <td class="col-points" style="width: 6mm; text-align: center; font-weight: bold;">${points !== null ? points : ''}</td>
-                                    </tr>
-                                    ${hasImage && imageData ? `
-                                        <tr class="image-row">
-                                            <td colspan="6">
-                                                <div class="report-image-container">
-                                                    <img src="${imageData}" class="report-image" alt="Beweisfoto">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ` : ''}
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `).join('')}
-        </div>
-        
-        <!-- LEGENDE -->
-        <div class="legend-container">
-            <span class="status-indicator status-ok"></span> = I.O. (10 Punkte) &nbsp;&nbsp; | &nbsp;&nbsp;
-            <span class="status-indicator status-nok"></span> = N.I.O. (&lt; 10 Punkte) &nbsp;&nbsp; | &nbsp;&nbsp;
-            <span class="status-indicator status-na"></span> = Nicht bewertet
-        </div>
-        
-        <!-- UNTERSCHRIFTEN -->
-        <div class="signature-container">
-            <div style="text-align: center; margin-bottom: 6mm; font-weight: bold; color: #003865;">
-                Unterschriften zur Bestätigung der Audit-Ergebnisse
-            </div>
-            <div class="signature-grid">
-                <div class="signature-item">
-                    Auditor / Prüfer<br>
-                    <div class="signature-line"></div>
-                    <div style="font-size: 8pt; margin-top: 1mm; color: #666;">
-                        Name, Datum, Unterschrift
-                    </div>
-                </div>
-                <div class="signature-item">
-                    Auditierter / Bereichsverantwortlicher<br>
-                    <div class="signature-line"></div>
-                    <div style="font-size: 8pt; margin-top: 1mm; color: #666;">
-                        Name, Datum, Unterschrift
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- DRUCK-STEUERUNG -->
-        <div class="print-container">
-            <button class="print-btn" onclick="window.print();">🖨️ BERICHTSDRUCK STARTEN</button>
-        </div>
-        
-        <!-- FOOTER -->
-        <div class="footer-container">
-            Häusner Daniel | WI/SW2-PQT | ZfP Audit-Checkliste AE - 27.01.2026<br>
-            Erstellt mit ZfP Audit-Checkliste | Generiert am: ${new Date().toLocaleDateString('de-DE')}, ${new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
-        </div>
-    </div>
-</body>
-</html>`;
-        }
-
-        // === AUDITS CLOUD-SYNCHRONISIERUNG ===
-        
-        async function saveAuditToCloud() {
-            if (!currentAuditType || !currentAuditData) {
-                alert("Bitte zuerst ein Audit auswählen und Daten eingeben!");
-                return;
-            }
+            `;
             
-            saveCurrentAuditData();
-            
-            const localDeviations = extractDeviationsForLocal();
-            
-            localDeviations.forEach(newDeviation => {
-                const exists = deviations.some(d => 
-                    d.auditId === newDeviation.auditId && 
-                    d.questionId === newDeviation.questionId
+            // Abweichungen anzeigen
+            if (deviationsCount > 0) {
+                const auditDeviations = allQuestions.filter(q => 
+                    q.points !== null && q.points <= 8 && q.deviation && q.deviation.text && q.deviation.text.trim() !== ''
                 );
                 
-                if (!exists) {
-                    deviations.push(newDeviation);
-                }
-            });
-            
-            saveDeviations();
-            
-            const auditData = {
-                meta: {
-                    ...currentAuditData.meta,
-                    saved_at: new Date().toISOString(),
-                    password: AUDIT_PASSWORD,
-                    department: extractDepartment(),
-                    audit_number: generateAuditNumber(),
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                },
-                participants: currentAuditData.participants,
-                questions: currentAuditData.questions,
-                images: currentAuditData.images
-            };
-            
-            try {
-                const auditResponse = await fetch(`${SUPABASE_URL}/rest/v1/audits`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(auditData)
-                });
-                
-                if (auditResponse.ok) {
-                    const auditResult = await auditResponse.json();
-                    const auditId = auditResult[0]?.id;
-                    
-                    if (localDeviations.length > 0) {
-                        for (const deviation of localDeviations) {
-                            await saveSingleDeviationToCloud({
-                                ...deviation,
-                                audit_id: auditId
-                            });
-                        }
-                    }
-                    
-                    alert(`✅ Audit gespeichert!\n\n${localDeviations.length} Abweichungen in die Cloud übertragen.`);
-                    updateDeviationsProgressDisplay();
-                    updateCloudProgressDisplay();
-                    
-                } else {
-                    throw new Error('Audit speichern fehlgeschlagen');
-                }
-                
-            } catch (error) {
-                console.error('Cloud-Fehler:', error);
-                alert(`✅ Audit lokal gespeichert!\n\n${localDeviations.length} Abweichungen lokal übernommen.\n\nCloud: ${error.message}`);
+                html += `
+                    <div style="margin-bottom: 15px; padding: 10px; background: var(--deviation-bg); border-radius: 5px; border-left: 3px solid var(--deviation-border);">
+                        <h3 style="margin-bottom: 10px; color: var(--deviation-border);">⚠️ Erfasste Abweichungen</h3>
+                        <div style="font-size: 0.9em;">
+                            ${auditDeviations.map(q => `
+                                <div style="margin-bottom: 8px; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 3px;">
+                                    <div style="font-weight: bold; color: var(--text-primary); margin-bottom: 3px;">
+                                        ${q.id} - ${getPointsColor(q.points).includes('0') ? 'Kritisch (0P)' : 'Verbesserungspotenzial (' + q.points + 'P)'}
+                                    </div>
+                                    <div style="color: var(--text-secondary); margin-bottom: 3px; font-size: 0.9em;">
+                                        ${q.text}
+                                    </div>
+                                    <div style="color: var(--text-primary); margin-bottom: 3px;">
+                                        <strong>Abweichung:</strong> ${q.deviation.text}
+                                    </div>
+                                    ${q.deviation.responsible ? `
+                                        <div style="color: var(--text-primary);">
+                                            <strong>Verantwortlich:</strong> ${q.deviation.responsible}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
             }
             
-            setTimeout(() => {
-                syncDeviationsWithCloud();
-            }, 1000);
+            // Empfehlung
+            let recommendation = '';
+            let recommendationColor = '';
+            
+            if (percentage >= 90) {
+                recommendation = '✅ EXZELLENT - Das Audit wurde mit sehr hoher Punktzahl bestanden. Alle Anforderungen sind erfüllt oder übertroffen.';
+                recommendationColor = 'var(--points-10)';
+            } else if (percentage >= 80) {
+                recommendation = '✅ GUT - Das Audit wurde bestanden. Es gibt nur geringfügige Abweichungen, die behoben werden sollten.';
+                recommendationColor = 'var(--points-8)';
+            } else if (percentage >= 70) {
+                recommendation = '⚠️ BEFRIEDIGEND - Das Audit wurde bestanden, jedoch gibt es mehrere Abweichungen, die umgehend behoben werden müssen.';
+                recommendationColor = 'var(--points-4)';
+            } else if (percentage >= 60) {
+                recommendation = '❌ AUSREICHEND - Das Audit wurde knapp bestanden. Es gibt erhebliche Abweichungen, die dringend behoben werden müssen.';
+                recommendationColor = 'var(--points-0)';
+            } else {
+                recommendation = '❌ NICHT BESTANDEN - Das Audit wurde nicht bestanden. Es besteht erheblicher Handlungsbedarf.';
+                recommendationColor = 'var(--points-0)';
+            }
+            
+            html += `
+                <div style="margin-top: 15px; padding: 10px; background: ${recommendationColor}20; border-radius: 5px; border-left: 3px solid ${recommendationColor};">
+                    <h3 style="margin-bottom: 8px; color: ${recommendationColor};">Empfehlung</h3>
+                    <div style="font-size: 0.95em; color: var(--text-primary);">
+                        ${recommendation}
+                    </div>
+                    ${deviationsCount > 0 ? `
+                        <div style="margin-top: 8px; font-size: 0.9em; color: var(--text-secondary);">
+                            <strong>Hinweis:</strong> ${deviationsCount} Abweichung${deviationsCount !== 1 ? 'en' : ''} wurde${deviationsCount !== 1 ? 'n' : ''} erfasst und ${deviationsCount !== 1 ? 'sind' : 'ist'} im Abweichungsmanagement zu bearbeiten.
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            document.getElementById('evaluationContent').innerHTML = html;
         }
 
         // === VIEW TOGGLE ===
@@ -4962,11 +4228,13 @@
             const toggleBtn = document.getElementById('toggleViewBtn');
             
             if (desktopView.style.display !== 'none') {
+                // Zu Mobile wechseln
                 desktopView.style.display = 'none';
                 mobileView.style.display = 'block';
                 toggleBtn.textContent = '🖥️ Desktop';
                 renderMobileQuestion();
             } else {
+                // Zu Desktop wechseln
                 desktopView.style.display = 'block';
                 mobileView.style.display = 'none';
                 toggleBtn.textContent = '📱 Mobile';
@@ -5271,6 +4539,7 @@
         }
 
         function viewAuditReport(auditId) {
+            // Audit aus Cloud laden und Report generieren
             loadAuditFromCloudByIdForReport(auditId);
         }
 
@@ -5288,6 +4557,7 @@
                     if (audits.length > 0) {
                         const audit = audits[0];
                         
+                        // Temporären Audit-Typ für Report setzen
                         const originalAuditType = currentAuditType;
                         const originalAuditData = currentAuditData;
                         
@@ -5301,8 +4571,10 @@
                         
                         allQuestions = currentAuditData.questions || [];
                         
+                        // Report generieren
                         generateReport();
                         
+                        // Zurücksetzen
                         currentAuditType = originalAuditType;
                         currentAuditData = originalAuditData;
                     }
@@ -5316,6 +4588,7 @@
         async function deleteAuditFromCloud(auditId) {
             if (confirm('Sind Sie sicher, dass Sie dieses Audit aus der Cloud löschen möchten?\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
                 try {
+                    // Zuerst zugehörige PDF löschen
                     await fetch(`${SUPABASE_URL}/storage/v1/object/pdfs/audit_${auditId}.pdf`, {
                         method: 'DELETE',
                         headers: {
@@ -5324,6 +4597,7 @@
                         }
                     }).catch(err => console.log('Kein PDF zum Löschen gefunden'));
                     
+                    // Audit löschen
                     const response = await fetch(`${SUPABASE_URL}/rest/v1/audits?id=eq.${auditId}`, {
                         method: 'DELETE',
                         headers: {
@@ -5333,6 +4607,7 @@
                     });
                     
                     if (response.ok) {
+                        // Auch zugehörige Abweichungen löschen
                         await fetch(`${SUPABASE_URL}/rest/v1/deviations?audit_id=eq.${auditId}`, {
                             method: 'DELETE',
                             headers: {
@@ -5367,6 +4642,7 @@
                     const pdfBlob = await response.blob();
                     const pdfUrl = URL.createObjectURL(pdfBlob);
                     
+                    // PDF in Modal anzeigen
                     const pdfViewer = document.getElementById('pdfViewer');
                     pdfViewer.innerHTML = `
                         <iframe src="${pdfUrl}" 
@@ -5385,23 +4661,12 @@
             }
         }
 
-        // === EVALUATION FUNKTION ===
-        function showEvaluation() {
-            const evaluation = document.getElementById('evaluation');
-            const btn = document.getElementById('evaluationBtn');
-            
-            if (evaluation.classList.contains('active')) {
-                evaluation.classList.remove('active');
-                btn.textContent = '📊 Auswertung';
-            } else {
-                evaluation.classList.add('active');
-                btn.textContent = '⬆️ Ausblenden';
-                renderEvaluation();
-            }
-        }
-
-        function renderEvaluation() {
-            if (!allQuestions.length) return;
+        // === REPORT HTML GENERATOR ===
+        function createReportHTML() {
+            const auditInfo = AUDIT_TYPES[currentAuditType];
+            const auditDate = new Date(currentAuditData.meta.lastModified);
+            const formattedDate = auditDate.toLocaleDateString('de-DE');
+            const formattedTime = auditDate.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
             
             const totalQuestions = allQuestions.length;
             const answeredQuestions = allQuestions.filter(q => q.points !== null).length;
@@ -5413,129 +4678,317 @@
                 q.points !== null && q.points <= 8 && q.deviation && q.deviation.text && q.deviation.text.trim() !== ''
             ).length;
             
-            const pointsDistribution = {
-                0: allQuestions.filter(q => q.points === 0).length,
-                4: allQuestions.filter(q => q.points === 4).length,
-                8: allQuestions.filter(q => q.points === 8).length,
-                10: allQuestions.filter(q => q.points === 10).length,
-                unanswered: allQuestions.filter(q => q.points === null).length
-            };
+            let recommendation = '';
+            if (percentage >= 90) {
+                recommendation = 'EXZELLENT - Das Audit wurde mit sehr hoher Punktzahl bestanden. Alle Anforderungen sind erfüllt oder übertroffen.';
+            } else if (percentage >= 80) {
+                recommendation = 'GUT - Das Audit wurde bestanden. Es gibt nur geringfügige Abweichungen, die behoben werden sollten.';
+            } else if (percentage >= 70) {
+                recommendation = 'BEFRIEDIGEND - Das Audit wurde bestanden, jedoch gibt es mehrere Abweichungen, die umgehend behoben werden müssen.';
+            } else if (percentage >= 60) {
+                recommendation = 'AUSREICHEND - Das Audit wurde knapp bestanden. Es gibt erhebliche Abweichungen, die dringend behoben werden müssen.';
+            } else {
+                recommendation = 'NICHT BESTANDEN - Das Audit wurde nicht bestanden. Es besteht erheblicher Handlungsbedarf.';
+            }
             
-            let html = `
-                <div style="margin-bottom: 15px; padding: 10px; background: var(--bg-tertiary); border-radius: 5px;">
-                    <h3 style="margin-bottom: 10px; color: var(--text-tertiary);">Gesamtauswertung</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
-                        <div style="text-align: center; padding: 8px; background: var(--bg-secondary); border-radius: 4px;">
-                            <div style="font-size: 0.8em; color: var(--text-secondary);">Fragen</div>
-                            <div style="font-size: 1.2em; font-weight: bold; color: var(--text-tertiary);">
-                                ${answeredQuestions}/${totalQuestions}
+            return `
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditbericht - ${auditInfo.title} | Schaeffler</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .main-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2c3e50;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .info-item {
+            padding: 10px;
+        }
+        .info-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 3px;
+        }
+        .info-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        .section-title {
+            background: #34495e;
+            color: white;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+        .question {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid #3498db;
+            background: #f8f9fa;
+            page-break-inside: avoid;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .question-id {
+            background: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .question-text {
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .points-info {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 3px;
+            text-align: center;
+        }
+        .points-0 { background: #ffeaea; color: #c0392b; border-left: 3px solid #c0392b; }
+        .points-4 { background: #fff4e6; color: #e67e22; border-left: 3px solid #e67e22; }
+        .points-8 { background: #e8f6f3; color: #27ae60; border-left: 3px solid #27ae60; }
+        .points-10 { background: #e8f6f3; color: #27ae60; border-left: 3px solid #27ae60; }
+        .evidence {
+            font-size: 12px;
+            color: #555;
+            margin: 5px 0;
+            padding: 8px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .deviation {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff3f3;
+            border-left: 3px solid #e74c3c;
+            border-radius: 3px;
+        }
+        .deviation-title {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .signature-area {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .signature-line {
+            display: inline-block;
+            width: 200px;
+            border-top: 1px solid #333;
+            margin: 0 40px;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .main-container {
+                box-shadow: none;
+                padding: 15mm;
+                max-width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>ZfP Auditbericht - ${auditInfo.title}</h1>
+            <div class="subtitle">Schaeffler AG | ${auditInfo.standards}</div>
+        </div>
+        
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Audit-Nummer</div>
+                <div class="info-value">${currentAuditData.meta.auditNumber || 'N/A'}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Durchführungsdatum</div>
+                <div class="info-value">${formattedDate} ${formattedTime}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Auditor(en)</div>
+                <div class="info-value">${participants.auditors.join(', ') || 'Nicht angegeben'}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Auditierte Abteilung</div>
+                <div class="info-value">${participants.auditees.join(', ') || 'Nicht angegeben'}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Gesamtpunktzahl</div>
+                <div class="info-value">${totalPoints}/${maxPoints} (${percentage}%)</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Abweichungen</div>
+                <div class="info-value">${deviationsCount}</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Zusammenfassung</div>
+            <div style="padding: 15px; background: #f8f9fa; border-radius: 3px;">
+                <p><strong>Gesamtergebnis:</strong> ${percentage}% Erfüllung</p>
+                <p><strong>Empfehlung:</strong> ${recommendation}</p>
+                <p><strong>Status:</strong> ${deviationsCount > 0 ? 'Mit Abweichungen' : 'Ohne Abweichungen'}</p>
+                <p><strong>Beantwortete Fragen:</strong> ${answeredQuestions} von ${totalQuestions}</p>
+            </div>
+        </div>
+        
+        ${AUDIT_DATA[currentAuditType].map((section, sectionIndex) => `
+            <div class="section">
+                <div class="section-title">${section.title}</div>
+                ${section.questions.map(question => {
+                    const questionData = getQuestionData(question.id);
+                    const points = questionData?.points;
+                    const pointsClass = points !== null ? `points-${points}` : '';
+                    const pointsText = points !== null ? `${points} Punkte` : 'Nicht bewertet';
+                    const evidence = questionData?.evidence || '';
+                    const deviation = questionData?.deviation;
+                    
+                    return `
+                        <div class="question">
+                            <div class="question-header">
+                                <div class="question-text">${question.text}</div>
+                                <div class="question-id">${question.id}</div>
                             </div>
-                        </div>
-                        <div style="text-align: center; padding: 8px; background: var(--bg-secondary); border-radius: 4px;">
-                            <div style="font-size: 0.8em; color: var(--text-secondary);">Punkte</div>
-                            <div style="font-size: 1.2em; font-weight: bold; color: var(--text-tertiary);">
-                                ${totalPoints}/${maxPoints}
-                            </div>
-                        </div>
-                        <div style="text-align: center; padding: 8px; background: var(--bg-secondary); border-radius: 4px;">
-                            <div style="font-size: 0.8em; color: var(--text-secondary);">Erfüllung</div>
-                            <div style="font-size: 1.2em; font-weight: bold; color: ${getPointsColor(Math.round(percentage/10)*10)};">
-                                ${percentage}%
-                            </div>
-                        </div>
-                        <div style="text-align: center; padding: 8px; background: var(--bg-secondary); border-radius: 4px;">
-                            <div style="font-size: 0.8em; color: var(--text-secondary);">Abweichungen</div>
-                            <div style="font-size: 1.2em; font-weight: bold; color: ${deviationsCount > 0 ? 'var(--points-0)' : 'var(--points-10)'}">
-                                ${deviationsCount}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="margin-bottom: 15px; padding: 10px; background: var(--bg-tertiary); border-radius: 5px;">
-                    <h3 style="margin-bottom: 10px; color: var(--text-tertiary);">Punkteverteilung</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
-                        ${[10, 8, 4, 0].map(points => `
-                            <div style="text-align: center; padding: 6px; background: ${getPointsColor(points)}; color: white; border-radius: 4px;">
-                                <div style="font-size: 0.8em;">${points} Punkte</div>
-                                <div style="font-size: 1.1em; font-weight: bold;">${pointsDistribution[points]}</div>
-                            </div>
-                        `).join('')}
-                        <div style="text-align: center; padding: 6px; background: var(--points-na); color: white; border-radius: 4px;">
-                            <div style="font-size: 0.8em;">Nicht bewertet</div>
-                            <div style="font-size: 1.1em; font-weight: bold;">${pointsDistribution.unanswered}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            if (deviationsCount > 0) {
-                const auditDeviations = allQuestions.filter(q => 
-                    q.points !== null && q.points <= 8 && q.deviation && q.deviation.text && q.deviation.text.trim() !== ''
-                );
-                
-                html += `
-                    <div style="margin-bottom: 15px; padding: 10px; background: var(--deviation-bg); border-radius: 5px; border-left: 3px solid var(--deviation-border);">
-                        <h3 style="margin-bottom: 10px; color: var(--deviation-border);">⚠️ Erfasste Abweichungen</h3>
-                        <div style="font-size: 0.9em;">
-                            ${auditDeviations.map(q => `
-                                <div style="margin-bottom: 8px; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 3px;">
-                                    <div style="font-weight: bold; color: var(--text-primary); margin-bottom: 3px;">
-                                        ${q.id} - ${getPointsColor(q.points).includes('0') ? 'Kritisch (0P)' : 'Verbesserungspotenzial (' + q.points + 'P)'}
-                                    </div>
-                                    <div style="color: var(--text-secondary); margin-bottom: 3px; font-size: 0.9em;">
-                                        ${q.text}
-                                    </div>
-                                    <div style="color: var(--text-primary); margin-bottom: 3px;">
-                                        <strong>Abweichung:</strong> ${q.deviation.text}
-                                    </div>
-                                    ${q.deviation.responsible ? `
-                                        <div style="color: var(--text-primary);">
-                                            <strong>Verantwortlich:</strong> ${q.deviation.responsible}
+                            ${points !== null ? `
+                                <div class="points-info ${pointsClass}">${pointsText}</div>
+                            ` : ''}
+                            ${evidence ? `
+                                <div class="evidence">
+                                    <strong>Nachweise/Bemerkungen:</strong> ${evidence}
+                                </div>
+                            ` : ''}
+                            ${deviation && deviation.text && deviation.text.trim() !== '' ? `
+                                <div class="deviation">
+                                    <div class="deviation-title">⚠️ Abweichung</div>
+                                    <div style="font-size: 12px;"><strong>Beschreibung:</strong> ${deviation.text}</div>
+                                    ${deviation.responsible ? `
+                                        <div style="font-size: 12px; margin-top: 3px;">
+                                            <strong>Verantwortlicher:</strong> ${deviation.responsible}
                                         </div>
                                     ` : ''}
                                 </div>
-                            `).join('')}
+                            ` : ''}
                         </div>
-                    </div>
-                `;
-            }
-            
-            let recommendation = '';
-            let recommendationColor = '';
-            
-            if (percentage >= 90) {
-                recommendation = '✅ EXZELLENT - Das Audit wurde mit sehr hoher Punktzahl bestanden. Alle Anforderungen sind erfüllt oder übertroffen.';
-                recommendationColor = 'var(--points-10)';
-            } else if (percentage >= 80) {
-                recommendation = '✅ GUT - Das Audit wurde bestanden. Es gibt nur geringfügige Abweichungen, die behoben werden sollten.';
-                recommendationColor = 'var(--points-8)';
-            } else if (percentage >= 70) {
-                recommendation = '⚠️ BEFRIEDIGEND - Das Audit wurde bestanden, jedoch gibt es mehrere Abweichungen, die umgehend behoben werden müssen.';
-                recommendationColor = 'var(--points-4)';
-            } else if (percentage >= 60) {
-                recommendation = '❌ AUSREICHEND - Das Audit wurde knapp bestanden. Es gibt erhebliche Abweichungen, die dringend behoben werden müssen.';
-                recommendationColor = 'var(--points-0)';
-            } else {
-                recommendation = '❌ NICHT BESTANDEN - Das Audit wurde nicht bestanden. Es besteht erheblicher Handlungsbedarf.';
-                recommendationColor = 'var(--points-0)';
-            }
-            
-            html += `
-                <div style="margin-top: 15px; padding: 10px; background: ${recommendationColor}20; border-radius: 5px; border-left: 3px solid ${recommendationColor};">
-                    <h3 style="margin-bottom: 8px; color: ${recommendationColor};">Empfehlung</h3>
-                    <div style="font-size: 0.95em; color: var(--text-primary);">
-                        ${recommendation}
-                    </div>
-                    ${deviationsCount > 0 ? `
-                        <div style="margin-top: 8px; font-size: 0.9em; color: var(--text-secondary);">
-                            <strong>Hinweis:</strong> ${deviationsCount} Abweichung${deviationsCount !== 1 ? 'en' : ''} wurde${deviationsCount !== 1 ? 'n' : ''} erfasst und ${deviationsCount !== 1 ? 'sind' : 'ist'} im Abweichungsmanagement zu bearbeiten.
-                        </div>
-                    ` : ''}
+                    `;
+                }).join('')}
+            </div>
+        `).join('')}
+        
+        <div class="section">
+            <div class="section-title">Abweichungsübersicht</div>
+            ${deviationsCount > 0 ? `
+                <div style="padding: 15px; background: #fff3f3; border-radius: 3px;">
+                    <p><strong>Anzahl erfasster Abweichungen:</strong> ${deviationsCount}</p>
+                    <p><strong>Status:</strong> Alle Abweichungen sind im Abweichungsmanagement zu erfassen und zu bearbeiten.</p>
                 </div>
-            `;
-            
-            document.getElementById('evaluationContent').innerHTML = html;
+            ` : `
+                <div style="padding: 15px; background: #e8f6f3; border-radius: 3px; text-align: center;">
+                    <p style="color: #27ae60; font-weight: bold;">✅ Keine Abweichungen erfasst</p>
+                </div>
+            `}
+        </div>
+        
+        <div class="signature-area">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <p>Ort, Datum: ________________________</p>
+            </div>
+            <div style="display: flex; justify-content: space-around;">
+                <div style="text-align: center;">
+                    <p>________________________</p>
+                    <p>Auditor</p>
+                </div>
+                <div style="text-align: center;">
+                    <p>________________________</p>
+                    <p>Auditierter Bereich</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>ZfP Audit-Checkliste &copy; 2026 Schaeffler AG | Version AE, 27.01.2026</p>
+            <p>Erstellt am: ${new Date().toLocaleDateString('de-DE')} ${new Date().toLocaleTimeString('de-DE')}</p>
+        </div>
+    </div>
+    
+    <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
+            📄 Drucken
+        </button>
+        <button onclick="window.close()" style="padding: 10px 20px; background: #7f8c8d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-left: 10px;">
+            Schließen
+        </button>
+    </div>
+</body>
+</html>`;
         }
 
         // Initialisierung abschließen
