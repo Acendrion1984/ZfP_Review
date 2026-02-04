@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZfP Audit-Checkliste - Schaeffler</title>
+    <title>ZfP Review Audit - Schaeffler Technologies AG & Co. KG</title>
     <style>
         /* === DARK MODE VARIABLEN === */
-        :root {
+        :root,
+html[data-theme="light"] {
             /* Light Mode Variablen */
-            --bg-primary: #f5f5f5;
+            --bg-primary: #eef8ee;      /* sehr helles grün */
             --bg-secondary: #ffffff;
-            --bg-tertiary: #f8f9fa;
+            --bg-tertiary: #f3fbf3;     /* sehr helles grün */
             --text-primary: #333333;
             --text-secondary: #7f8c8d;
-            --text-tertiary: #2c3e50;
+            --text-tertiary: #111111;   /* NICHT blau */
             --border-color: #bdc3c7;
             --border-light: #ecf0f1;
             --shadow-color: rgba(0,0,0,0.1);
             
             /* Header */
-            --header-border: #2c3e50;
-            --header-bg: #34495e;
-            
+--header-border: #0f2a1a;
+--header-bg: #1f6f43;
             /* Buttons */
             --btn-back: #7f8c8d;
             --btn-report: #8e44ad;
@@ -94,21 +94,20 @@
             --audit-deviations-glass: #c0392b;  /* dunkleres Rot */
         }
         
-        @media (prefers-color-scheme: dark) {
-            :root {
+html[data-theme="dark"] {
                 /* Dark Mode Variablen */
                 --bg-primary: #121212;
                 --bg-secondary: #1e1e1e;
                 --bg-tertiary: #2d2d2d;
                 --text-primary: #e0e0e0;
                 --text-secondary: #a0a0a0;
-                --text-tertiary: #3498db;
+                --text-tertiary: #ffffff;   /* NICHT blau */
                 --border-color: #444444;
                 --border-light: #333333;
                 --shadow-color: rgba(0,0,0,0.3);
                 
                 /* Header */
-                --header-border: #3498db;
+                --header-border: #1f2a66;
                 --header-bg: #2c3e50;
                 
                 /* Buttons - Darker versions */
@@ -180,7 +179,84 @@
                 --audit-cloud-glass: #e67e22E6;
                 --audit-deviations-glass: #c0392bE6;
             }
-        }
+/* Fallback: wenn KEIN data-theme gesetzt ist -> System Dark nutzen */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* Dark Mode Variablen (identisch wie oben) */
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --bg-tertiary: #2d2d2d;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-tertiary: #ffffff;
+    --border-color: #444444;
+    --border-light: #333333;
+    --shadow-color: rgba(0,0,0,0.3);
+
+    --header-border: #ffffff;
+    --header-bg: #2c3e50;
+
+    --btn-back: #5d6d7e;
+    --btn-report: #6c3483;
+    --btn-danger: #c0392b;
+    --btn-info: #117a8b;
+    --btn-desktop: #b9770e;
+    --btn-success: #229954;
+    --btn-warning: #b9770e;
+    --btn-export: #2874a6;
+    --btn-import: #7d3c98;
+    --btn-cloud: #16a085;
+    --btn-audits: #6c3483;
+    --btn-deviations: #c0392b;
+    --btn-pdf: #c0392b;
+
+    --audit-et: #2874a6;
+    --audit-mt: #c0392b;
+    --audit-ne: #239b56;
+    --audit-ut: #7d3c98;
+    --audit-cloud: #e67e22;
+    --audit-deviations: #c0392b;
+
+    --progress-bg: #34495e;
+    --progress-100: #27ae60;
+    --progress-75: #2ecc71;
+    --progress-50: #f39c12;
+    --progress-25: #e67e22;
+    --progress-0: #c0392b;
+
+    --question-border: #3498db;
+    --question-bg: #2d2d2d;
+    --points-0: #e74c3c;
+    --points-4: #f39c12;
+    --points-8: #2ecc71;
+    --points-10: #27ae60;
+    --points-na: #7f8c8d;
+
+    --deviation-bg: #3a1f1f;
+    --deviation-border: #c0392b;
+    --deviation-open: #c0392b;
+    --deviation-closed: #229954;
+    --deviation-completed: #5d6d7e;
+
+    --input-bg: #2d2d2d;
+    --input-border: #444444;
+    --input-text: #e0e0e0;
+
+    --modal-bg: rgba(0,0,0,0.9);
+    --modal-content-bg: #1e1e1e;
+
+    --status-ok: #27ae60;
+    --status-nok: #e74c3c;
+    --status-na: #7f8c8d;
+
+    --audit-et-glass: #2874a6E6;
+    --audit-mt-glass: #c0392bE6;
+    --audit-ne-glass: #239b56E6;
+    --audit-ut-glass: #7d3c98E6;
+    --audit-cloud-glass: #e67e22E6;
+    --audit-deviations-glass: #c0392bE6;
+  }
+}
         
         /* === ALLE EXISTIERENDEN STYLES === */
         * {
@@ -207,6 +283,7 @@
             border-radius: 6px;
             box-shadow: 0 2px 8px var(--shadow-color);
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* Theme Toggle innerhalb der Containerkarte */
         }
         
         header {
@@ -228,6 +305,55 @@
             margin-bottom: 8px;
         }
 
+        /* === THEME TOGGLE (INNERHALB CONTAINER) === */
+        .theme-toggle {
+          position: absolute;
+          left: 12px;
+          bottom: 12px;
+          z-index: 50;
+
+          width: 34px;
+          height: 34px;
+          border-radius: 10px;
+          border: 1px solid var(--border-color);
+          background: var(--bg-secondary);
+          color: var(--text-primary);
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          cursor: pointer;
+          box-shadow: 0 2px 10px var(--shadow-color);
+          font-size: 16px;
+        }
+        .theme-toggle:hover { opacity: 0.95; transform: translateY(-1px); }
+
+        /* === MEHR KONTRAST FÜR STARTSEITE-KACHELN === */
+        .audit-btn.glass {
+          border: 2px solid rgba(255,255,255,0.38) !important;
+          box-shadow: 0 10px 22px rgba(0,0,0,0.22) !important;
+        }
+/* App-Theme Light (unabhängig vom Browser/OS Theme) */
+html[data-theme="light"] .audit-btn.glass {
+  border-color: rgba(0,0,0,0.38) !important;
+  box-shadow:
+    0 12px 26px rgba(0,0,0,0.22),
+    0 0 0 1px rgba(255,255,255,0.35) inset !important;
+}
+
+/* Glanz/Overlay etwas dezenter */
+html[data-theme="light"] .audit-buttons .audit-btn.glass::before {
+  opacity: 0.65;
+}
+
+/* Prozent/Status wieder WEISS (wie gewünscht) */
+html[data-theme="light"] .audit-btn .btn-progress {
+  background: rgba(0,0,0,0.22) !important;   /* dunkler Chip -> weiß lesbar */
+  color: #fff !important;
+  font-weight: 900 !important;
+  border: 1px solid rgba(255,255,255,0.35) !important;
+}
         /* === KONTROLLELEMENTE MIT SCROLLBAR === */
         .controls-container {
             width: 100%;
@@ -852,8 +978,7 @@
             font-weight: 600;
             margin-bottom: 5px;
         }
-
-        /* Responsive Anpassungen */
+/* Responsive Anpassungen */
         @media (max-width: 768px) {
             .cloud-button-wrapper,
             .deviations-button-wrapper {
@@ -955,6 +1080,10 @@
             transform: translateY(-2px);
             box-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
+.audit-btn:focus-visible {
+  outline: 3px solid rgba(0, 120, 255, 0.6);
+  outline-offset: 3px;
+}
         
         .audit-btn.wirbelstrom { background: var(--audit-et); }
         .audit-btn.magnetpulver { background: var(--audit-mt); }
@@ -1383,7 +1512,7 @@
             font-size: 0.85em;
         }
         
-        .creator-info { font-weight: bold; color: var(--text-tertiary); margin-top: 4px; font-size: 0.9em; }
+        .creator-info { font-weight: bold; color: var(--text-primary); margin-top: 4px; font-size: 0.9em; }
         .version-info { margin-top: 2px; font-size: 0.8em; color: var(--text-secondary); }
 
         /* Dark Mode Optimierungen */
@@ -1585,8 +1714,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>ZfP Audit-Checkliste</h1>
-            <div class="subtitle">Zerstörungsfreie Prüfverfahren - Schaeffler</div>
+            <h1>ZfP Review Audit</h1>
+            <div class="subtitle">Zerstörungsfreie Prüfung</div>
         </header>
 
         <!-- CLOUD MODAL -->
@@ -1654,9 +1783,9 @@
                 
                 <!-- Filter Controls -->
                 <div class="filter-controls">
-                    <button class="filter-btn active" onclick="filterDeviations('all')">Alle</button>
-                    <button class="filter-btn" onclick="filterDeviations('open')">Offen</button>
-                    <button class="filter-btn" onclick="filterDeviations('completed')">Abgeschlossen</button>
+<button class="filter-btn active" data-filter="all" onclick="filterDeviations('all')">Alle</button>
+<button class="filter-btn" data-filter="open" onclick="filterDeviations('open')">Offen</button>
+<button class="filter-btn" data-filter="completed" onclick="filterDeviations('completed')">Abgeschlossen</button>
                     <button class="filter-btn" onclick="syncDeviationsWithCloud()" title="Abweichungen mit Cloud synchronisieren" style="background: var(--btn-cloud); color: white;">
                         🔄 Sync
                     </button>
@@ -1820,8 +1949,10 @@
             </div>
         </div>
 
+        <button id="themeToggleBtn" class="theme-toggle" title="Hell/Dunkel umschalten">🌓</button>
+
         <footer>
-            <p>ZfP Audit-Checkliste &copy; 2026 Schaeffler</p>
+            <p>ZfP Review Audit &copy; 2026 Schaeffler Technologies AG & Co. KG</p>
             <div class="version-info">Version AE, 27.01.2026</div>
             <div class="creator-info">Ersteller: Daniel Häusner, WI/SW2-PQT</div>
         </footer>
@@ -2037,26 +2168,41 @@
                 ]}
             ]
         };
-
-        // === INITIALISIERUNG ===
+// === INITIALISIERUNG ===
         document.addEventListener('DOMContentLoaded', function() {
-            initializeDarkMode();
+            initThemeToggle();
             initializeApp();
             setupEventListeners();
             loadDeviations(); // Lokale Abweichungen laden
             loadDeviationsFromCloud(); // Cloud-Abweichungen laden
         });
 
-        function initializeDarkMode() {
-            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-            function updateColorScheme(e) {
-                const isDark = e.matches;
-                document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-                updateProgressBarColor();
-            }
-            updateColorScheme(prefersDarkScheme);
-            prefersDarkScheme.addEventListener('change', updateColorScheme);
-            document.body.classList.add(prefersDarkScheme.matches ? 'dark-mode' : 'light-mode');
+        function getSavedTheme() {
+          return localStorage.getItem('zfp_theme'); // 'light' | 'dark' | null
+        }
+
+        function applyTheme(theme) {
+          document.documentElement.setAttribute('data-theme', theme);
+          document.body.classList.toggle('dark-mode', theme === 'dark');
+          document.body.classList.toggle('light-mode', theme === 'light');
+          updateProgressBarColor();
+        }
+
+        function initThemeToggle() {
+          const saved = getSavedTheme();
+          const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const initial = saved || (systemDark ? 'dark' : 'light');
+          applyTheme(initial);
+
+          const btn = document.getElementById('themeToggleBtn');
+          if (btn) {
+            btn.addEventListener('click', () => {
+              const current = document.documentElement.getAttribute('data-theme') || 'light';
+              const next = current === 'dark' ? 'light' : 'dark';
+              localStorage.setItem('zfp_theme', next);
+              applyTheme(next);
+            });
+          }
         }
         
         function initializeApp() {
@@ -2394,11 +2540,11 @@
                         
                         <td data-label="Aktionen">
                             <div class="actions-centered">
-                                ${deviation.hasImage ? `<button onclick="viewDeviationImage(${index})" class="action-btn image" title="Bild ansehen">📷</button>` : ''}
-                                ${deviation.status === 'offen'
-                                  ? `<button onclick="completeDeviation(${index})" class="action-btn complete" title="Als abgeschlossen markieren">✅</button>`
-                                  : `<button onclick="reopenDeviation(${index})" class="action-btn open" title="Wieder öffnen">🔄</button>`}
-                                <button onclick="deleteDeviation(${index})" class="action-btn delete" title="Abweichung löschen">🗑️</button>
+${deviation.hasImage ? `<button onclick="viewDeviationImageByKey('${(deviation.key || deviation.id)}')" class="action-btn image" title="Bild ansehen">📷</button>` : ''}
+${deviation.status === 'offen'
+  ? `<button onclick="completeDeviationByKey('${(deviation.key || deviation.id)}')" class="action-btn complete" title="Als abgeschlossen markieren">✅</button>`
+  : `<button onclick="reopenDeviationByKey('${(deviation.key || deviation.id)}')" class="action-btn open" title="Wieder öffnen">🔄</button>`}
+<button onclick="deleteDeviationByKey('${(deviation.key || deviation.id)}')" class="action-btn delete" title="Abweichung löschen">🗑️</button>
                             </div>
                         </td>
                     </tr>
@@ -2419,26 +2565,74 @@
             container.appendChild(tableContainer);
         }
         
-        function filterDeviations(filter) {
-            currentDeviationFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.toLowerCase().includes(filter)) btn.classList.add('active');
-            });
-            displayDeviationsList();
-        }
-        
-        function viewDeviationImage(index) {
-            if (index >= 0 && index < deviations.length) {
-                const deviation = deviations[index];
-                if (deviation.imageData) {
-                    document.getElementById('modalImage').src = deviation.imageData;
-                    document.getElementById('imageModal').style.display = 'flex';
-                } else {
-                    alert('Kein Bild für diese Abweichung vorhanden');
-                }
-            }
-        }
+function filterDeviations(filter) {
+    currentDeviationFilter = filter;
+
+    document.querySelectorAll('.filter-controls .filter-btn[data-filter]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
+    });
+
+    displayDeviationsList();
+}
+
+function findDeviationIndexByKeyOrId(keyOrId) {
+    return deviations.findIndex(d => (d.key && d.key === keyOrId) || d.id === keyOrId);
+}
+async function completeDeviationByKey(keyOrId) {
+    const idx = findDeviationIndexByKeyOrId(keyOrId);
+    if (idx < 0) return alert('Abweichung nicht gefunden');
+
+    deviations[idx].status = 'abgeschlossen';
+    deviations[idx].completedAt = new Date().toISOString();
+    deviations[idx].completedBy = participants.auditors[0] || 'Unbekannt';
+    await saveSingleDeviationToCloud(deviations[idx]);
+    saveDeviations();
+    displayDeviationsList();
+    alert('✅ Abweichung wurde als abgeschlossen markiert!');
+}
+
+async function reopenDeviationByKey(keyOrId) {
+    const idx = findDeviationIndexByKeyOrId(keyOrId);
+    if (idx < 0) return alert('Abweichung nicht gefunden');
+
+    deviations[idx].status = 'offen';
+    deviations[idx].reopenedAt = new Date().toISOString();
+    await saveSingleDeviationToCloud(deviations[idx]);
+    saveDeviations();
+    displayDeviationsList();
+    alert('🔄 Abweichung wurde wieder geöffnet!');
+}
+
+async function deleteDeviationByKey(keyOrId) {
+    if (!confirm('Sind Sie sicher, dass Sie diese Abweichung löschen möchten?\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) return;
+
+    const pw = prompt('Bitte Passwort eingeben, um die Abweichung zu löschen:');
+    if (pw !== 'ZfP-Review') {
+        alert('❌ Falsches Passwort. Löschvorgang abgebrochen.');
+        return;
+    }
+
+    const idx = findDeviationIndexByKeyOrId(keyOrId);
+    if (idx < 0) return alert('Abweichung nicht gefunden');
+
+    await deleteDeviationFromCloud(deviations[idx].id);
+    deviations.splice(idx, 1);
+    saveDeviations();
+    displayDeviationsList();
+    alert('✅ Abweichung wurde gelöscht!');
+}       
+function viewDeviationImageByKey(keyOrId) {
+    const idx = findDeviationIndexByKeyOrId(keyOrId);
+    if (idx < 0) return alert('Abweichung nicht gefunden');
+
+    const deviation = deviations[idx];
+    if (deviation.imageData) {
+        document.getElementById('modalImage').src = deviation.imageData;
+        document.getElementById('imageModal').style.display = 'flex';
+    } else {
+        alert('Kein Bild für diese Abweichung vorhanden');
+    }
+}
         
         async function completeDeviation(index) {
             if (index >= 0 && index < deviations.length) {
@@ -2645,8 +2839,7 @@
             const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
             return `AUD-${year}${month}${day}-${random}`;
         }
-
-        function generatePDFBlob() {
+function generatePDFBlob() {
             return new Promise((resolve, reject) => {
                 try {
                     const reportHtml = createReportHTML();
@@ -2693,8 +2886,8 @@
             document.getElementById('cloudModal').style.display = 'none';
             document.getElementById('auditSelection').classList.add('active');
             document.getElementById('auditContent').classList.remove('active');
-            document.querySelector('h1').textContent = 'ZfP Audit-Checkliste';
-            document.querySelector('.subtitle').textContent = 'Zerstörungsfreie Prüfverfahren - Schaeffler';
+            document.querySelector('h1').textContent = 'ZfP Review Audit';
+            document.querySelector('.subtitle').textContent = 'Zerstörungsfreie Prüfung';
             updateAuditProgressDisplays();
             updateCloudProgressDisplay();
         }
@@ -2708,8 +2901,8 @@
             document.getElementById('deviationsModal').style.display = 'none';
             document.getElementById('auditSelection').classList.add('active');
             document.getElementById('auditContent').classList.remove('active');
-            document.querySelector('h1').textContent = 'ZfP Audit-Checkliste';
-            document.querySelector('.subtitle').textContent = 'Zerstörungsfreie Prüfverfahren - Schaeffler';
+            document.querySelector('h1').textContent = 'ZfP Review Audit';
+            document.querySelector('.subtitle').textContent = 'Zerstörungsfreie Prüfung';
         }
         
         function closeImageModal() { document.getElementById('imageModal').style.display = 'none'; document.getElementById('modalImage').src = ''; }
@@ -2755,7 +2948,16 @@
             currentAuditType = auditType;
             document.getElementById('auditSelection').classList.remove('active');
             document.getElementById('auditContent').classList.add('active');
-            loadCurrentAuditData();
+
+            // Wenn Daten bereits (z.B. aus Cloud) gesetzt wurden, nicht überschreiben
+            if (!currentAuditData || !currentAuditData.questions || currentAuditData.meta?.audit_type !== auditType) {
+                loadCurrentAuditData();
+            } else {
+                allQuestions = currentAuditData.questions || [];
+                participants = currentAuditData.participants || { auditors: [], auditees: [] };
+                imageStorage = currentAuditData.images || {};
+                allQuestionElements = allQuestions;
+            }
             
             const auditInfo = AUDIT_TYPES[auditType];
             document.querySelector('h1').textContent = `ZfP Audit - ${auditInfo.title}`;
@@ -2841,8 +3043,8 @@
             allQuestionElements = [];
             document.getElementById('auditSelection').classList.add('active');
             document.getElementById('auditContent').classList.remove('active');
-            document.querySelector('h1').textContent = 'ZfP Audit-Checkliste';
-            document.querySelector('.subtitle').textContent = 'Zerstörungsfreie Prüfverfahren - Schaeffler';
+            document.querySelector('h1').textContent = 'ZfP Review Audit';
+            document.querySelector('.subtitle').textContent = 'Zerstörungsfreie Prüfung';
         }
 
         function updateCurrentAuditProgress() {
@@ -3351,24 +3553,41 @@
 
         // === RESET FUNKTION ===
         function showResetConfirmation() {
-            if (confirm('MÖCHTEN SIE WIRKLICH DAS KOMPLETTE AUDIT ZURÜCKSETZEN?\n\nDiese Aktion löscht alle Bewertungen, Nachweise und Bilder.\nDie Teilnehmerliste bleibt erhalten.\n\nDiese Aktion kann nicht rückgängig gemacht werden!')) {
+            if (confirm('MÖCHTEN SIE WIRKLICH DAS KOMPLETTE AUDIT ZURÜCKSETZEN?\n\nDiese Aktion löscht alle Bewertungen, Nachweise, Bilder UND die Teilnehmer.\n\nDiese Aktion kann nicht rückgängig gemacht werden!')) {
                 resetAudit();
             }
         }
 
         function resetAudit() {
             if (!currentAuditType) return;
+
             allQuestions.forEach(question => {
                 question.points = null;
                 question.evidence = '';
                 question.deviation = { text: '', responsible: '', hasImage: false };
             });
+
             imageStorage = {};
+
+            // Teilnehmer ebenfalls leeren (Anforderung)
+            participants = { auditors: [], auditees: [] };
+
+            // Eingabefelder leeren
+            const aIn = document.getElementById('auditorInput');
+            const eIn = document.getElementById('auditeeInput');
+            const mIn = document.getElementById('mobileParticipantInput');
+            if (aIn) aIn.value = '';
+            if (eIn) eIn.value = '';
+            if (mIn) mIn.value = '';
+
             currentAuditData.questions = allQuestions;
             currentAuditData.images = {};
+            currentAuditData.participants = participants;
             currentAuditData.meta.lastModified = new Date().toISOString();
+
             saveCurrentAuditData();
             renderAuditSections();
+            renderParticipants();
             if (window.innerWidth <= 768) renderMobileQuestion();
             updateCurrentAuditProgress();
             alert('✅ Audit wurde zurückgesetzt!');
@@ -3444,8 +3663,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auditbericht - ${auditInfo.title} | Schaeffler</title>
+    <title>Auditbericht - ${auditInfo.title} | Schaeffler Technologies AG & Co. KG</title>
+/* =========================================================
+   LIGHT MODE: FLAT KACHELN (ohne Glass/Glanz) + hoher Kontrast
+   ========================================================= */
+html[data-theme="light"] .audit-buttons .audit-btn.glass,
+html[data-theme="light"] .cloud-button-wrapper .audit-btn.cloud.glass,
+html[data-theme="light"] .deviations-button-wrapper .audit-btn.deviations.glass {
+  /* flat look */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12) !important;
+  border: 2px solid rgba(0,0,0,0.18) !important;
+
+  /* readable text */
+  color: #111 !important;
+  text-shadow: none !important;
+}
+
+/* Glanz-Overlay komplett aus */
+html[data-theme="light"] .audit-buttons .audit-btn.glass::before,
+html[data-theme="light"] .cloud-button-wrapper .audit-btn.cloud.glass::before,
+html[data-theme="light"] .deviations-button-wrapper .audit-btn.deviations.glass::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Textelemente */
+html[data-theme="light"] .audit-btn.glass .btn-icon,
+html[data-theme="light"] .audit-btn.glass span {
+  color: #111 !important;
+  text-shadow: none !important;
+  font-weight: 800;
+}
+
+/* Progress/Status als klarer Chip */
+html[data-theme="light"] .audit-btn.glass .btn-progress {
+  background: #fff !important;
+  color: #111 !important;
+  border: 1px solid rgba(0,0,0,0.25) !important;
+  font-weight: 900 !important;
+  text-shadow: none !important;
+}
+
+/* Optional: Hover ohne “glassy“ Effekt */
+html[data-theme="light"] .audit-buttons .audit-btn.glass:hover,
+html[data-theme="light"] .cloud-button-wrapper .audit-btn.cloud.glass:hover,
+html[data-theme="light"] .deviations-button-wrapper .audit-btn.deviations.glass:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.16) !important;
+  filter: none !important;
+}
+/* === FORCE FLAT + HIGH CONTRAST (LIGHT) === */
+html[data-theme="light"] button.audit-btn.glass {
+  color: #111 !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.16) !important;
+  border: 2px solid rgba(0,0,0,0.22) !important;
+}
+
+/* alle Kinder im Button schwarz (Verfahren + Prozent + Icon) */
+html[data-theme="light"] button.audit-btn.glass * {
+  color: #111 !important;
+  text-shadow: none !important;
+}
+
+/* Progress-Badge als klarer Chip */
+html[data-theme="light"] button.audit-btn.glass .btn-progress {
+  background: #fff !important;
+  border: 1px solid rgba(0,0,0,0.28) !important;
+  font-weight: 900 !important;
+}
+
+/* Glass-Overlay AUS */
+html[data-theme="light"] button.audit-btn.glass::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* optional: Hover sauber */
+html[data-theme="light"] button.audit-btn.glass:hover {
+  filter: none !important;
+}
+
     <style>
+
         @page {
             size: A4 portrait;
             margin: 15mm 10mm 15mm 15mm;
@@ -4191,8 +4495,8 @@
         
         <!-- FOOTER -->
         <div class="footer-container">
-            Häusner Daniel | WI/SW2-PQT | ZfP Audit-Checkliste AE - 27.01.2026<br>
-            Erstellt mit ZfP Audit-Checkliste | Generiert am: ${formatDateDMY(new Date())}
+            Häusner Daniel | WI/SW2-PQT | ZfP Review Audit AE - 27.01.2026<br>
+            Erstellt mit ZfP Review Audit | Generiert am: ${formatDateDMY(new Date())}
         </div>
     </div>
 </body>
@@ -4452,10 +4756,16 @@
                         const auditDate = new Date(audit.meta?.saved_at || audit.created_at);
                         closeCloudModal();
                         setTimeout(() => {
+                            const loadedParticipants = audit.participants || {};
+                            const normalizedParticipants = {
+                                auditors: Array.isArray(loadedParticipants.auditors) ? loadedParticipants.auditors : [],
+                                auditees: Array.isArray(loadedParticipants.auditees) ? loadedParticipants.auditees : []
+                            };
+
                             currentAuditData = {
-                                meta: audit.meta,
-                                participants: audit.participants || { auditors: [], auditees: [] },
-                                questions: audit.questions || [],
+                                meta: audit.meta || {},
+                                participants: normalizedParticipants,
+                                questions: Array.isArray(audit.questions) ? audit.questions : [],
                                 images: audit.images || {}
                             };
                             allQuestions = currentAuditData.questions || [];
@@ -4508,30 +4818,37 @@
             }
         }
 
-        async function deleteAuditFromCloud(auditId) {
-            if (confirm('Sind Sie sicher, dass Sie dieses Audit aus der Cloud löschen möchten?\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
-                try {
-                    await fetch(`${SUPABASE_URL}/storage/v1/object/pdfs/audit_${auditId}.pdf`, {
-                        method: 'DELETE',
-                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-                    }).catch(() => {});
+async function deleteAuditFromCloud(auditId) {
+    if (!confirm('Sind Sie sicher, dass Sie dieses Audit aus der Cloud löschen möchten?\n\nDiese Aktion kann nicht rückgängig gemacht werden.')) {
+        return;
+    }
+    // Passwort prüfen
+    const pw = prompt('Bitte Passwort eingeben, um das Audit zu löschen:');
+    if (pw !== 'ZfP-Review') {
+        alert('❌ Falsches Passwort. Löschvorgang abgebrochen.');
+        return;
+    }
 
-                    const response = await fetch(`${SUPABASE_URL}/rest/v1/audits?id=eq.${auditId}`, {
-                        method: 'DELETE',
-                        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-                    });
-                    if (!response.ok) throw new Error('Löschen fehlgeschlagen');
+    try {
+        await fetch(`${SUPABASE_URL}/storage/v1/object/pdfs/audit_${auditId}.pdf`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        }).catch(() => {});
 
-                    alert('✅ Audit wurde aus der Cloud gelöscht!');
-                    loadAuditsFromCloud();
-                    loadDeviationsFromCloud();
-                } catch (error) {
-                    console.error('Löschfehler:', error);
-                    alert('❌ Fehler beim Löschen: ' + error.message);
-                }
-            }
-        }
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/audits?id=eq.${auditId}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (!response.ok) throw new Error('Löschen fehlgeschlagen');
 
+        alert('✅ Audit wurde aus der Cloud gelöscht!');
+        loadAuditsFromCloud();
+        loadDeviationsFromCloud();
+    } catch (error) {
+        console.error('Löschfehler:', error);
+        alert('❌ Fehler beim Löschen: ' + error.message);
+    }
+}
         async function loadPDFFromCloud(auditId) {
             try {
                 const response = await fetch(`${SUPABASE_URL}/storage/v1/object/pdfs/audit_${auditId}.pdf`, {
