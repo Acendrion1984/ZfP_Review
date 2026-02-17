@@ -2198,92 +2198,46 @@ html[data-theme="light"] .audit-btn .btn-progress {
             loadDeviationsFromCloud(); // Cloud-Abweichungen laden
         });
 
-/* ========= SYNCHRONISIERTES THEME MANAGEMENT ========= */
-const THEME_STORAGE_KEY = 'zfp-theme-preference'; // WICHTIG: Gleicher Key wie in den anderen Apps!
-
-// Theme initialisieren
-function initSyncedTheme() {
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || 'light';
-    if (savedTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        document.body.classList.add('dark-mode');
-    } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        document.body.classList.remove('dark-mode');
-    }
-    console.log('Theme initialisiert:', savedTheme);
+/* ========= THEME FUNKTIONEN ========= */
+function getSavedTheme() {
+  return localStorage.getItem('zfp-theme-preference'); // 'light' | 'dark' | null
 }
 
-// Theme umschalten
-function toggleSyncedTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem(THEME_STORAGE_KEY, newTheme);
-    
-    if (newTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-    } else {
-        document.body.classList.remove('dark-mode');
-    }
-    
-    // Andere Tabs benachrichtigen
-    localStorage.setItem('theme_changed_at', Date.now().toString());
-    console.log('Theme umgeschaltet auf:', newTheme);
+function updateToggleAppearance() {
+  // Symbol bleibt immer gleich (🌓)
+  const btn = document.getElementById('themeToggleBtn');
+  if (!btn) return;
+  btn.textContent = '🌓'; // Immer das gleiche Symbol
 }
 
-// Auf Änderungen von anderen Tabs reagieren
-window.addEventListener('storage', function(e) {
-    if (e.key === THEME_STORAGE_KEY) {
-        const newTheme = e.newValue;
-        console.log('Theme-Änderung von anderem Tab empfangen:', newTheme);
-        
-        if (newTheme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            document.body.classList.add('dark-mode');
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            document.body.classList.remove('dark-mode');
-        }
-    }
-});
-
-// Theme-Toggle Button initialisieren
-function initThemeButton() {
-    const themeButton = document.getElementById('themeToggleBtn');
-    
-    if (themeButton) {
-        console.log('Theme-Button gefunden');
-        
-        // Alte Event-Listener entfernen
-        themeButton.replaceWith(themeButton.cloneNode(true));
-        
-        // Neuen Button holen
-        const newButton = document.getElementById('themeToggleBtn');
-        
-        // Neuen Event-Listener hinzufügen
-        newButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Theme-Button geklickt');
-            toggleSyncedTheme();
-        });
-    } else {
-        console.error('Theme-Button nicht gefunden!');
-    }
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const darkEl = document.getElementById('darkModeStyles');
+  if (darkEl) {
+    if (theme === 'dark') darkEl.media = 'all';
+    else if (theme === 'light') darkEl.media = 'not all';
+    else darkEl.media = '(prefers-color-scheme: dark)';
+  }
+  document.body.classList.toggle('dark-mode', theme === 'dark');
+  document.body.classList.toggle('light-mode', theme === 'light');
+  updateToggleAppearance(); // Symbol bleibt gleich, nur Hintergrund ändert sich
 }
 
-// Alles starten
-document.addEventListener('DOMContentLoaded', function() {
-    initSyncedTheme();
-    initThemeButton();
-});
-
-// Falls DOMContentLoaded schon gefeuert wurde
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    initSyncedTheme();
-    initThemeButton();
+function initThemeToggle() {
+  const saved = getSavedTheme();
+  const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = saved || (systemDark ? 'dark' : 'light');
+  applyTheme(initial);
+  
+  const btn = document.getElementById('themeToggleBtn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || (systemDark ? 'dark' : 'light');
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('zfp-theme-preference', next);
+      applyTheme(next);
+    });
+  }
 }
         
         function initializeApp() {
